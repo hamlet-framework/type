@@ -12,7 +12,7 @@ class CastTest extends TestCase
     public function values()
     {
         $handle = fopen(__FILE__, 'r');
-        $callback = function () {
+        $callback = function (): int {
             return 1;
         };
         $object = new class()

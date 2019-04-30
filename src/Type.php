@@ -54,12 +54,8 @@ abstract class Type
 
     public static function of(string $declaration): Type
     {
-        static $lexer;
-        static $parser;
-        if (!isset($lexer) || !isset($parser)) {
-            $lexer = new Lexer();
-            $parser = new TypeParser();
-        }
+        $lexer = new Lexer();
+        $parser = new TypeParser();
         $tokens = new TokenIterator($lexer->tokenize($declaration));
         return static::fromNode($parser->parse($tokens));
     }
@@ -94,6 +90,9 @@ abstract class Type
             switch ($node->type->name) {
                 case 'array':
                     if (count($node->genericTypes) == 2) {
+                        /**
+                         * @psalm-suppress MixedArgumentTypeCoercion
+                         */
                         return _map(
                             static::fromNode($node->genericTypes[0]),
                             static::fromNode($node->genericTypes[1])
@@ -105,5 +104,6 @@ abstract class Type
                     }
             }
         }
+        throw new RuntimeException('Cannot convert node to type: ' . var_export($node, true));
     }
 }
