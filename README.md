@@ -1,6 +1,8 @@
 Hamlet Cast 
 ===
 
+[![Build Status](https://travis-ci.org/hamlet-framework/type.svg)](https://travis-ci.org/hamlet-framework/type)
+
 There are few aspects of specifying type of an expression in PHP:
 
 1. The most exact specification of the type (we assume it's in psalm syntax), for example `array<int,DateTime|null>`
