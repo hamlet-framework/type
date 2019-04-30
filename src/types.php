@@ -128,5 +128,3 @@ function _intersection(Type $type, Type ...$types): Type
     }
     return new IntersectionType($type, _intersection(...$types));
 }
-
-

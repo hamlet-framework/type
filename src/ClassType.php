@@ -36,7 +36,7 @@ class ClassType extends Type
         return $value;
     }
 
-    function __toString()
+    public function __toString()
     {
         return $this->type;
     }
