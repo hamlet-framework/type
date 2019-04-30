@@ -120,6 +120,7 @@ function _property(string $name, bool $required, Type $type): PropertyType
  * @psalm-param array<Type<S>> $types
  * @return Type
  * @psalm-return Type<T&S>|Type<T>
+ * @psalm-suppress InvalidDocblock
  */
 function _intersection(Type $type, Type ...$types): Type
 {
