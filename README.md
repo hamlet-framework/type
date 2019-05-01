@@ -60,9 +60,8 @@ $type = _intersection(
 );
 ``` 
 
-Quite a mouthful. But it allows us to do things like this
+Quite a mouthful. One day I will extends the parser so that the same type could be generated from literal specification
 
-## Type casting PHP
-
-`bool` - can be converted from any type
-``
+```php
+Type::of('array{id:int}')->cast($record);
+```
