@@ -29,17 +29,12 @@ This object can be used in following ways
 
 Assert at run time that the type of `$records` is `array<int,DateTime|null>>`:
 ```php
-assert($type($records));
+$type->assert($records);
 ```
 
-Cast `$records` to `array<int,DateTime|null>>` and throw an exception when `$records` are not of type `array<int,DateTime|null>>` when assertions are enabled:
+Cast `$records` to `array<int,DateTime|null>>` and throw an exception when `$records` cannot be cast to `array<int,DateTime|null>>`:
 ```php
 return $type->cast($records);
-```
-
-Cast `$records` to `array<int,DateTime|null>>` or throw a runtime exception if cast fails:
-```php
-return $type->castOrFail($records);
 ```
 
 Combine type with other types, for example, making it nullable `array<int,DateTime|null>>|null`:
