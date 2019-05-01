@@ -3,7 +3,7 @@
 namespace Hamlet\Cast;
 
 /**
- * @template K as int|string
+ * @template K as array-key
  * @template V
  * @extends Type<array<K,V>>
  */
