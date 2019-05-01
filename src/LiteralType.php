@@ -46,9 +46,6 @@ class LiteralType extends Type
         throw new CastException($value, $this);
     }
 
-    /**
-     * @return string
-     */
     public function __toString()
     {
         $escape =

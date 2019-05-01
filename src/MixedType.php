@@ -17,9 +17,6 @@ class MixedType extends Type
         return $value;
     }
 
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return 'mixed';

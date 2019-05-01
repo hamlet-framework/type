@@ -3,7 +3,7 @@
 namespace Hamlet\Cast;
 
 /**
- * @template K as array-key
+ * @template K as int|string
  * @template V
  * @extends Type<array<K,V>>
  */
@@ -64,9 +64,6 @@ class MapType extends Type
         return $result;
     }
 
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return 'array<' . $this->keyType . ',' . $this->valueType . '>';
