@@ -93,6 +93,20 @@ class CastText extends TestCase
         Assert::assertEquals(['id' => 12, 'name' => 'hey there', 'online' => false], $type->cast($value));
     }
 
+    /**
+     * @expectedException \Hamlet\Cast\CastException
+     */
+    public function testPropertyTypeThrowsExceptionOnMissingProperty()
+    {
+        _property('id', true, _int())->cast([]);
+    }
+
+    public function testNonRequiredPropertyTypeThrowsNoExceptionOnMissingProperty()
+    {
+        _property('id', false, _int())->cast([]);
+        Assert::assertTrue(true);
+    }
+
     public function testListType()
     {
         $type = _list(_string());
