@@ -73,6 +73,26 @@ class CastText extends TestCase
         Assert::assertFalse($type->matches($value));
     }
 
+    public function testIntersectionCast()
+    {
+        $type = _intersection(
+            _property('id', true, _int()),
+            _property('name', true, _string()),
+            _property('online', false, _bool())
+        );
+
+        $object = new class()
+        {
+            public function __toString(): string
+            {
+                return 'hey there';
+            }
+        };
+        $value = ['id' => '12monkeys', 'name' => $object, 'online' => '0'];
+
+        Assert::assertEquals(['id' => 12, 'name' => 'hey there', 'online' => false], $type->cast($value));
+    }
+
     public function testListType()
     {
         $type = _list(_string());

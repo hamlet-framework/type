@@ -88,9 +88,10 @@ class PropertyType extends Type
         if (!is_array($value)) {
             throw new CastException($value, $this);
         }
-        if (!array_key_exists($this->name, $value)) {
+        if ($this->required && !array_key_exists($this->name, $value)) {
             throw new CastException($value, $this);
         }
+        $value[$this->name] = $this->type->cast($value[$this->name]);
         return $value;
     }
 
