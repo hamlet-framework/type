@@ -13,7 +13,7 @@ class ParserTest extends TestCase
             ['array<int,string|null>'],
             ['array<int>'],
             ['int'],
-            ['\\DateTime|null'],
+            ['\\DateTime|null']
         ];
     }
 
