@@ -3,7 +3,6 @@
 namespace Hamlet\Cast\Reader;
 
 use Hoa\Compiler\Llk\Llk;
-use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Compiler\Visitor\Dump;
 use Hoa\File\Read;
 use PHPUnit\Framework\Assert;
@@ -25,6 +24,7 @@ class ParserTest extends TestCase
             ['string[][]'],
             ['(1|false)[]'],
             ['(A::FOO|A::BAR)'],
+            ['(A::FOO|false|callable():void)[][][]'],
             ['int[]'],
             ["callable(('a'|'b'), int):(string|array{\\DateTime}|callable():void)"],
             ['array{0: string, 1: string, foo: stdClass, 28: false}'],
@@ -33,7 +33,11 @@ class ParserTest extends TestCase
             ['Closure(bool):int'],
             ['array<string,\DateTime>'],
             ['Generator<T0, int, mixed, T0>'],
-            ['Generator<T0, int, mixed, T0> & object']
+            ['int[]|string'],
+            ['int[]|string & array'],
+            ['callable(array{int}[]):(int|null)'],
+            ['array<string,int[]|object>[]'],
+            ['Generator<T0, int, mixed, T0> & (object|null)']
         ];
     }
 
@@ -44,11 +48,12 @@ class ParserTest extends TestCase
     public function testHoaParser(string $specification)
     {
         $compiler = Llk::load(new Read(__DIR__ . '/../../src/Reader/grammar.pp'));
-        /** @var TreeNode $ast */
-        $ast = $compiler->parse($specification, 'type');
-        $visitor = new Dump();
+        $ast = $compiler->parse($specification, 'expression');
+        $dump = new Dump();
+
+        echo PHP_EOL;
         echo $specification . PHP_EOL;
-        echo $visitor->visit($ast);
+        echo $dump->visit($ast);
 
         Assert::assertTrue(true);
     }

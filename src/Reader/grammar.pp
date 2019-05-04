@@ -38,26 +38,24 @@
 %token  id              [a-zA-Z_][a-zA-Z0-9_]*
 %token  backslash       \\
 
-type:
-  ( basic_type() | derived_type() ) legacy_array()*
+expression:
+    type()
+
+#type:
+    basic_type()
+  | derived_type()
 
 derived_type:
     union()
   | intersection()
 
 basic_type:
-    escaped_type()
-  | <built_in>
-  | literal()
-  | array()
-  | generic()
-  | closure()
-  | class_name()
+  ( escaped_type() | <built_in> | literal() | array() | generic() | closure() | class_name() ) legacy_array()*
 
-quoted_string:
+#quoted_string:
     ::quote_:: <string> ::_quote::
 
-literal:
+#literal:
     quoted_string()
   | <int_number>
   | <float_number>
@@ -66,44 +64,44 @@ literal:
   | <null>
   | const()
 
-const:
+#const:
     class_name() ::namespace:: <id>
 
-array:
+#array:
     <array> ::brace_:: property() (::comma:: property())* ::_brace::
   | <array> ::angular_:: type() ::comma:: type() ::_angular::
   | <array> ::angular_:: type() ::_angular::
   | <array>
 
-property_name:
+#property_name:
     <id>
   | <int_number>
   | quoted_string()
 
-property:
+#property:
     property_name() (::question::)? ::colon:: type()
   | type()
 
 escaped_type:
     ::parenthesis_:: type() ::_parenthesis::
 
-union:
+#union:
     basic_type() ::or:: type()
 
-intersection:
+#intersection:
     basic_type() ::and:: type()
 
-generic:
+#generic:
     class_name() ::angular_:: type() (::comma:: type())* ::_angular::
 
-closure:
+#closure:
     <closure> ::parenthesis_:: closure_parameters()? ::_parenthesis:: (::colon:: type())?
 
-closure_parameters:
+#closure_parameters:
     type() (::comma:: type())*
 
-class_name:
+#class_name:
     ::backslash::? <id> (::backslash:: <id>)*
 
-legacy_array:
+#legacy_array:
     ::bracket_:: ::_bracket::
