@@ -24,10 +24,11 @@ class ParserTest extends TestCase
             ["'a'|'b'"],
             ['string[][]'],
             ['(1|false)[]'],
-            ['(A::FOO | A::BAR)'],
+            ['(A::FOO|A::BAR)'],
             ['int[]'],
             ["callable(('a'|'b'), int):(string|array{\\DateTime}|callable():void)"],
             ['array{0: string, 1: string, foo: stdClass, 28: false}'],
+            ['non-empty-array{string,string,foo:non-empty-array,23:boolean}'],
             ['A::class|B::class'],
             ['Closure(bool):int'],
             ['array<string,\DateTime>'],
@@ -44,7 +45,7 @@ class ParserTest extends TestCase
     {
         $compiler = Llk::load(new Read(__DIR__ . '/../../src/Reader/grammar.pp'));
         /** @var TreeNode $ast */
-        $ast = $compiler->parse($specification, 'type', true);
+        $ast = $compiler->parse($specification, 'type');
         $visitor = new Dump();
         echo $specification . PHP_EOL;
         echo $visitor->visit($ast);

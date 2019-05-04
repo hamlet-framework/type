@@ -1,14 +1,13 @@
-%skip   space           [\s\t\n\r]
+%skip   space           \s
 
-%token  built_in        (int|string|float|bool|object|iterable|mixed|numeric-string|boolean|integer|double|real|resource|self|static|scalar|numeric|array-key)
+%token  built_in        (integer|int|string|float|boolean|bool|object|iterable|mixed|numeric-string|double|real|resource|self|static|scalar|numeric|array-key)
 
 %token  array           (array|non-empty-array)
-%token  callable        callable
+%token  closure         (callable|Closure)
 
 %token  false           false
 %token  true            true
 %token  null            null
-
 
 %token  quote_          '        -> string
 %token  string:string   [^']+
@@ -36,10 +35,11 @@
 %token  and             &
 %token  float_number    (\d+)?\.\d+
 %token  int_number      \d+
-%token  id              \\?[a-zA-Z][a-zA-Z0-9_]*(\\[a-zA-Z][a-zA-Z0-9_]+)*
+%token  id              [a-zA-Z_][a-zA-Z0-9_]*
+%token  backslash       \\
 
 type:
-    (basic_type() | derived_type()) (::bracket_:: ::_bracket::)*
+  ( basic_type() | derived_type() ) legacy_array()*
 
 derived_type:
     union()
@@ -52,10 +52,7 @@ basic_type:
   | array()
   | generic()
   | closure()
-  | class()
-
-class:
-    <id>
+  | class_name()
 
 quoted_string:
     ::quote_:: <string> ::_quote::
@@ -70,7 +67,7 @@ literal:
   | const()
 
 const:
-    <id> ::namespace:: <id>
+    class_name() ::namespace:: <id>
 
 array:
     <array> ::brace_:: property() (::comma:: property())* ::_brace::
@@ -97,10 +94,16 @@ intersection:
     basic_type() ::and:: type()
 
 generic:
-    <id> ::angular_:: type() (::comma:: type())* ::_angular::
+    class_name() ::angular_:: type() (::comma:: type())* ::_angular::
 
 closure:
-    (<id> | <callable>) ::parenthesis_:: closure_parameters()? ::_parenthesis:: (::colon:: type())?
+    <closure> ::parenthesis_:: closure_parameters()? ::_parenthesis:: (::colon:: type())?
 
 closure_parameters:
     type() (::comma:: type())*
+
+class_name:
+    ::backslash::? <id> (::backslash:: <id>)*
+
+legacy_array:
+    ::bracket_:: ::_bracket::
