@@ -22,7 +22,7 @@ class CastException extends RuntimeException
      */
     public function __construct($value, Type $targetType)
     {
-        parent::__construct('Cannot convert ' . var_export($value, true) . ' to ' . $targetType);
+        parent::__construct('Cannot convert ' . print_r($value, true) . ' to ' . $targetType);
         $this->value = $value;
         $this->targetType = $targetType;
     }

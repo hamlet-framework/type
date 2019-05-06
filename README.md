@@ -55,8 +55,16 @@ $type = _intersection(
 );
 ``` 
 
-Quite a mouthful. One day I will extends the parser so that the same type could be generated from literal specification
+Quite a mouthful. If you want to assert types matching your PHPDoc you can use the type parser (WiP):
 
 ```php
-Type::of('array{id:int}')->cast($record);
+assert(Type::of('array{id:int}')->matches($record));
 ```
+
+## Todo
+
+- Add parametrized types to closures and generics
+- Check closure parameters
+- Add non nullable array type
+- Add resource type
+- Add the rest of types from Psalm project

@@ -54,6 +54,14 @@ class UnionType extends Type
 
     public function __toString()
     {
-        return join('|', $this->as);
+        $tokens = [];
+        foreach ($this->as as $a) {
+            if ($a instanceof IntersectionType) {
+                $tokens[] = '(' . $a . ')';
+            } else {
+                $tokens[] = (string) $a;
+            }
+        }
+        return join('|', $tokens);
     }
 }

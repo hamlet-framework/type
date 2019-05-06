@@ -3,7 +3,7 @@
 namespace Hamlet\Cast;
 
 /**
- * @template N as array-key
+ * @template N as int|string
  * @template T
  * @extends Type<array{N:T}>
  */
@@ -27,13 +27,13 @@ class PropertyType extends Type
     private $type;
 
     /**
-     * @param string $name
+     * @param int|string $name
      * @psalm-param N $name
      * @param bool $required
      * @param Type $type
      * @psalm-param Type<T> $type
      */
-    public function __construct(string $name, bool $required, Type $type)
+    public function __construct($name, bool $required, Type $type)
     {
         $this->name = $name;
         $this->required = $required;
@@ -98,6 +98,7 @@ class PropertyType extends Type
 
     public function __toString()
     {
-        return 'array{' . ((string) $this->name) . ($this->required ? '' : '?') . ':' . $this->type . '}';
+        $id = ((string) $this->name) . ($this->required ? '' : '?') . ':';
+        return 'array{' . $id . $this->type . '}';
     }
 }

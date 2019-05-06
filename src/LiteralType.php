@@ -65,6 +65,11 @@ class LiteralType extends Type
                 }
                 return (string) $a;
             };
-        return '(' . join('|', array_map($escape, $this->values)) . ')';
+
+        if (count($this->values) > 1) {
+            return '(' . join('|', array_map($escape, $this->values)) . ')';
+        } else {
+            return $escape($this->values[0]);
+        }
     }
 }

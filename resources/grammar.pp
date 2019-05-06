@@ -3,7 +3,7 @@
 %token  built_in        (integer|int|string|float|boolean|bool|object|iterable|mixed|numeric-string|double|real|resource|self|static|scalar|numeric|array-key)
 
 %token  array           (array|non-empty-array)
-%token  closure         (callable|Closure)
+%token  callable        (callable|Closure)
 
 %token  false           false
 %token  true            true
@@ -41,7 +41,7 @@
 expression:
     type()
 
-#type:
+type:
     basic_type()
   | derived_type()
 
@@ -49,10 +49,10 @@ derived_type:
     union()
   | intersection()
 
-basic_type:
-  ( escaped_type() | <built_in> | literal() | array() | generic() | closure() | class_name() ) legacy_array()*
+#basic_type:
+  ( escaped_type() | <built_in> | literal() | object_like_array() | array() | generic() | callable() | class_name() ) brackets()*
 
-#quoted_string:
+quoted_string:
     ::quote_:: <string> ::_quote::
 
 #literal:
@@ -68,10 +68,12 @@ basic_type:
     class_name() ::namespace:: <id>
 
 #array:
-    <array> ::brace_:: property() (::comma:: property())* ::_brace::
-  | <array> ::angular_:: type() ::comma:: type() ::_angular::
+    <array> ::angular_:: type() ::comma:: type() ::_angular::
   | <array> ::angular_:: type() ::_angular::
   | <array>
+
+#object_like_array:
+    <array> ::brace_:: property() (::comma:: property())* ::_brace::
 
 #property_name:
     <id>
@@ -79,8 +81,11 @@ basic_type:
   | quoted_string()
 
 #property:
-    property_name() (::question::)? ::colon:: type()
+    property_name() property_option()? ::colon:: type()
   | type()
+
+#property_option:
+    ::question::
 
 escaped_type:
     ::parenthesis_:: type() ::_parenthesis::
@@ -94,14 +99,17 @@ escaped_type:
 #generic:
     class_name() ::angular_:: type() (::comma:: type())* ::_angular::
 
-#closure:
-    <closure> ::parenthesis_:: closure_parameters()? ::_parenthesis:: (::colon:: type())?
+#callable:
+    <callable> ::parenthesis_:: callable_parameters()? ::_parenthesis:: (::colon:: type())?
 
-#closure_parameters:
+callable_parameters:
     type() (::comma:: type())*
 
 #class_name:
-    ::backslash::? <id> (::backslash:: <id>)*
+    backslash()? <id> (backslash() <id>)*
 
-#legacy_array:
+#backslash:
+    ::backslash::
+
+#brackets:
     ::bracket_:: ::_bracket::

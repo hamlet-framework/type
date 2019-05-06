@@ -2,20 +2,25 @@
 
 namespace Hamlet\Cast;
 
-use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
-use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
-use PHPStan\PhpDocParser\Lexer\Lexer;
-use PHPStan\PhpDocParser\Parser\TokenIterator;
-use PHPStan\PhpDocParser\Parser\TypeParser;
-use RuntimeException;
+use Hoa\Compiler\Llk\Llk;
+use Hoa\Compiler\Llk\Parser;
+use Hoa\Compiler\Llk\TreeNode;
+use Hoa\File\Read;
 
 /**
  * @template T
  */
 abstract class Type
 {
+    /** @var Parser|null */
+    private static $compiler = null;
+
+    /**
+     * @var array
+     * @psalm-var array<string,Type>
+     */
+    private static $typeCache = [];
+
     /**
      * @param mixed $value
      * @return bool
@@ -54,56 +59,16 @@ abstract class Type
 
     public static function of(string $declaration): Type
     {
-        $lexer = new Lexer();
-        $parser = new TypeParser();
-        $tokens = new TokenIterator($lexer->tokenize($declaration));
-        return static::fromNode($parser->parse($tokens));
-    }
-
-    private static function fromNode(TypeNode $node): Type
-    {
-        if ($node instanceof IdentifierTypeNode) {
-            switch ($node->name) {
-                case 'bool':
-                    return _bool();
-                case 'float':
-                    return _float();
-                case 'int':
-                    return _int();
-                case 'string':
-                    return _string();
-                case 'null':
-                    return _null();
-                default:
-                    if (class_exists($node->name)) {
-                        return _class($node->name);
-                    }
-                    throw new RuntimeException('Unknown type ' . $node->name);
+        if (!isset(self::$typeCache[$declaration])) {
+            if (self::$compiler === null) {
+                self::$compiler = Llk::load(new Read(__DIR__ . '/../resources/grammar.pp'));
             }
-        } elseif ($node instanceof UnionTypeNode) {
-            $enum = [];
-            foreach ($node->types as $typeNode) {
-                $enum[] = static::fromNode($typeNode);
-            }
-            return _union(...$enum);
-        } elseif ($node instanceof GenericTypeNode) {
-            switch ($node->type->name) {
-                case 'array':
-                    if (count($node->genericTypes) == 2) {
-                        /**
-                         * @psalm-suppress MixedArgumentTypeCoercion
-                         */
-                        return _map(
-                            static::fromNode($node->genericTypes[0]),
-                            static::fromNode($node->genericTypes[1])
-                        );
-                    } else {
-                        return _list(
-                            static::fromNode($node->genericTypes[0])
-                        );
-                    }
-            }
+            /** @var TreeNode $node */
+            $node = self::$compiler->parse($declaration, 'expression');
+            $parser = new TypeParser();
+            return self::$typeCache[$declaration] = $parser->parse($node);
+        } else {
+            return self::$typeCache[$declaration];
         }
-        throw new RuntimeException('Cannot convert node to type: ' . var_export($node, true));
     }
 }

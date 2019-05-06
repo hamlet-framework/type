@@ -102,6 +102,16 @@ class CastTest extends TestCase
     }
 
     /**
+     * @dataProvider values()
+     * @param mixed $value
+     */
+    public function testObjectCast($value)
+    {
+        $result = _object()->cast($value);
+        Assert::assertEquals((object) $value, $result);
+    }
+
+    /**
      * @expectedException \Hamlet\Cast\CastException
      */
     public function testIllegalFloatCastWithinList()

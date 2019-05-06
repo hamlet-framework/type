@@ -75,7 +75,9 @@ class IntersectionType extends Type
             }
             return 'array{' . join(',', $items) . '}';
         } else {
-            return $this->a . ' & ' . $this->b;
+            $a = ($this->a instanceof UnionType) ? '(' . $this->a . ')' : ((string) $this->a);
+            $b = ($this->b instanceof UnionType) ? '(' . $this->b . ')' : ((string) $this->b);
+            return $a . ' & ' . $b;
         }
     }
 }

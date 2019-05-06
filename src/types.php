@@ -27,6 +27,11 @@ function _null(): NullType
     return new NullType();
 }
 
+function _object(): ObjectType
+{
+    return new ObjectType();
+}
+
 function _mixed(): MixedType
 {
     return new MixedType();
@@ -96,9 +101,9 @@ function _class(string $type): ClassType
 }
 
 /**
- * @template N as string
+ * @template N as int|string|null
  * @template T
- * @param string $name
+ * @param int|string|null $name
  * @psalm-param N $name
  * @param bool $required
  * @param Type $type
@@ -106,7 +111,7 @@ function _class(string $type): ClassType
  * @return PropertyType
  * @psalm-return PropertyType<N,T>
  */
-function _property(string $name, bool $required, Type $type): PropertyType
+function _property($name, bool $required, Type $type): PropertyType
 {
     return new PropertyType($name, $required, $type);
 }
