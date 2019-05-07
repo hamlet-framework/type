@@ -1,0 +1,158 @@
+<?php
+
+namespace Hamlet\Cast\Parser;
+
+use Hamlet\Cast\Type;
+use Hoa\Compiler\Llk\Llk;
+use Hoa\Compiler\Llk\TreeNode;
+use Hoa\Compiler\Visitor\Dump;
+use Hoa\File\Read;
+use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
+use function Hamlet\Cast\_class;
+use ReflectionClass;
+use ReflectionException;
+
+class ParserTest extends TestCase
+{
+    public function typeDeclarations()
+    {
+        return [
+            ['int'],
+            ['string'],
+            ['false'],
+            ['null'],
+            ["'a'|'b'"],
+            ['\\Hamlet\\Cast\\Type'],
+            ['array'],
+            ['array<string>'],
+            ["array<string, array<string, int|'a'|false>>"],
+            ['array<string, array<string, array{0:DateTime}>>'],
+            ['array|null|false|1|1.1'],
+            ['array{id:int|null,name?:string|null}'],
+            ["('a'|'b'|'c')"],
+            ['string[][]'],
+            ['(1|false)[]'],
+            ['int[]|string'],
+            ['int[]|string & array'],
+            ['array<string,int[]|object>[]'],
+            ['int[]'],
+            ['array{0: string, 1: string, foo: stdClass, 28: false}'],
+            ['array|array{id:int}'],
+            ['non-empty-array{0:string,1:string,foo:non-empty-array,23:boolean}'],
+            ['array<string,\DateTime>'],
+            ['callable()'],
+            ["callable(('a'|'b'), int):(string|array{\\DateTime}|callable():int)"],
+            ['Closure(bool):int'],
+            ['Generator<T0, int, mixed, T0>'],
+            ['callable(array{0:int}[]):(int|null)'],
+            ['Generator<T0, int, mixed, T0> & (object|null)'],
+            // ['A::class|B::class'],
+            // ['(A::FOO|A::BAR)'],
+            // ['(A::FOO|false|callable():void)[][][]']
+        ];
+    }
+
+    /**
+     * @dataProvider typeDeclarations()
+     * @param string $specification
+     */
+    public function testHoaParser(string $specification)
+    {
+        $compiler = Llk::load(new Read(__DIR__ . '/../../resources/grammar.pp'));
+        $ast = _class(TreeNode::class)->cast($compiler->parse($specification, 'expression'));
+        $dump = new Dump();
+
+        // echo PHP_EOL;
+        // echo $specification . PHP_EOL;
+        // echo $dump->visit($ast);
+
+        Assert::assertTrue(true);
+    }
+
+    /**
+     * @dataProvider typeDeclarations()
+     * @param string $specification
+     */
+    public function testTypeParser(string $specification)
+    {
+        $type = Type::of($specification);
+
+        echo PHP_EOL;
+        echo $specification . PHP_EOL;
+        echo $type . PHP_EOL;
+
+        Assert::assertTrue(true);
+    }
+
+    public function phpDocDeclarations()
+    {
+        return [
+            ['
+                /** @var string $a */
+            '],
+            ['
+                /***********
+                 * @var int|string|null
+                 ***********/
+            '],
+            ["
+                /*
+                 *
+                 *
+                 * This is the set of objects
+                 * @psalm-var object|array{'*': int}
+                 */
+            "],
+            ['
+                /**
+                 * Check if a given lexeme is matched at the beginning of the text.
+                 *
+                 * @param   string  $lexeme    Name of the lexeme.
+                 * @param   string  $regex     Regular expression describing the lexeme.
+                 * @param   int     $offset    Offset.
+                 * @return  array
+                 * @throws  \Hoa\Compiler\Exception\Lexer
+                 */
+            '],
+            ['
+                /**
+                 * A summary informing the user what the associated element does.
+                 *
+                 * A *description*, that can span multiple lines, to go _in-depth_ into the details of this element
+                 * and to provide some background information or textual references.
+                 *
+                 * @param string $myArgument With a *description* of this argument, these may also
+                 *    span multiple lines.
+                 *
+                 * @return void
+                 */  
+            ']
+        ];
+    }
+
+    /**
+     * @dataProvider phpDocDeclarations()
+     * @param string $specification
+     */
+    public function testPhpDocParser(string $specification)
+    {
+        print_r(DocBlockParser::parse($specification));
+        Assert::assertTrue(true);
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    public function _testNameResolver()
+    {
+        $type = new ReflectionClass(TestClass::class);
+        $type->getProperty('a');
+
+        $typeA = DocBlockParser::fromProperty($type->getProperty('a'));
+        $typeB = DocBlockParser::fromProperty($type->getProperty('b'));
+
+        Assert::assertEquals('array<int,array<array{0:\DateTime}>>', (string) $typeA);
+        Assert::assertEquals("'x'|'y'|'z'|\Hamlet\Cast\CastException|\DateTime|null", (string) $typeB);
+    }
+}

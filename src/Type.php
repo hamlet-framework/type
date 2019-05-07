@@ -2,6 +2,7 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Parser\TypeParser;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\Compiler\Llk\TreeNode;

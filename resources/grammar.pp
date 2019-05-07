@@ -37,9 +37,10 @@
 %token  int_number      \d+
 %token  id              [a-zA-Z_][a-zA-Z0-9_]*
 %token  backslash       \\
+%token  word            [^\s]+
 
 expression:
-    type()
+    type() ::word::*
 
 type:
     basic_type()

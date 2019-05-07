@@ -1,7 +1,24 @@
 <?php
 
-namespace Hamlet\Cast;
+namespace Hamlet\Cast\Parser;
 
+use function Hamlet\Cast\_intersection;
+use function Hamlet\Cast\_list;
+use function Hamlet\Cast\_property;
+use Hamlet\Cast\BoolType;
+use Hamlet\Cast\CallableType;
+use Hamlet\Cast\ClassType;
+use Hamlet\Cast\FloatType;
+use Hamlet\Cast\IntType;
+use Hamlet\Cast\ListType;
+use Hamlet\Cast\LiteralType;
+use Hamlet\Cast\MapType;
+use Hamlet\Cast\MixedType;
+use Hamlet\Cast\NullType;
+use Hamlet\Cast\ObjectType;
+use Hamlet\Cast\StringType;
+use Hamlet\Cast\Type;
+use Hamlet\Cast\UnionType;
 use Hoa\Compiler\Llk\TreeNode;
 use RuntimeException;
 
@@ -87,6 +104,8 @@ class TypeParser
                 return new StringType();
             case 'object':
                 return new ObjectType();
+            case 'mixed':
+                return new MixedType();
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }
