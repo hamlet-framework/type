@@ -4,7 +4,7 @@ namespace Hamlet\Cast;
 
 /**
  * @template T
- * @extends Type<T>
+ * @extends Type<array<T>>
  */
 class ListType extends Type
 {

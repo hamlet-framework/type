@@ -63,6 +63,8 @@ assert(Type::of('array{id:int}')->matches($record));
 
 ## Todo
 
+- Add proper parser for PHPDoc and Namespace resolver
+- Add cache to parsers so that the build system could resolve types on the fly
 - Add parametrized types to closures and generics
 - Check closure parameters
 - Add non nullable array type

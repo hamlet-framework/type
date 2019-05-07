@@ -2,37 +2,65 @@
 
 namespace Hamlet\Cast;
 
-function _int(): IntType
+/**
+ * @return Type
+ * @psalm-return Type<int>
+ */
+function _int(): Type
 {
     return new IntType();
 }
 
-function _bool(): BoolType
+/**
+ * @return Type
+ * @psalm-return Type<bool>
+ */
+function _bool(): Type
 {
     return new BoolType();
 }
 
-function _float(): FloatType
+/**
+ * @return Type
+ * @psalm-return Type<float>
+ */
+function _float(): Type
 {
     return new FloatType();
 }
 
-function _string(): StringType
+/**
+ * @return Type
+ * @psalm-return Type<string>
+ */
+function _string(): Type
 {
     return new StringType();
 }
 
-function _null(): NullType
+/**
+ * @return Type
+ * @psalm-return Type<null>
+ */
+function _null(): Type
 {
     return new NullType();
 }
 
-function _object(): ObjectType
+/**
+ * @return Type
+ * @psalm-return Type<object>
+ */
+function _object(): Type
 {
     return new ObjectType();
 }
 
-function _mixed(): MixedType
+/**
+ * @return Type
+ * @psalm-return Type<mixed>
+ */
+function _mixed(): Type
 {
     return new MixedType();
 }
@@ -41,10 +69,10 @@ function _mixed(): MixedType
  * @template A
  * @param Type[] $as
  * @psalm-param array<Type<A>> $as
- * @return UnionType
- * @psalm-return UnionType<A>
+ * @return Type
+ * @psalm-return Type<A>
  */
-function _union(Type ...$as): UnionType
+function _union(Type ...$as): Type
 {
     return new UnionType(...$as);
 }
@@ -53,10 +81,10 @@ function _union(Type ...$as): UnionType
  * @template A
  * @param array $as
  * @psalm-param array<A> $as
- * @return LiteralType
- * @psalm-return LiteralType<A>
+ * @return Type
+ * @psalm-return Type<A>
  */
-function _literal(...$as): LiteralType
+function _literal(...$as): Type
 {
     return new LiteralType(...$as);
 }
@@ -68,10 +96,10 @@ function _literal(...$as): LiteralType
  * @psalm-param Type<A> $keyType
  * @param Type $valueType
  * @psalm-param Type<B> $valueType
- * @return MapType
- * @psalm-return MapType<A,B>
+ * @return Type
+ * @psalm-return Type<array<A,B>>
  */
-function _map(Type $keyType, Type $valueType): MapType
+function _map(Type $keyType, Type $valueType): Type
 {
     return new MapType($keyType, $valueType);
 }
@@ -80,10 +108,10 @@ function _map(Type $keyType, Type $valueType): MapType
  * @template A
  * @param Type $type
  * @psalm-param Type<A> $type
- * @return ListType
- * @psalm-return ListType<A>
+ * @return Type
+ * @psalm-return Type<array<array-key,A>>
  */
-function _list(Type $type): ListType
+function _list(Type $type): Type
 {
     return new ListType($type);
 }
@@ -92,10 +120,10 @@ function _list(Type $type): ListType
  * @template T
  * @param string $type
  * @psalm-param class-string<T> $type
- * @return ClassType
- * @psalm-return ClassType<T>
+ * @return Type
+ * @psalm-return Type<T>
  */
-function _class(string $type): ClassType
+function _class(string $type): Type
 {
     return new ClassType($type);
 }

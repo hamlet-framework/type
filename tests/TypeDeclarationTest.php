@@ -10,10 +10,9 @@ class CastText extends TestCase
 {
     public function testSimpleCast()
     {
-        $a = _string()->cast("this");
-        $a = _union(_string(), _null())->cast("this");
-
-        $b = _map(_int(), _class(DateTime::class))->cast([]);
+        _string()->cast("this");
+        _union(_string(), _null())->cast("this");
+        _map(_int(), _class(DateTime::class))->cast([]);
 
         Assert::assertTrue(true);
     }
