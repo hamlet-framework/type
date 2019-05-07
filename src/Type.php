@@ -58,18 +58,26 @@ abstract class Type
      */
     abstract public function __toString();
 
-    public static function of(string $declaration): Type
+    /**
+     * @param string $declaration
+     * @param string $namespace
+     * @param string[] $aliases
+     * @psalm-param array<string,string> $aliases
+     * @return Type
+     */
+    public static function of(string $declaration, string $namespace = '', array $aliases = []): Type
     {
-        if (!isset(self::$typeCache[$declaration])) {
+        $key = $declaration . ';' . $namespace . ';' . var_export($aliases, true);
+        if (!isset(self::$typeCache[$key])) {
             if (self::$compiler === null) {
                 self::$compiler = Llk::load(new Read(__DIR__ . '/../resources/grammar.pp'));
             }
             /** @var TreeNode $node */
             $node = self::$compiler->parse($declaration, 'expression');
-            $parser = new TypeParser();
-            return self::$typeCache[$declaration] = $parser->parse($node);
+            $parser = new TypeParser($namespace, $aliases);
+            return self::$typeCache[$key] = $parser->parse($node);
         } else {
-            return self::$typeCache[$declaration];
+            return self::$typeCache[$key];
         }
     }
 }

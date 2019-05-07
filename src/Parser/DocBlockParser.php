@@ -12,14 +12,39 @@ class DocBlockParser
     {
         $doc = $property->getDocComment();
         $fields = self::parse($doc);
+
+        $body = file_get_contents($property->getDeclaringClass()->getFileName());
+
+        if (preg_match('|namespace\s+([^\s]+);|', $body, $matches)) {
+            $namespace = '\\' . $matches[1];
+        } else {
+            $namespace = '\\';
+        }
+
+
+        preg_match_all('|^\s*use\s+([^\s]+)\s*(\s+as\s+([^\s]+))?;|m', $body, $matches);
+        $aliases = [];
+        /**
+         * @var array<int,array<int,string>> $matches
+         */
+        foreach ($matches[1] as $i => $name) {
+            if (!empty($matches[3][$i])) {
+                $shortName = $matches[3][$i];
+            } else {
+                $tokens = explode('\\', $name);
+                $shortName = array_pop($tokens);
+            }
+            $aliases[$shortName] = '\\' . $name;
+        }
+
         foreach ($fields as $field) {
             if ($field['tag'] == '@psalm-var') {
-                return Type::of($field['type']);
+                return Type::of($field['type'], $namespace, $aliases);
             }
         }
         foreach ($fields as $field) {
             if ($field['tag'] == '@var') {
-                return Type::of($field['type']);
+                return Type::of($field['type'], $namespace, $aliases);
             }
         }
         return new MixedType();

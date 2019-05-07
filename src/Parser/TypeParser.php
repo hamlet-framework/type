@@ -24,6 +24,28 @@ use RuntimeException;
 
 class TypeParser
 {
+    /**
+     * @var string
+     */
+    private $namespace;
+
+    /**
+     * @var string[]
+     * @psalm-var array<string,string>
+     */
+    private $aliases;
+
+    /**
+     * @param string $namespace
+     * @param string[] $aliases
+     * @psalm-param array<string,string> $aliases
+     */
+    public function __construct(string $namespace, array $aliases)
+    {
+        $this->namespace = $namespace;
+        $this->aliases = $aliases;
+    }
+
     public function parse(TreeNode $node): Type
     {
         if ($node->isToken() && $node->getValueToken() == 'built_in') {
@@ -110,6 +132,11 @@ class TypeParser
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }
 
+    /**
+     * @param TreeNode $node
+     * @return Type
+     * @psalm-suppress ArgumentTypeCoercion
+     */
     private function fromClassName(TreeNode $node): Type
     {
         $path = '';
@@ -123,8 +150,15 @@ class TypeParser
                 throw new RuntimeException('Unexpected ID ' . print_r($child, true));
             }
         }
-        /** @psalm-suppress ArgumentTypeCoercion */
-        return new ClassType($path);
+        if ($path[0] == '\\') {
+            return new ClassType($path);
+        } elseif (isset($this->aliases[$path])) {
+            return new ClassType($this->aliases[$path]);
+        } elseif (class_exists($this->namespace . '\\' . $path)) {
+            return new ClassType($this->namespace . '\\' . $path);
+        } else {
+            return new ClassType($path);
+        }
     }
 
     private function fromArray(TreeNode $node): Type

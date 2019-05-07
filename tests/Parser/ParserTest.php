@@ -144,7 +144,7 @@ class ParserTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function _testNameResolver()
+    public function testNameResolver()
     {
         $type = new ReflectionClass(TestClass::class);
         $type->getProperty('a');
