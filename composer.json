@@ -22,7 +22,8 @@
   "require-dev": {
     "phpunit/phpunit": "^6 || ^7",
     "squizlabs/php_codesniffer": "@stable",
-    "vimeo/psalm": "@stable"
+    "vimeo/psalm": "@stable",
+    "jakub-onderka/php-parallel-lint": "@stable"
   },
   "autoload": {
     "psr-4": {

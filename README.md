@@ -48,6 +48,7 @@ Object like arrays are specified as intersections of simpler property types. For
 corresponds to this construct:
 
 ```php
+/** @var Type<array{id:int,name:string,valid?:bool}> $type */
 $type = _intersection(
     _property('id', true, _int()),
     _property('name', true, _string()),
@@ -55,18 +56,17 @@ $type = _intersection(
 );
 ``` 
 
-Quite a mouthful. If you want to assert types matching your PHPDoc you can use the type parser (WiP):
+Quite a mouthful. Also not the additional required `@var` as psalm currently have no support for dependent types. 
+
+If you want to assert types matching your PHPDoc you can use the type parser (WiP):
 
 ```php
-assert(Type::of('array{id:int}')->matches($record));
+/** @var Type<array{id:int}> */
+$type = Type::of('array{id:int}');
+
+assert($type->matches($record));
 ```
 
 ## Todo
 
-- Add proper parser for PHPDoc and Namespace resolver
-- Add cache to parsers so that the build system could resolve types on the fly
-- Add parametrized types to closures and generics
-- Check closure parameters
-- Add non nullable array type
-- Add resource type
-- Add the rest of types from Psalm project
+- Add more tests for PHPDoc and Namespace resolver

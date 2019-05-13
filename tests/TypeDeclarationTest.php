@@ -52,11 +52,9 @@ class CastText extends TestCase
 
     public function testIntersectionType()
     {
-        $type = _intersection(
-            _property('id', true, _int()),
-            _property('name', true, _string()),
-            _property('online', false, _bool())
-        );
+        /** @var Type<array{id:int,name:string,online?:bool}> $type */
+        $type = Type::of('array{id:int,name:string,online?:bool}');
+
         Assert::assertEquals('array{id:int,name:string,online?:bool}', (string) $type);
 
         $value = ['id' => 12, 'name' => 'hey there'];
@@ -74,6 +72,7 @@ class CastText extends TestCase
 
     public function testIntersectionCast()
     {
+        /** @var Type<array{id:int,name:string,online?:bool}> $type */
         $type = _intersection(
             _property('id', true, _int()),
             _property('name', true, _string()),
