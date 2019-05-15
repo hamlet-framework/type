@@ -38,7 +38,7 @@ abstract class Type
      */
     public function assert($value)
     {
-        assert($this->matches($value));
+        assert($this->matches($value), new CastException($this, $value));
         return $value;
     }
 
