@@ -7,16 +7,27 @@ namespace Hamlet\Cast;
  */
 class MixedType extends Type
 {
+    /**
+     * @param mixed $value
+     * @return bool
+     */
     public function matches($value): bool
     {
         return true;
     }
 
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
     public function cast($value)
     {
         return $value;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'mixed';

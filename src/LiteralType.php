@@ -23,6 +23,11 @@ class LiteralType extends Type
         $this->values = $values;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true T $value
+     */
     public function matches($value): bool
     {
         foreach ($this->values as $v) {
@@ -33,6 +38,11 @@ class LiteralType extends Type
         return false;
     }
 
+    /**
+     * @param mixed $value
+     * @return mixed
+     * @psalm-return T
+     */
     public function cast($value)
     {
         if ($this->matches($value)) {
@@ -46,6 +56,9 @@ class LiteralType extends Type
         throw new CastException($value, $this);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $escape =

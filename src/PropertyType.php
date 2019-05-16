@@ -68,6 +68,11 @@ class PropertyType extends Type
         return $this->type;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true array<N,T> $value
+     */
     public function matches($value): bool
     {
         if (!is_array($value)) {
@@ -81,7 +86,11 @@ class PropertyType extends Type
     }
 
     /**
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @param mixed $value
+     * @return array
+     * @psalm-return array<N,T>
+     * @psalm-suppress MixedTypeCoercion
+     * @psalm-suppress LessSpecificImplementedReturnType
      */
     public function cast($value)
     {
@@ -96,6 +105,9 @@ class PropertyType extends Type
         return $value;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $id = ((string) $this->name) . ($this->required ? '' : '?') . ':';

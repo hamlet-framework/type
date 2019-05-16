@@ -7,11 +7,20 @@ namespace Hamlet\Cast;
  */
 class IntType extends Type
 {
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true int $value
+     */
     public function matches($value): bool
     {
         return is_int($value);
     }
 
+    /**
+     * @param mixed $value
+     * @return int
+     */
     public function cast($value)
     {
         if (is_object($value)) {
@@ -20,6 +29,9 @@ class IntType extends Type
         return (int) $value;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'int';

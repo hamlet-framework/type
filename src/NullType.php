@@ -7,11 +7,20 @@ namespace Hamlet\Cast;
  */
 class NullType extends Type
 {
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true null $value
+     */
     public function matches($value): bool
     {
         return is_null($value);
     }
 
+    /**
+     * @param mixed $value
+     * @return null
+     */
     public function cast($value)
     {
         if ($value != null) {
@@ -20,6 +29,9 @@ class NullType extends Type
         return null;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'null';

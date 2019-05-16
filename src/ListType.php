@@ -23,6 +23,11 @@ class ListType extends Type
         $this->elementType = $elementType;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true array<T> $value
+     */
     public function matches($value): bool
     {
         if (!is_array($value)) {
@@ -39,6 +44,11 @@ class ListType extends Type
         return true;
     }
 
+    /**
+     * @param mixed $value
+     * @return array
+     * @psalm-return array<T>
+     */
     public function cast($value)
     {
         if (!is_array($value)) {
@@ -54,6 +64,9 @@ class ListType extends Type
         return $result;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'array<' . $this->elementType . '>';

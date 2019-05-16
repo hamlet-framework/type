@@ -5,6 +5,7 @@ namespace Hamlet\Cast\Parser;
 use Hamlet\Cast\MixedType;
 use Hamlet\Cast\Type;
 use ReflectionProperty;
+use RuntimeException;
 
 class DocBlockParser
 {
@@ -13,7 +14,14 @@ class DocBlockParser
         $doc = $property->getDocComment();
         $fields = self::parse($doc);
 
-        $body = file_get_contents($property->getDeclaringClass()->getFileName());
+        $fileName = $property->getDeclaringClass()->getFileName();
+        if ($fileName === false) {
+            throw new RuntimeException('Cannot find declaring file name');
+        }
+        $body = file_get_contents($fileName);
+        if ($body === false) {
+            throw new RuntimeException('Cannot load file ' . $fileName);
+        }
 
         if (preg_match('|namespace\s+([^\s]+);|', $body, $matches)) {
             $namespace = '\\' . $matches[1];

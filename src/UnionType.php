@@ -23,6 +23,11 @@ class UnionType extends Type
         $this->as = $as;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true A $value
+     */
     public function matches($value): bool
     {
         foreach ($this->as as $a) {
@@ -34,7 +39,9 @@ class UnionType extends Type
     }
 
     /**
-     * @psalm-suppress RedundantConditionGivenDocblockType
+     * @param mixed $value
+     * @return mixed
+     * @psalm-return A $value
      */
     public function cast($value)
     {
@@ -52,6 +59,9 @@ class UnionType extends Type
         throw new CastException($value, $this);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $tokens = [];

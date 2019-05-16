@@ -136,6 +136,7 @@ class TypeParser
      * @param TreeNode $node
      * @return Type
      * @psalm-suppress ArgumentTypeCoercion
+     * @psalm-suppress TypeCoercion
      */
     private function fromClassName(TreeNode $node): Type
     {
@@ -169,7 +170,10 @@ class TypeParser
             case 2:
                 return new ListType($this->parse($node->getChild(1)));
             case 3:
-                /** @psalm-suppress MixedArgumentTypeCoercion */
+                /**
+                 * @psalm-suppress MixedArgumentTypeCoercion
+                 * @psalm-suppress MixedTypeCoercion
+                 */
                 return new MapType($this->parse($node->getChild(1)), $this->parse($node->getChild(2)));
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
@@ -179,7 +183,7 @@ class TypeParser
     {
         switch ($node->getChildrenNumber()) {
             case 1:
-                return _property(null, true, $this->parse($node->getChild(0)));
+                return _property('', true, $this->parse($node->getChild(0)));
             case 2:
                 $name = $node->getChild(0)->getChild(0)->getValueValue();
                 return _property($name, true, $this->parse($node->getChild(1)));

@@ -3,7 +3,7 @@
 namespace Hamlet\Cast;
 
 /**
- * @template K as array-key
+ * @template K as int|string
  * @template V
  * @extends Type<array<K,V>>
  */
@@ -33,6 +33,11 @@ class MapType extends Type
         $this->valueType = $valueType;
     }
 
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true array<K,V> $value
+     */
     public function matches($value): bool
     {
         if (!is_array($value)) {
@@ -40,6 +45,7 @@ class MapType extends Type
         }
         /**
          * @psalm-suppress MixedAssignment
+         * @psalm-suppress TypeDoesNotContainType
          */
         foreach ($value as $k => $v) {
             if (!$this->keyType->matches($k) || !$this->valueType->matches($v)) {
@@ -49,6 +55,11 @@ class MapType extends Type
         return true;
     }
 
+    /**
+     * @param mixed $value
+     * @return array
+     * @psalm-return array<K,V>
+     */
     public function cast($value)
     {
         if (!is_array($value)) {
@@ -64,6 +75,9 @@ class MapType extends Type
         return $result;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'array<' . $this->keyType . ',' . $this->valueType . '>';

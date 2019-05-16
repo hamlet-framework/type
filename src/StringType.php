@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Hamlet\Cast;
 
@@ -7,11 +7,20 @@ namespace Hamlet\Cast;
  */
 class StringType extends Type
 {
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true string $value
+     */
     public function matches($value): bool
     {
         return is_string($value);
     }
 
+    /**
+     * @param mixed $value
+     * @return string
+     */
     public function cast($value)
     {
         if (is_array($value)) {
@@ -23,6 +32,9 @@ class StringType extends Type
         return (string) $value;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'string';

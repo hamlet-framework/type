@@ -2,27 +2,20 @@
 <psalm
     totallyTyped="true"
     allowPhpStormGenerics="true"
+    requireVoidReturnType="true"
+    rememberPropertyAssignmentsAfterCall="false"
+    memoizeMethodCallResults="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
     <projectFiles>
         <directory name="src" />
-        <directory name="tests" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
-        <MissingReturnType>
-            <errorLevel type="suppress">
-                <directory name="tests"/>
-            </errorLevel>
-        </MissingReturnType>
-        <PropertyNotSetInConstructor>
-            <errorLevel type="suppress">
-                <directory name="tests"/>
-            </errorLevel>
-        </PropertyNotSetInConstructor>
+        <ReservedWord errorLevel="suppress"/>
     </issueHandlers>
 </psalm>

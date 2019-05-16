@@ -5,6 +5,8 @@ namespace Hamlet\Cast;
 /**
  * @template T as callable
  * @extends Type<T>
+ *
+ * @todo add more logic into return type and argument types
  */
 class CallableType extends Type
 {
@@ -28,19 +30,27 @@ class CallableType extends Type
      * @param Type|null $returnType
      * @param Type[] $argumentTypes
      */
-    public function __construct(string $tag, $returnType, array $argumentTypes)
+    public function __construct(string $tag, $returnType = null, array $argumentTypes = [])
     {
         $this->tag = $tag;
         $this->returnType = $returnType;
         $this->argumentTypes = $argumentTypes;
     }
 
-    // @todo reflection can actually look into it
+    /**
+     * @param mixed $value
+     * @return bool
+     * @psalm-assert-if-true callable $value
+     */
     public function matches($value): bool
     {
         return is_callable($value);
     }
 
+    /**
+     * @param mixed $value
+     * @return callable
+     */
     public function cast($value)
     {
         if (!is_callable($value)) {
@@ -49,6 +59,9 @@ class CallableType extends Type
         return $value;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $arguments = [];

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Hamlet\Cast;
 
@@ -13,7 +13,9 @@ use Hoa\File\Read;
  */
 abstract class Type
 {
-    /** @var Parser|null */
+    /**
+     * @var Parser|null
+     */
     private static $compiler = null;
 
     /**
@@ -25,6 +27,7 @@ abstract class Type
     /**
      * @param mixed $value
      * @return bool
+     * @psalm-assert-if-true T $value
      */
     abstract public function matches($value): bool;
 
@@ -33,12 +36,10 @@ abstract class Type
      * @return mixed
      * @psalm-return T
      * @psalm-assert T $value
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
      */
     public function assert($value)
     {
-        assert($this->matches($value), new CastException($this, $value));
+        assert($this->matches($value), new CastException($value, $this));
         return $value;
     }
 
@@ -46,10 +47,6 @@ abstract class Type
      * @param mixed $value
      * @return mixed
      * @psalm-return T
-     * @psalm-assert T $a
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
-     * @psalm-suppress MixedReturnTypeCoercion
      */
     abstract public function cast($value);
 

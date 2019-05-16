@@ -78,11 +78,11 @@ class ParserTest extends TestCase
     {
         $type = Type::of($specification);
 
-        echo PHP_EOL;
-        echo $specification . PHP_EOL;
-        echo $type . PHP_EOL;
+        // echo PHP_EOL;
+        // echo $specification . PHP_EOL;
+        // echo $type . PHP_EOL;
 
-        Assert::assertTrue(true);
+        Assert::assertNotNull($type);
     }
 
     public function phpDocDeclarations()
@@ -137,8 +137,8 @@ class ParserTest extends TestCase
      */
     public function testPhpDocParser(string $specification)
     {
-        print_r(DocBlockParser::parse($specification));
-        Assert::assertTrue(true);
+        $data = DocBlockParser::parse($specification);
+        Assert::assertNotNull($data);
     }
 
     /**
