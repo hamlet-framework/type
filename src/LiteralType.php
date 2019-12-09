@@ -9,14 +9,12 @@ namespace Hamlet\Cast;
 class LiteralType extends Type
 {
     /**
-     * @var array
-     * @psalm-var array<T>
+     * @var array<T>
      */
     private $values;
 
     /**
-     * @param array $values
-     * @psalm-param array<T> $values
+     * @param T ...$values
      */
     public function __construct(...$values)
     {
@@ -56,10 +54,7 @@ class LiteralType extends Type
         throw new CastException($value, $this);
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         $escape =
             /**

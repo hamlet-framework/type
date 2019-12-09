@@ -32,10 +32,7 @@ class StringType extends Type
         return (string) $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return 'string';
     }

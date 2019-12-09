@@ -1,10 +1,10 @@
 <?php
 
-namespace Hamlet\Cast\Test;
+require_once __DIR__ . '/../vendor/autoload.php';
 
-use function Hamlet\Cast\_callable;
-use stdClass;
+use Hamlet\Cast\Type;
 use function Hamlet\Cast\_bool;
+use function Hamlet\Cast\_callable;
 use function Hamlet\Cast\_class;
 use function Hamlet\Cast\_float;
 use function Hamlet\Cast\_int;
@@ -14,7 +14,7 @@ use function Hamlet\Cast\_map;
 use function Hamlet\Cast\_mixed;
 use function Hamlet\Cast\_null;
 use function Hamlet\Cast\_object;
-use function Hamlet\Cast\_property;
+use function Hamlet\Cast\_object_like;
 use function Hamlet\Cast\_string;
 use function Hamlet\Cast\_union;
 
@@ -48,8 +48,7 @@ class Example
     }
 
     /**
-     * @return array
-     * @psalm-return array<int>
+     * @return array<int>
      */
     public function list(): array
     {
@@ -99,12 +98,16 @@ class Example
     }
 
     /**
-     * @return array
-     * @psalm-return array{id:int}
+     * @return array{id:int}
      */
-    public function property(): array
+    public function object_like(): array
     {
-        return _property('id', true, _int())->cast(['id' => 1]);
+        /** @var Type<array{id:int}> $type */
+        $type = _object_like([
+            'id' => _int()
+        ]);
+
+        return $type->cast(['id' => 1]);
     }
 
     public function string(): string

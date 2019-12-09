@@ -9,14 +9,12 @@ namespace Hamlet\Cast;
 class ClassType extends Type
 {
     /**
-     * @var string
-     * @psalm-var class-string<T>
+     * @var class-string<T>
      */
     private $type;
 
     /**
-     * @param string $type
-     * @psalm-param class-string<T> $type
+     * @param class-string<T> $type
      */
     public function __construct(string $type)
     {
@@ -35,8 +33,7 @@ class ClassType extends Type
 
     /**
      * @param mixed $value
-     * @return object
-     * @psalm-return T
+     * @return T
      */
     public function cast($value)
     {
@@ -46,10 +43,7 @@ class ClassType extends Type
         return $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->type;
     }

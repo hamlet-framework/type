@@ -2,9 +2,6 @@
 
 namespace Hamlet\Cast\Parser;
 
-use function Hamlet\Cast\_intersection;
-use function Hamlet\Cast\_list;
-use function Hamlet\Cast\_property;
 use Hamlet\Cast\BoolType;
 use Hamlet\Cast\CallableType;
 use Hamlet\Cast\ClassType;
@@ -21,6 +18,8 @@ use Hamlet\Cast\Type;
 use Hamlet\Cast\UnionType;
 use Hoa\Compiler\Llk\TreeNode;
 use RuntimeException;
+use function Hamlet\Cast\_list;
+use function Hamlet\Cast\_object_like;
 
 class TypeParser
 {
@@ -62,12 +61,6 @@ class TypeParser
                     $subTypes[] = $this->parse($node->getChild($i));
                 }
                 return new UnionType(...$subTypes);
-            case '#intersection':
-                $subTypes = [];
-                for ($i = 0; $i < $node->getChildrenNumber(); $i++) {
-                    $subTypes[] = $this->parse($node->getChild($i));
-                }
-                return _intersection(...$subTypes);
             case '#array':
                 return $this->fromArray($node);
             case '#object_like_array':
@@ -179,17 +172,21 @@ class TypeParser
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }
 
-    private function fromProperty(TreeNode $node): Type
+    /**
+     * @param TreeNode $node
+     * @return array{0:string,1:bool,2:Type}
+     */
+    private function fromProperty(TreeNode $node): array
     {
         switch ($node->getChildrenNumber()) {
             case 1:
-                return _property('', true, $this->parse($node->getChild(0)));
+                return ['', true, $this->parse($node->getChild(0))];
             case 2:
                 $name = $node->getChild(0)->getChild(0)->getValueValue();
-                return _property($name, true, $this->parse($node->getChild(1)));
+                return [$name, true, $this->parse($node->getChild(1))];
             case 3:
                 $name = $node->getChild(0)->getChild(0)->getValueValue();
-                return _property($name, false, $this->parse($node->getChild(2)));
+                return [$name, false, $this->parse($node->getChild(2))];
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }
@@ -200,12 +197,13 @@ class TypeParser
         for ($i = 1; $i < $node->getChildrenNumber(); $i++) {
             $child = $node->getChild($i);
             if ($child->getId() == '#property') {
-                $properties[] = $this->fromProperty($child);
+                [$name, $required, $type] = $this->fromProperty($child);
+                $properties[$name . ($required ? '' : '?')] = $type;
             } else {
                 throw new RuntimeException('Cannot convert node ' . print_r($child, true));
             }
         }
-        return _intersection(...$properties);
+        return _object_like($properties);
     }
 
     private function fromCallable(TreeNode $node): Type

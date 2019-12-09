@@ -49,7 +49,8 @@ class CallableType extends Type
 
     /**
      * @param mixed $value
-     * @return callable
+     * @return T
+     * @psalm-suppress InvalidReturnStatement
      */
     public function cast($value)
     {
@@ -59,21 +60,18 @@ class CallableType extends Type
         return $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         $arguments = [];
         foreach ($this->argumentTypes as $argumentType) {
-            if ($argumentType instanceof UnionType || $argumentType instanceof IntersectionType) {
+            if ($argumentType instanceof UnionType) {
                 $arguments[] = '(' . $argumentType . ')';
             } else {
                 $arguments[] = (string) $argumentType;
             }
         }
         if ($this->returnType) {
-            if ($this->returnType instanceof UnionType || $this->returnType instanceof IntersectionType) {
+            if ($this->returnType instanceof UnionType) {
                 $return = ':(' . $this->returnType . ')';
             } else {
                 $return = ':' . $this->returnType;

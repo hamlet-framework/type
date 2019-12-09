@@ -21,7 +21,7 @@ class BoolType extends Type
      * @param mixed $value
      * @return bool
      */
-    public function cast($value)
+    public function cast($value): bool
     {
         return (bool) $value;
     }
@@ -29,7 +29,7 @@ class BoolType extends Type
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return 'bool';
     }

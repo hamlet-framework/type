@@ -3,29 +3,25 @@
 namespace Hamlet\Cast;
 
 /**
- * @template K as int|string
+ * @template K as array-key
  * @template V
  * @extends Type<array<K,V>>
  */
 class MapType extends Type
 {
     /**
-     * @var Type
-     * @psalm-var Type<K>
+     * @var Type<K>
      */
     private $keyType;
 
     /**
-     * @var Type
-     * @psalm-var Type<V>
+     * @var Type<V>
      */
     private $valueType;
 
     /**
-     * @param Type $keyType
-     * @psalm-param Type<K> $keyType
-     * @param Type $valueType
-     * @psalm-param Type<V> $valueType
+     * @param Type<K> $keyType
+     * @param Type<V> $valueType
      */
     public function __construct(Type $keyType, Type $valueType)
     {
@@ -57,8 +53,8 @@ class MapType extends Type
 
     /**
      * @param mixed $value
-     * @return array
-     * @psalm-return array<K,V>
+     * @return array<K,V>
+     * @psalm-suppress InvalidReturnType
      */
     public function cast($value)
     {
@@ -75,10 +71,7 @@ class MapType extends Type
         return $result;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return 'array<' . $this->keyType . ',' . $this->valueType . '>';
     }

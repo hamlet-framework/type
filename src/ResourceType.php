@@ -29,10 +29,7 @@ class ResourceType extends Type
         return $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return 'resource';
     }

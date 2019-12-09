@@ -45,7 +45,9 @@ class CastText extends TestCase
     public function testPropertyType()
     {
         $value = ['id' => 12];
-        assert(_property('id', true, _int())->matches($value));
+        assert(_object_like([
+            'id' => _int()
+        ])->matches($value));
 
         Assert::assertEquals(12, $value['id']);
     }
@@ -73,11 +75,11 @@ class CastText extends TestCase
     public function testIntersectionCast()
     {
         /** @var Type<array{id:int,name:string,online?:bool}> $type */
-        $type = _intersection(
-            _property('id', true, _int()),
-            _property('name', true, _string()),
-            _property('online', false, _bool())
-        );
+        $type = _object_like([
+            'id'      => _int(),
+            'name'    => _string(),
+            'online?' => _bool()
+        ]);
 
         $object = new class()
         {
@@ -96,12 +98,12 @@ class CastText extends TestCase
      */
     public function testPropertyTypeThrowsExceptionOnMissingProperty()
     {
-        _property('id', true, _int())->cast([]);
+        _object_like(['id' => _int()])->cast([]);
     }
 
     public function testNonRequiredPropertyTypeThrowsNoExceptionOnMissingProperty()
     {
-        _property('id', false, _int())->cast([]);
+        _object_like(['id?' => _int()])->cast([]);
         Assert::assertTrue(true);
     }
 

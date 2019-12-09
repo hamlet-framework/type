@@ -26,10 +26,7 @@ class ObjectType extends Type
         return (object) $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return 'object';
     }

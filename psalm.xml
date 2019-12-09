@@ -11,6 +11,7 @@
 >
     <projectFiles>
         <directory name="src" />
+        <directory name="psalm-cases" />
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>

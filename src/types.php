@@ -3,8 +3,7 @@
 namespace Hamlet\Cast;
 
 /**
- * @return Type
- * @psalm-return Type<bool>
+ * @return Type<bool>
  */
 function _bool(): Type
 {
@@ -13,10 +12,8 @@ function _bool(): Type
 
 /**
  * @template T
- * @param string $type
- * @psalm-param class-string<T> $type
- * @return Type
- * @psalm-return Type<T>
+ * @param class-string<T> $type
+ * @return Type<T>
  */
 function _class(string $type): Type
 {
@@ -24,8 +21,7 @@ function _class(string $type): Type
 }
 
 /**
- * @return Type
- * @psalm-return Type<callable>
+ * @return Type<callable>
  * @psalm-suppress MixedTypeCoercion
  */
 function _callable(): Type
@@ -34,30 +30,11 @@ function _callable(): Type
 }
 
 /**
- * @return Type
- * @psalm-return Type<float>
+ * @return Type<float>
  */
 function _float(): Type
 {
     return new FloatType();
-}
-
-/**
- * @template T
- * @template S
- * @param Type $type
- * @psalm-param Type<T> $type
- * @param Type ...$types
- * @psalm-param array<Type<S>> $types
- * @return Type
- * @psalm-return Type<T&S>|Type<T>
- */
-function _intersection(Type $type, Type ...$types): Type
-{
-    if (empty($types)) {
-        return $type;
-    }
-    return new IntersectionType($type, _intersection(...$types));
 }
 
 /**
@@ -71,10 +48,8 @@ function _int(): Type
 
 /**
  * @template A
- * @param Type $type
- * @psalm-param Type<A> $type
- * @return Type
- * @psalm-return Type<array<array-key,A>>
+ * @param Type<A> $type
+ * @return ListType<A>
  */
 function _list(Type $type): Type
 {
@@ -83,10 +58,8 @@ function _list(Type $type): Type
 
 /**
  * @template A
- * @param array $as
- * @psalm-param array<A> $as
- * @return Type
- * @psalm-return Type<A>
+ * @param array<A> $as
+ * @return Type<A>
  */
 function _literal(...$as): Type
 {
@@ -94,14 +67,11 @@ function _literal(...$as): Type
 }
 
 /**
- * @template A as int|string
+ * @template A as array-key
  * @template B
- * @param Type $keyType
- * @psalm-param Type<A> $keyType
- * @param Type $valueType
- * @psalm-param Type<B> $valueType
- * @return Type
- * @psalm-return Type<array<A,B>>
+ * @param Type<A> $keyType
+ * @param Type<B> $valueType
+ * @return MapType<A,B>
  */
 function _map(Type $keyType, Type $valueType): Type
 {
@@ -109,8 +79,7 @@ function _map(Type $keyType, Type $valueType): Type
 }
 
 /**
- * @return Type
- * @psalm-return Type<mixed>
+ * @return Type<mixed>
  */
 function _mixed(): Type
 {
@@ -118,8 +87,7 @@ function _mixed(): Type
 }
 
 /**
- * @return Type
- * @psalm-return Type<null>
+ * @return Type<null>
  */
 function _null(): Type
 {
@@ -127,8 +95,7 @@ function _null(): Type
 }
 
 /**
- * @return Type
- * @psalm-return Type<object>
+ * @return Type<object>
  */
 function _object(): Type
 {
@@ -136,24 +103,17 @@ function _object(): Type
 }
 
 /**
- * @template N as int|string
  * @template T
- * @param int|string $name
- * @psalm-param N $name
- * @param bool $required
- * @param Type $type
- * @psalm-param Type<T> $type
- * @return PropertyType
- * @psalm-return PropertyType<N,T>
+ * @param array<string,Type<T>> $properties
+ * @return ObjectLikeType<T>
  */
-function _property($name, bool $required, Type $type): PropertyType
+function _object_like(array $properties): Type
 {
-    return new PropertyType($name, $required, $type);
+    return new ObjectLikeType($properties);
 }
 
 /**
- * @return Type
- * @psalm-return Type<resource>
+ * @return Type<resource>
  */
 function _resource(): Type
 {
@@ -161,8 +121,7 @@ function _resource(): Type
 }
 
 /**
- * @return Type
- * @psalm-return Type<string>
+ * @return Type<string>
  */
 function _string(): Type
 {
@@ -171,10 +130,8 @@ function _string(): Type
 
 /**
  * @template A
- * @param Type[] $as
- * @psalm-param array<Type<A>> $as
- * @return Type
- * @psalm-return Type<A>
+ * @param Type<A> ...$as
+ * @return Type<A>
  */
 function _union(Type ...$as): Type
 {

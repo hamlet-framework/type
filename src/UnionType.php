@@ -9,14 +9,12 @@ namespace Hamlet\Cast;
 class UnionType extends Type
 {
     /**
-     * @var Type[]
-     * @psalm-var array<Type<A>>
+     * @var array<Type<A>>
      */
     private $as;
 
     /**
-     * @param Type[] $as
-     * @psalm-param array<Type<A>> $as
+     * @param Type<A> ...$as
      */
     public function __construct(...$as)
     {
@@ -40,8 +38,7 @@ class UnionType extends Type
 
     /**
      * @param mixed $value
-     * @return mixed
-     * @psalm-return A $value
+     * @return A $value
      */
     public function cast($value)
     {
@@ -59,18 +56,11 @@ class UnionType extends Type
         throw new CastException($value, $this);
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         $tokens = [];
         foreach ($this->as as $a) {
-            if ($a instanceof IntersectionType) {
-                $tokens[] = '(' . $a . ')';
-            } else {
-                $tokens[] = (string) $a;
-            }
+            $tokens[] = (string) $a;
         }
         return join('|', $tokens);
     }

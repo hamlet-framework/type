@@ -29,10 +29,7 @@ class NullType extends Type
         return null;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return 'null';
     }

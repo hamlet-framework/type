@@ -29,10 +29,7 @@ class IntType extends Type
         return (int) $value;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return 'int';
     }

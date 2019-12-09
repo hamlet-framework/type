@@ -44,16 +44,16 @@ _union($type, _null())
 
 ## Object like arrays
 
-Object like arrays are specified as intersections of simpler property types. For example for type `array{id:int,name:string,valid?:bool}` 
+Object like arrays require more leg work. For example for type `array{id:int,name:string,valid?:bool}` 
 corresponds to this construct:
 
 ```php
-/** @var Type<array{id:int,name:string,valid?:bool}> $type */
-$type = _intersection(
-    _property('id', true, _int()),
-    _property('name', true, _string()),
-    _property('valid', false, _bool())
-);
+/** @var Type<array{id:int,name:string,valid?:bool}> */
+$type = _object_like([
+    'id'     => _int(),
+    'name'   => _string(),
+    'valid?' => _bool()
+]);
 ``` 
 
 Quite a mouthful. Also not the additional required `@var` as psalm currently have no support for dependent types. 
@@ -70,3 +70,8 @@ assert($type->matches($record));
 ## Todo
 
 - Add more tests for PHPDoc and Namespace resolver
+- Add PHPStan analyser
+- Add static shortcuts for performance
+- Add more tests for agreements between psalm/phpstan and Type assertions
+- Intersection types are useless
+

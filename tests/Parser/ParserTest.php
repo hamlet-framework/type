@@ -34,7 +34,6 @@ class ParserTest extends TestCase
             ['string[][]'],
             ['(1|false)[]'],
             ['int[]|string'],
-            ['int[]|string & array'],
             ['array<string,int[]|object>[]'],
             ['int[]'],
             ['array{0: string, 1: string, foo: stdClass, 28: false}'],
@@ -46,10 +45,6 @@ class ParserTest extends TestCase
             ['Closure(bool):int'],
             ['Generator<T0, int, mixed, T0>'],
             ['callable(array{0:int}[]):(int|null)'],
-            ['Generator<T0, int, mixed, T0> & (object|null)'],
-            // ['A::class|B::class'],
-            // ['(A::FOO|A::BAR)'],
-            // ['(A::FOO|false|callable():void)[][][]']
         ];
     }
 

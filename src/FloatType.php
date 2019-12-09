@@ -12,7 +12,7 @@ class FloatType extends Type
         return is_float($value);
     }
 
-    public function cast($value)
+    public function cast($value): float
     {
         if (is_object($value)) {
             throw new CastException($value, $this);
@@ -20,7 +20,7 @@ class FloatType extends Type
         return (float) $value;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return 'float';
     }

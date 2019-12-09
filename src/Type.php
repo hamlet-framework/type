@@ -19,8 +19,7 @@ abstract class Type
     private static $compiler = null;
 
     /**
-     * @var array
-     * @psalm-var array<string,Type>
+     * @var array<string,Type>
      */
     private static $typeCache = [];
 
@@ -33,8 +32,7 @@ abstract class Type
 
     /**
      * @param mixed $value
-     * @return mixed
-     * @psalm-return T
+     * @return T
      * @psalm-assert T $value
      */
     public function assert($value)
@@ -45,21 +43,16 @@ abstract class Type
 
     /**
      * @param mixed $value
-     * @return mixed
-     * @psalm-return T
+     * @return T
      */
     abstract public function cast($value);
 
-    /**
-     * @return string
-     */
-    abstract public function __toString();
+    abstract public function __toString(): string;
 
     /**
      * @param string $declaration
      * @param string $namespace
-     * @param string[] $aliases
-     * @psalm-param array<string,string> $aliases
+     * @param array<string,string> $aliases
      * @return Type
      */
     public static function of(string $declaration, string $namespace = '', array $aliases = []): Type
