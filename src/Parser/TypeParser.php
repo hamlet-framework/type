@@ -197,7 +197,7 @@ class TypeParser
         for ($i = 1; $i < $node->getChildrenNumber(); $i++) {
             $child = $node->getChild($i);
             if ($child->getId() == '#property') {
-                [$name, $required, $type] = $this->fromProperty($child);
+                list($name, $required, $type) = $this->fromProperty($child);
                 $properties[$name . ($required ? '' : '?')] = $type;
             } else {
                 throw new RuntimeException('Cannot convert node ' . print_r($child, true));
