@@ -9,12 +9,14 @@ namespace Hamlet\Cast;
 class LiteralType extends Type
 {
     /**
-     * @var array<T>
+     * @var array
+     * @psalm-var array<T>
      */
     private $values;
 
     /**
-     * @param T ...$values
+     * @param mixed ...$values
+     * @psalm-param T ...$values
      */
     public function __construct(...$values)
     {

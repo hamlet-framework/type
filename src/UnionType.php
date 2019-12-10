@@ -9,12 +9,14 @@ namespace Hamlet\Cast;
 class UnionType extends Type
 {
     /**
-     * @var array<Type<A>>
+     * @var Type[]
+     * @psalm-var array<Type<A>>
      */
     private $as;
 
     /**
-     * @param Type<A> ...$as
+     * @param Type ...$as
+     * @psalm-param Type<A> ...$as
      */
     public function __construct(...$as)
     {
@@ -38,7 +40,8 @@ class UnionType extends Type
 
     /**
      * @param mixed $value
-     * @return A $value
+     * @return mixed
+     * @psalm-return A
      */
     public function cast($value)
     {

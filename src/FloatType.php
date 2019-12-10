@@ -12,6 +12,10 @@ class FloatType extends Type
         return is_float($value);
     }
 
+    /**
+     * @param mixed $value
+     * @return float
+     */
     public function cast($value): float
     {
         if (is_object($value)) {

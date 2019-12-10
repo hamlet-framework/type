@@ -10,18 +10,22 @@ namespace Hamlet\Cast;
 class MapType extends Type
 {
     /**
-     * @var Type<K>
+     * @var Type
+     * @psalm-var Type<K>
      */
     private $keyType;
 
     /**
-     * @var Type<V>
+     * @var Type
+     * @psalm-var Type<V>
      */
     private $valueType;
 
     /**
-     * @param Type<K> $keyType
-     * @param Type<V> $valueType
+     * @param Type $keyType
+     * @psalm-param Type<K> $keyType
+     * @param Type $valueType
+     * @psalm-param Type<V> $valueType
      */
     public function __construct(Type $keyType, Type $valueType)
     {
@@ -53,7 +57,8 @@ class MapType extends Type
 
     /**
      * @param mixed $value
-     * @return array<K,V>
+     * @return array
+     * @psalm-return array<K,V>
      * @psalm-suppress InvalidReturnType
      */
     public function cast($value)

@@ -26,9 +26,6 @@ class BoolType extends Type
         return (bool) $value;
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return 'bool';

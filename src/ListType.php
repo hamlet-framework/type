@@ -9,12 +9,14 @@ namespace Hamlet\Cast;
 class ListType extends Type
 {
     /**
-     * @var Type<T>
+     * @var Type
+     * @psalm-var Type<T>
      */
     private $elementType;
 
     /**
-     * @param Type<T> $elementType
+     * @param Type $elementType
+     * @psalm-param Type<T> $elementType
      */
     public function __construct(Type $elementType)
     {
@@ -44,9 +46,10 @@ class ListType extends Type
 
     /**
      * @param mixed $value
-     * @return list<T>
+     * @return array
+     * @psalm-return list<T>
      */
-    public function cast($value)
+    public function cast($value): array
     {
         if (!is_array($value)) {
             throw new CastException($value, $this);

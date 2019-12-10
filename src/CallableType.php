@@ -49,7 +49,8 @@ class CallableType extends Type
 
     /**
      * @param mixed $value
-     * @return T
+     * @return callable
+     * @psalm-return T
      * @psalm-suppress InvalidReturnStatement
      */
     public function cast($value)

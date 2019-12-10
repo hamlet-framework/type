@@ -9,12 +9,14 @@ namespace Hamlet\Cast;
 class ObjectLikeType extends Type
 {
     /**
-     * @var array<string,Type<T>>
+     * @var Type[]
+     * @psalm-var array<string,Type<T>>
      */
     private $fields;
 
     /**
-     * @param array<string,Type<T>> $fields
+     * @param Type[] $fields
+     * @psalm-param array<string,Type<T>> $fields
      */
     public function __construct(array $fields)
     {
@@ -49,9 +51,10 @@ class ObjectLikeType extends Type
 
     /**
      * @param mixed $value
-     * @return array<T>
+     * @return array
+     * @psalm-return array<T>
      */
-    public function cast($value)
+    public function cast($value): array
     {
         if (!is_array($value)) {
             throw new CastException($value, $this);

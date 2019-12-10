@@ -21,7 +21,7 @@ class IntType extends Type
      * @param mixed $value
      * @return int
      */
-    public function cast($value)
+    public function cast($value): int
     {
         if (is_object($value)) {
             throw new CastException($value, $this);

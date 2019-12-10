@@ -19,7 +19,8 @@ abstract class Type
     private static $compiler = null;
 
     /**
-     * @var array<string,Type>
+     * @var Type[]
+     * @psalm-var array<string,Type>
      */
     private static $typeCache = [];
 
@@ -32,7 +33,8 @@ abstract class Type
 
     /**
      * @param mixed $value
-     * @return T
+     * @return mixed
+     * @psalm-return T
      * @psalm-assert T $value
      */
     public function assert($value)
@@ -43,7 +45,8 @@ abstract class Type
 
     /**
      * @param mixed $value
-     * @return T
+     * @return mixed
+     * @psalm-return T
      */
     abstract public function cast($value);
 
