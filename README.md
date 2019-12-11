@@ -27,7 +27,7 @@ creates an object of type `Type<array<int,DateTime|null>>`.
 
 This object can be used in following ways
 
-Assert at run time that the type of `$records` is `array<int,DateTime|null>>`:
+Asserting at run time that the type of `$records` is `array<int,DateTime|null>>`:
 ```php
 $type->assert($records);
 ```
@@ -44,7 +44,7 @@ _union($type, _null())
 
 ## Object like arrays
 
-Object like arrays require more leg work. For example for type `array{id:int,name:string,valid?:bool}` 
+Object like arrays require more leg work. For example the type `array{id:int,name:string,valid?:bool}` 
 corresponds to this construct:
 
 ```php
@@ -56,7 +56,7 @@ $type = _object_like([
 ]);
 ``` 
 
-Quite a mouthful. Also not the additional required `@var` as psalm currently have no support for dependent types. 
+Quite a mouthful. Also note the required `@var` as psalm currently have no support for dependent types. 
 
 If you want to assert types matching your PHPDoc you can use the type parser (WiP):
 

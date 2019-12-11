@@ -45,11 +45,12 @@ class CastText extends TestCase
     public function testPropertyType()
     {
         $value = ['id' => 12];
-        assert(_object_like([
+        $type = _object_like([
             'id' => _int()
-        ])->matches($value));
+        ]);
+        assert($type->matches($value));
 
-        Assert::assertEquals(12, $value['id']);
+        Assert::assertEquals(12, $type->cast($value)['id']);
     }
 
     public function testIntersectionType()
@@ -113,6 +114,7 @@ class CastText extends TestCase
 
         Assert::assertTrue($type->matches(['a', 'b']));
         Assert::assertFalse($type->matches(['a', 2]));
+        Assert::assertEquals(['a', '2'], $type->cast(['a', 2]));
     }
 
     /**
