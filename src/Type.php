@@ -60,6 +60,21 @@ abstract class Type
      */
     public static function of(string $declaration, string $namespace = '', array $aliases = []): Type
     {
+        switch ($declaration) {
+            case 'string':
+                return new StringType;
+            case 'int':
+                return new IntType;
+            case 'float':
+                return new FloatType;
+            case 'bool':
+            case 'boolean':
+                return new BoolType;
+            case 'mixed':
+                return new MixedType;
+            case 'resource':
+                return new ResourceType;
+        }
         $key = $declaration . ';' . $namespace . ';' . var_export($aliases, true);
         if (!isset(self::$typeCache[$key])) {
             if (self::$compiler === null) {

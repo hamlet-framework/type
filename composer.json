@@ -40,7 +40,9 @@
   },
   "archive": {
     "exclude": [
-      "src/Test"
+      "psalm-cases",
+      "src/Test",
+      "tests"
     ]
   }
 }
