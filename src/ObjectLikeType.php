@@ -2,6 +2,8 @@
 
 namespace Hamlet\Cast;
 
+use stdClass;
+
 /**
  * @template T
  * @extends Type<array<T>>
@@ -53,24 +55,34 @@ class ObjectLikeType extends Type
      * @param mixed $value
      * @return array
      * @psalm-return array<T>
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress RedundantCondition
      */
     public function cast($value): array
     {
-        if (!is_array($value)) {
+        if (!is_array($value) && !is_a($value, stdClass::class)) {
             throw new CastException($value, $this);
         }
         foreach ($this->fields as $field => $type) {
             $tokens = explode('?', $field, 2);
-            if (!array_key_exists($tokens[0], $value)) {
-                if (count($tokens) == 1) {
+            $fieldName = $tokens[0];
+            $required = count($tokens) == 1;
+
+            if (is_array($value)) {
+                if (array_key_exists($fieldName, $value)) {
+                    $value[$fieldName] = $type->cast($value[$fieldName]);
+                } elseif ($required) {
                     throw new CastException($value, $this);
-                } else {
-                    continue;
+                }
+            } elseif (is_object($value)) {
+                if (property_exists($value, $fieldName)) {
+                    $value->{$fieldName} = $type->cast($value->{$fieldName});
+                } elseif ($required) {
+                    throw new CastException($value, $this);
                 }
             }
-            $value[$tokens[0]] = $type->cast($value[$tokens[0]]);
         }
-        return $value;
+        return (array) $value;
     }
 
     public function __toString(): string

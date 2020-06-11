@@ -6,7 +6,7 @@ use DateTime;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
-class CastText extends TestCase
+class TypeDeclarationTest extends TestCase
 {
     public function testSimpleCast()
     {

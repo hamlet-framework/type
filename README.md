@@ -3,15 +3,15 @@ Hamlet Cast
 
 [![Build Status](https://travis-ci.org/hamlet-framework/type.svg)](https://travis-ci.org/hamlet-framework/type)
 
-There are few aspects of specifying type of an expression in PHP:
+There are few aspects of specifying type of expression in PHP:
 
-1. The most exact specification of the type (we assume it's in psalm syntax), for example `array<int,DateTime|null>`
-2. The sequence of assertions that are required to check that the actual object at run time has this type, in pseudo code something like `assert($records instanceof array<int,DateTime|null>)`
-3. The hint that will tell static analysers (this is meant to be psalm at the moment) what's the exact type specification after the cast, or in pseudo code`(array<int,DateTime|null>) $records`
-4. The ability of deriving the types from other types without doing string manipulation, expressed in pseudo code as something like `array<int,DateTime|null> || null`
-5. The ability to cast to it when the casting is safe, i.e. falsey should cast to false, etc.
+1. The most exact specification of the type (we assume it's in psalm syntax): `array<int,DateTime|null>`
+2. The sequence of run time assertions: `assert($records instanceof array<int,DateTime|null>)`
+3. The type hint for static analysers (which is _psalm_ at the moment): `(array<int,DateTime|null>) $records`
+4. The ability to derive types without string manipulation: `array<int,DateTime|null> || null`
+5. The ability to cast when it's safe, i.e. falsey should cast to false, etc.
 
-This library provides the basic building blocks for type specifications. For example the following expression
+This library provides the basic building blocks for type specifications. For example, the following expression:
 
 ```php
 $type = _map(
@@ -25,9 +25,7 @@ $type = _map(
 
 creates an object of type `Type<array<int,DateTime|null>>`.
 
-This object can be used in following ways
-
-Asserting at run time that the type of `$records` is `array<int,DateTime|null>>`:
+Asserting at run time, that the type of `$records` is `array<int,DateTime|null>>`:
 ```php
 $type->assert($records);
 ```
@@ -71,7 +69,5 @@ assert($type->matches($record));
 
 - Add more tests for PHPDoc and Namespace resolver
 - Add PHPStan analyser
-- Add static shortcuts for performance
 - Add more tests for agreements between psalm/phpstan and Type assertions
-- Intersection types are useless
 
