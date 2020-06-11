@@ -89,14 +89,18 @@ class JsonMappingTest extends TestCase
                 },
                 "Tolstoy": {
                     "War and Peace": 1869
+                },
+                "Bulgakov": {
+                    "The Master and Margarita": "1940"
                 }
             }
         ';
         $writers = _map(_string(), _map(_string(), _int()))->cast(json_decode($json));
 
-        Assert::assertCount(2, $writers);
-        Assert::assertEquals(1866, $writers['Dostoyevsky']['Crime and Punishment']);
-        Assert::assertEquals(1869, $writers['Dostoyevsky']['Idiot']);
-        Assert::assertEquals(1869, $writers['Tolstoy']['War and Peace']);
+        Assert::assertCount(3, $writers);
+        Assert::assertSame(1866, $writers['Dostoyevsky']['Crime and Punishment']);
+        Assert::assertSame(1869, $writers['Dostoyevsky']['Idiot']);
+        Assert::assertSame(1869, $writers['Tolstoy']['War and Peace']);
+        Assert::assertSame(1940, $writers['Bulgakov']['The Master and Margarita']);
     }
 }
