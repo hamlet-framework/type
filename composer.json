@@ -20,6 +20,7 @@
     "hoa/compiler": "@stable"
   },
   "require-dev": {
+    "ext-json": "*",
     "php-parallel-lint/php-parallel-lint": "@stable",
     "phpunit/phpunit": "^6 || ^7",
     "squizlabs/php_codesniffer": "@stable",

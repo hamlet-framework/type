@@ -2,6 +2,8 @@
 
 namespace Hamlet\Cast;
 
+use stdClass;
+
 /**
  * @template K as array-key
  * @template V
@@ -63,17 +65,17 @@ class MapType extends Type
      */
     public function cast($value)
     {
-        if (!is_array($value)) {
-            throw new CastException($value, $this);
+        if (is_array($value) || is_object($value) && is_a($value, stdClass::class)) {
+            $result = [];
+            /**
+             * @psalm-suppress MixedAssignment
+             */
+            foreach (((array) $value) as $k => $v) {
+                $result[$this->keyType->cast($k)] = $this->valueType->cast($v);
+            }
+            return $result;
         }
-        $result = [];
-        /**
-         * @psalm-suppress MixedAssignment
-         */
-        foreach ($value as $k => $v) {
-            $result[$this->keyType->cast($k)] = $this->valueType->cast($v);
-        }
-        return $result;
+        throw new CastException($value, $this);
     }
 
     public function __toString(): string

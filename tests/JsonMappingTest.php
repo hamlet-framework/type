@@ -61,4 +61,42 @@ class JsonMappingTest extends TestCase
         Assert::assertEquals('Vladivostok', $users[1]->address()->city());
         Assert::assertNull($users[2]->address());
     }
+
+    public function testJsonEmbeddedCasting()
+    {
+        $json = '
+            {
+                "Lyuba": "2.34",
+                "Sveta": "17.01"
+            }
+        ';
+        $weights = _map(_string(), _float())->cast(json_decode($json));
+
+        Assert::assertCount(2, $weights);
+        Assert::assertArrayHasKey('Lyuba', $weights);
+        Assert::assertArrayHasKey('Sveta', $weights);
+        Assert::assertSame(2.34, $weights['Lyuba']);
+        Assert::assertSame(17.01, $weights['Sveta']);
+    }
+
+    public function testMapOfMaps()
+    {
+        $json = '
+            {
+                "Dostoyevsky": {
+                    "Crime and Punishment": 1866,
+                    "Idiot": 1869
+                },
+                "Tolstoy": {
+                    "War and Peace": 1869
+                }
+            }
+        ';
+        $writers = _map(_string(), _map(_string(), _int()))->cast(json_decode($json));
+
+        Assert::assertCount(2, $writers);
+        Assert::assertEquals(1866, $writers['Dostoyevsky']['Crime and Punishment']);
+        Assert::assertEquals(1869, $writers['Dostoyevsky']['Idiot']);
+        Assert::assertEquals(1869, $writers['Tolstoy']['War and Peace']);
+    }
 }
