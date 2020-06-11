@@ -32,7 +32,7 @@ $type->assert($records);
 
 Cast `$records` to `array<int,DateTime|null>>` and throw an exception when `$records` cannot be cast to `array<int,DateTime|null>>`:
 ```php
-return $type->cast($records);
+return $type->resolveAndCast($records);
 ```
 
 Combine type with other types, for example, making it nullable `array<int,DateTime|null>>|null`:
@@ -67,6 +67,7 @@ assert($type->matches($record));
 
 ## Todo
 
+- Create plugin methods to accommodate fully functional json mapper
 - Add more tests for PHPDoc and Namespace resolver
 - Add PHPStan analyser
 - Add more tests for agreements between psalm/phpstan and Type assertions

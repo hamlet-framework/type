@@ -2,6 +2,7 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Resolvers\PropertyResolver;
 use stdClass;
 
 /**
@@ -59,11 +60,12 @@ class MapType extends Type
 
     /**
      * @param mixed $value
+     * @param PropertyResolver $resolver
      * @return array
      * @psalm-return array<K,V>
      * @psalm-suppress InvalidReturnType
      */
-    public function cast($value)
+    public function resolveAndCast($value, PropertyResolver $resolver)
     {
         if (is_array($value) || is_object($value) && is_a($value, stdClass::class)) {
             $result = [];
@@ -71,7 +73,7 @@ class MapType extends Type
              * @psalm-suppress MixedAssignment
              */
             foreach (((array) $value) as $k => $v) {
-                $result[$this->keyType->cast($k)] = $this->valueType->cast($v);
+                $result[$this->keyType->resolveAndCast($k, $resolver)] = $this->valueType->resolveAndCast($v, $resolver);
             }
             return $result;
         }

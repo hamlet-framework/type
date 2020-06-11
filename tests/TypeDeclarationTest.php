@@ -94,11 +94,9 @@ class TypeDeclarationTest extends TestCase
         Assert::assertEquals(['id' => 12, 'name' => 'hey there', 'online' => false], $type->cast($value));
     }
 
-    /**
-     * @expectedException \Hamlet\Cast\CastException
-     */
     public function testPropertyTypeThrowsExceptionOnMissingProperty()
     {
+        $this->expectException(CastException::class);
         _object_like(['id' => _int()])->cast([]);
     }
 
@@ -117,11 +115,9 @@ class TypeDeclarationTest extends TestCase
         Assert::assertEquals(['a', '2'], $type->cast(['a', 2]));
     }
 
-    /**
-     * @expectedException \Hamlet\Cast\CastException
-     */
     public function testCastOrFail()
     {
+        $this->expectException(CastException::class);
         $type = _union(_class(DateTime::class), _null());
         $type->cast(1.1);
     }

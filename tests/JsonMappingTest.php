@@ -54,7 +54,6 @@ class JsonMappingTest extends TestCase
                 }
             ]
         ';
-        /** @var User[] $value */
         $users = _list(_class(User::class))->cast(json_decode($json));
 
         Assert::assertCount(3, $users);

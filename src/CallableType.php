@@ -2,6 +2,8 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Resolvers\PropertyResolver;
+
 /**
  * @template T as callable
  * @extends Type<T>

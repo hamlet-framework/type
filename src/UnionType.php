@@ -2,6 +2,8 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Resolvers\PropertyResolver;
+
 /**
  * @template A
  * @extends Type<A>
@@ -40,10 +42,11 @@ class UnionType extends Type
 
     /**
      * @param mixed $value
+     * @param PropertyResolver $resolver
      * @return mixed
      * @psalm-return A
      */
-    public function cast($value)
+    public function resolveAndCast($value, PropertyResolver $resolver)
     {
         foreach ($this->as as $a) {
             if ($a->matches($value)) {
@@ -52,7 +55,7 @@ class UnionType extends Type
         }
         foreach ($this->as as $a) {
             try {
-                return $a->cast($value);
+                return $a->resolveAndCast($value, $resolver);
             } catch (CastException $e) {
             }
         }

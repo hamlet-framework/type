@@ -2,6 +2,8 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Resolvers\PropertyResolver;
+
 /**
  * @template T
  * @extends Type<list<T>>
@@ -46,10 +48,11 @@ class ListType extends Type
 
     /**
      * @param mixed $value
+     * @param PropertyResolver $resolver
      * @return array
      * @psalm-return list<T>
      */
-    public function cast($value): array
+    public function resolveAndCast($value, PropertyResolver $resolver): array
     {
         if (!is_array($value)) {
             throw new CastException($value, $this);
@@ -59,7 +62,7 @@ class ListType extends Type
          * @psalm-suppress MixedAssignment
          */
         foreach ($value as $v) {
-            $result[] = $this->elementType->cast($v);
+            $result[] = $this->elementType->resolveAndCast($v, $resolver);
         }
         return $result;
     }

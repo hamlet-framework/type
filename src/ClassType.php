@@ -3,6 +3,7 @@
 namespace Hamlet\Cast;
 
 use Hamlet\Cast\Parser\DocBlockParser;
+use Hamlet\Cast\Resolvers\PropertyResolver;
 use ReflectionClass;
 use ReflectionException;
 use stdClass;
@@ -52,13 +53,14 @@ class ClassType extends Type
 
     /**
      * @param mixed $value
+     * @param PropertyResolver $resolver
      * @return object
+     * @throws ReflectionException
      * @psalm-return T
      * @psalm-suppress MixedAssignment
      * @psalm-suppress InvalidReturnStatement
-     * @throws ReflectionException
      */
-    public function cast($value)
+    public function resolveAndCast($value, PropertyResolver $resolver)
     {
         if ($this->matches($value)) {
             return $value;
@@ -73,19 +75,14 @@ class ClassType extends Type
             $result = $reflectionClass->newInstanceWithoutConstructor();
             foreach ($reflectionClass->getProperties() as $property) {
                 $propertyName = $property->getName();
-                if (is_array($value) && array_key_exists($propertyName, $value)) {
-                    $propertyValue = $value[$propertyName];
-                } elseif (is_object($value) && property_exists($value, $propertyName)) {
-                    $propertyValue = $value->{$propertyName};
-                } else {
-                    $propertyValue = null;
-                }
+                $resolution = $resolver->resolve($this->type, $propertyName, $value);
+                $propertyValue = $resolution->value();
                 $property->setAccessible(true);
                 if (!isset(self::$propertyTypes[$this->type][$propertyName])) {
                     self::$propertyTypes[$this->type][$propertyName] = DocBlockParser::fromProperty($property);
                 }
                 $propertyType = self::$propertyTypes[$this->type][$propertyName];
-                $property->setValue($result, $propertyType->cast($propertyValue));
+                $property->setValue($result, $propertyType->resolveAndCast($propertyValue, $resolver));
             }
             return $result;
         }

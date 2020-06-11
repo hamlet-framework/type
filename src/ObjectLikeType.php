@@ -2,6 +2,7 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Resolvers\PropertyResolver;
 use stdClass;
 
 /**
@@ -53,33 +54,31 @@ class ObjectLikeType extends Type
 
     /**
      * @param mixed $value
+     * @param PropertyResolver $resolver
      * @return array
      * @psalm-return array<T>
      * @psalm-suppress MixedArgument
      * @psalm-suppress RedundantCondition
      */
-    public function cast($value): array
+    public function resolveAndCast($value, PropertyResolver $resolver): array
     {
         if (!is_array($value) && !is_a($value, stdClass::class)) {
             throw new CastException($value, $this);
         }
-        foreach ($this->fields as $field => $type) {
+        foreach ($this->fields as $field => $fieldType) {
             $tokens = explode('?', $field, 2);
             $fieldName = $tokens[0];
             $required = count($tokens) == 1;
 
-            if (is_array($value)) {
-                if (array_key_exists($fieldName, $value)) {
-                    $value[$fieldName] = $type->cast($value[$fieldName]);
-                } elseif ($required) {
-                    throw new CastException($value, $this);
+            $resolution = $resolver->resolve(null, $fieldName, $value);
+            if ($resolution->success()) {
+                if (is_array($value)) {
+                    $value[$fieldName] = $fieldType->resolveAndCast($resolution->value(), $resolver);
+                } elseif (is_object($value)) {
+                    $value->{$fieldName} = $fieldType->resolveAndCast($resolution->value(), $resolver);
                 }
-            } elseif (is_object($value)) {
-                if (property_exists($value, $fieldName)) {
-                    $value->{$fieldName} = $type->cast($value->{$fieldName});
-                } elseif ($required) {
-                    throw new CastException($value, $this);
-                }
+            } elseif ($required) {
+                throw new CastException($value, $this);
             }
         }
         return (array) $value;

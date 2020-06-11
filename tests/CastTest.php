@@ -111,11 +111,9 @@ class CastTest extends TestCase
         Assert::assertEquals((object) $value, $result);
     }
 
-    /**
-     * @expectedException \Hamlet\Cast\CastException
-     */
     public function testIllegalFloatCastWithinList()
     {
+        $this->expectException(CastException::class);
         $value = [1.1, null, new stdClass];
         $type = _list(_float());
 
