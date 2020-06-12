@@ -75,14 +75,17 @@ class Resolver
 
     /**
      * @template T as object
+     * @template V
      * @param string $type
      * @psalm-param class-string<T> $type
+     * @param mixed $value
+     * @psalm-param V $value
      * @return ReflectionClass
      * @psalm-return ReflectionClass<T>
      * @throws ReflectionException
      * @psalm-suppress MixedReturnTypeCoercion
      */
-    public function getReflectionClass(string $type): ReflectionClass
+    public function getReflectionClass(string $type, $value = null): ReflectionClass
     {
         if (!isset(self::$reflectionClasses[$type])) {
             self::$reflectionClasses[$type] = new ReflectionClass($type);

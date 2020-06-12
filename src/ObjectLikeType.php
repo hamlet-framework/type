@@ -72,12 +72,15 @@ class ObjectLikeType extends Type
 
             /** @psalm-suppress ArgumentTypeCoercion */
             $resolution = $resolver->getValue(null, $fieldName, $value);
-            if ($resolution->successful()) {
-                $fieldValue = $fieldType->resolveAndCast($resolution->value(), $resolver);
-                $value = $resolver->setValue($value, $fieldName, $fieldValue);
-            } elseif ($required) {
-                throw new CastException($value, $this);
+            if (!$resolution->successful()) {
+                if ($required) {
+                    throw new CastException($value, $this);
+                } else {
+                    continue;
+                }
             }
+            $fieldValue = $fieldType->resolveAndCast($resolution->value(), $resolver);
+            $value = $resolver->setValue($value, $fieldName, $fieldValue);
         }
         return (array) $value;
     }

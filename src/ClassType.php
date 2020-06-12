@@ -56,13 +56,16 @@ class ClassType extends Type
         }
 
         if (is_object($value) && is_a($value, stdClass::class) || is_array($value)) {
-            $reflectionClass = $resolver->getReflectionClass($this->type);
+            $reflectionClass = $resolver->getReflectionClass($this->type, $value);
             $result = $reflectionClass->newInstanceWithoutConstructor();
             foreach ($reflectionClass->getProperties() as $property) {
                 $propertyName = $property->getName();
                 $resolution = $resolver->getValue($this->type, $propertyName, $value);
-                $propertyValue = $resolution->value();
                 $propertyType = $resolver->getPropertyType($property);
+                if (!$resolution->successful() && !$propertyType->matches(null)) {
+                    throw new CastException($value, $this);
+                }
+                $propertyValue = $resolution->value();
                 $result = $resolver->setValue($result, $propertyName, $propertyType->resolveAndCast($propertyValue, $resolver));
             }
             return $result;
