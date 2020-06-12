@@ -3,7 +3,7 @@
 namespace Hamlet\Cast;
 
 use Hamlet\Cast\Parser\DocBlockParser;
-use Hamlet\Cast\Resolvers\PropertyResolver;
+use Hamlet\Cast\Resolvers\Resolver;
 use ReflectionClass;
 use ReflectionException;
 use stdClass;
@@ -19,18 +19,6 @@ class ClassType extends Type
      * @psalm-var class-string<T>
      */
     private $type;
-
-    /**
-     * @var ReflectionClass[]
-     * @psalm-var array<class-string, ReflectionClass>
-     */
-    private static $reflectionClasses = [];
-
-    /**
-     * @var Type[][]
-     * @psalm-var array<class-string,array<string,Type>>
-     */
-    private static $propertyTypes = [];
 
     /**
      * @param string $type
@@ -53,36 +41,29 @@ class ClassType extends Type
 
     /**
      * @param mixed $value
-     * @param PropertyResolver $resolver
+     * @param Resolver $resolver
      * @return object
      * @throws ReflectionException
      * @psalm-return T
      * @psalm-suppress MixedAssignment
      * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress InvalidReturnType
      */
-    public function resolveAndCast($value, PropertyResolver $resolver)
+    public function resolveAndCast($value, Resolver $resolver)
     {
         if ($this->matches($value)) {
             return $value;
         }
 
         if (is_object($value) && is_a($value, stdClass::class) || is_array($value)) {
-            if (!isset(self::$reflectionClasses[$this->type])) {
-                self::$reflectionClasses[$this->type] = new ReflectionClass($this->type);
-            }
-            $reflectionClass = self::$reflectionClasses[$this->type];
-
+            $reflectionClass = $resolver->getReflectionClass($this->type);
             $result = $reflectionClass->newInstanceWithoutConstructor();
             foreach ($reflectionClass->getProperties() as $property) {
                 $propertyName = $property->getName();
-                $resolution = $resolver->resolve($this->type, $propertyName, $value);
+                $resolution = $resolver->getValue($this->type, $propertyName, $value);
                 $propertyValue = $resolution->value();
-                $property->setAccessible(true);
-                if (!isset(self::$propertyTypes[$this->type][$propertyName])) {
-                    self::$propertyTypes[$this->type][$propertyName] = DocBlockParser::fromProperty($property);
-                }
-                $propertyType = self::$propertyTypes[$this->type][$propertyName];
-                $property->setValue($result, $propertyType->resolveAndCast($propertyValue, $resolver));
+                $propertyType = $resolver->getPropertyType($property);
+                $result = $resolver->setValue($result, $propertyName, $propertyType->resolveAndCast($propertyValue, $resolver));
             }
             return $result;
         }

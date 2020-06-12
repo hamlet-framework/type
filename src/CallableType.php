@@ -2,7 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\PropertyResolver;
+use Hamlet\Cast\Resolvers\Resolver;
 
 /**
  * @template T as callable

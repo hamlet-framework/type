@@ -3,7 +3,7 @@
 namespace Hamlet\Cast;
 
 use Hamlet\Cast\Parser\TypeParser;
-use Hamlet\Cast\Resolvers\PropertyResolver;
+use Hamlet\Cast\Resolvers\Resolver;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\Compiler\Llk\TreeNode;
@@ -51,17 +51,17 @@ abstract class Type
      */
     public function cast($value)
     {
-        $resolver = new PropertyResolver;
+        $resolver = new Resolver;
         return $this->resolveAndCast($value, $resolver);
     }
 
     /**
      * @param mixed $value
-     * @param PropertyResolver $resolver
+     * @param Resolver $resolver
      * @return mixed
      * @psalm-return T
      */
-    public function resolveAndCast($value, PropertyResolver $resolver)
+    public function resolveAndCast($value, Resolver $resolver)
     {
         return $this->cast($value);
     }

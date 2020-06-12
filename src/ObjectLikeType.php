@@ -2,7 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\PropertyResolver;
+use Hamlet\Cast\Resolvers\Resolver;
 use stdClass;
 
 /**
@@ -54,13 +54,13 @@ class ObjectLikeType extends Type
 
     /**
      * @param mixed $value
-     * @param PropertyResolver $resolver
+     * @param Resolver $resolver
      * @return array
      * @psalm-return array<T>
      * @psalm-suppress MixedArgument
      * @psalm-suppress RedundantCondition
      */
-    public function resolveAndCast($value, PropertyResolver $resolver): array
+    public function resolveAndCast($value, Resolver $resolver): array
     {
         if (!is_array($value) && !is_a($value, stdClass::class)) {
             throw new CastException($value, $this);
@@ -70,13 +70,11 @@ class ObjectLikeType extends Type
             $fieldName = $tokens[0];
             $required = count($tokens) == 1;
 
-            $resolution = $resolver->resolve(null, $fieldName, $value);
-            if ($resolution->success()) {
-                if (is_array($value)) {
-                    $value[$fieldName] = $fieldType->resolveAndCast($resolution->value(), $resolver);
-                } elseif (is_object($value)) {
-                    $value->{$fieldName} = $fieldType->resolveAndCast($resolution->value(), $resolver);
-                }
+            /** @psalm-suppress ArgumentTypeCoercion */
+            $resolution = $resolver->getValue(null, $fieldName, $value);
+            if ($resolution->successful()) {
+                $fieldValue = $fieldType->resolveAndCast($resolution->value(), $resolver);
+                $value = $resolver->setValue($value, $fieldName, $fieldValue);
             } elseif ($required) {
                 throw new CastException($value, $this);
             }
