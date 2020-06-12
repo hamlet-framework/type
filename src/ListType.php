@@ -6,7 +6,7 @@ use Hamlet\Cast\Resolvers\PropertyResolver;
 
 /**
  * @template T
- * @extends Type<list<T>>
+ * @extends Type<array<T>>
  */
 class ListType extends Type
 {
@@ -28,7 +28,7 @@ class ListType extends Type
     /**
      * @param mixed $value
      * @return bool
-     * @psalm-assert-if-true list<T> $value
+     * @psalm-assert-if-true array<T> $value
      */
     public function matches($value): bool
     {
@@ -50,7 +50,7 @@ class ListType extends Type
      * @param mixed $value
      * @param PropertyResolver $resolver
      * @return array
-     * @psalm-return list<T>
+     * @psalm-return array<T>
      */
     public function resolveAndCast($value, PropertyResolver $resolver): array
     {
