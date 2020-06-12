@@ -55,7 +55,7 @@ function _int(): Type
  * @param Type $type
  * @psalm-param Type<A> $type
  * @return ListType
- * @psalm-return Type<list<A>>
+ * @psalm-return Type<array<A>>
  *
  * @psalm-suppress InvalidReturnType
  * @psalm-suppress InvalidReturnStatement
