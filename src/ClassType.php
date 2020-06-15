@@ -2,7 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\DefaultResolver;
+use Hamlet\Cast\Resolvers\Resolver;
 use stdClass;
 
 /**
@@ -38,13 +38,13 @@ class ClassType extends Type
 
     /**
      * @param mixed $value
-     * @param DefaultResolver $resolver
+     * @param Resolver $resolver
      * @return object
      * @psalm-return T
      * @psalm-suppress InvalidReturnType
      * @psalm-suppress InvalidReturnStatement
      */
-    public function resolveAndCast($value, DefaultResolver $resolver)
+    public function resolveAndCast($value, Resolver $resolver)
     {
         if ($this->matches($value)) {
             return $value;

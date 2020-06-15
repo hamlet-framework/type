@@ -2,7 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\DefaultResolver;
+use Hamlet\Cast\Resolvers\Resolver;
 
 /**
  * @template A
@@ -42,11 +42,11 @@ class UnionType extends Type
 
     /**
      * @param mixed $value
-     * @param DefaultResolver $resolver
+     * @param Resolver $resolver
      * @return mixed
      * @psalm-return A
      */
-    public function resolveAndCast($value, DefaultResolver $resolver)
+    public function resolveAndCast($value, Resolver $resolver)
     {
         foreach ($this->as as $a) {
             if ($a->matches($value)) {

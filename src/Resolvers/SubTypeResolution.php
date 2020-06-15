@@ -16,16 +16,16 @@ class SubTypeResolution
     private $reflectionClass;
 
     /**
-     * @var DefaultResolver
+     * @var Resolver
      */
     private $subTreeResolver;
 
     /**
      * @param ReflectionClass $reflectionClass
      * @psalm-param ReflectionClass<T> $reflectionClass
-     * @param DefaultResolver $subTreeResolver
+     * @param Resolver $subTreeResolver
      */
-    public function __construct(ReflectionClass $reflectionClass, DefaultResolver $subTreeResolver)
+    public function __construct(ReflectionClass $reflectionClass, Resolver $subTreeResolver)
     {
         $this->reflectionClass = $reflectionClass;
         $this->subTreeResolver = $subTreeResolver;
@@ -40,7 +40,7 @@ class SubTypeResolution
         return $this->reflectionClass;
     }
 
-    public function subTreeResolver(): DefaultResolver
+    public function subTreeResolver(): Resolver
     {
         return $this->subTreeResolver;
     }

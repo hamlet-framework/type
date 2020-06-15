@@ -2,7 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\DefaultResolver;
+use Hamlet\Cast\Resolvers\Resolver;
 use stdClass;
 
 /**
@@ -54,11 +54,11 @@ class ObjectLikeType extends Type
 
     /**
      * @param mixed $value
-     * @param DefaultResolver $resolver
+     * @param Resolver $resolver
      * @return array
      * @psalm-return array<T>
      */
-    public function resolveAndCast($value, DefaultResolver $resolver): array
+    public function resolveAndCast($value, Resolver $resolver): array
     {
         if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);
