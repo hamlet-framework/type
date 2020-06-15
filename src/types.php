@@ -56,9 +56,6 @@ function _int(): Type
  * @psalm-param Type<A> $type
  * @return ListType
  * @psalm-return Type<array<A>>
- *
- * @psalm-suppress InvalidReturnType
- * @psalm-suppress InvalidReturnStatement
  */
 function _list(Type $type): Type
 {
@@ -86,9 +83,6 @@ function _literal(...$as): Type
  * @psalm-param Type<B> $valueType
  * @return MapType
  * @psalm-return Type<array<A,B>>
- *
- * @psalm-suppress InvalidReturnType
- * @psalm-suppress InvalidReturnStatement
  */
 function _map(Type $keyType, Type $valueType): Type
 {

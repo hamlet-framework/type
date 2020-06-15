@@ -2,7 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\Resolver;
+use Hamlet\Cast\Resolvers\DefaultResolver;
 use stdClass;
 
 /**
@@ -54,15 +54,13 @@ class ObjectLikeType extends Type
 
     /**
      * @param mixed $value
-     * @param Resolver $resolver
+     * @param DefaultResolver $resolver
      * @return array
      * @psalm-return array<T>
-     * @psalm-suppress MixedArgument
-     * @psalm-suppress RedundantCondition
      */
-    public function resolveAndCast($value, Resolver $resolver): array
+    public function resolveAndCast($value, DefaultResolver $resolver): array
     {
-        if (!is_array($value) && !is_a($value, stdClass::class)) {
+        if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);
         }
         foreach ($this->fields as $field => $fieldType) {
@@ -70,7 +68,9 @@ class ObjectLikeType extends Type
             $fieldName = $tokens[0];
             $required = count($tokens) == 1;
 
-            /** @psalm-suppress ArgumentTypeCoercion */
+            /**
+             * @psalm-suppress ArgumentTypeCoercion
+             */
             $resolution = $resolver->getValue(null, $fieldName, $value);
             if (!$resolution->successful()) {
                 if ($required) {

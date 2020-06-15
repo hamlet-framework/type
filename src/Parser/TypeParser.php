@@ -128,8 +128,6 @@ class TypeParser
     /**
      * @param TreeNode $node
      * @return Type
-     * @psalm-suppress ArgumentTypeCoercion
-     * @psalm-suppress TypeCoercion
      */
     private function fromClassName(TreeNode $node): Type
     {
@@ -144,6 +142,9 @@ class TypeParser
                 throw new RuntimeException('Unexpected ID ' . print_r($child, true));
             }
         }
+        /**
+         * @psalm-suppress ArgumentTypeCoercion
+         */
         if ($path[0] == '\\') {
             return new ClassType($path);
         } elseif (isset($this->aliases[$path])) {
@@ -157,16 +158,15 @@ class TypeParser
 
     private function fromArray(TreeNode $node): Type
     {
+        /**
+         * @psalm-suppress MixedArgumentTypeCoercion
+         */
         switch ($node->getChildrenNumber()) {
             case 1:
                 return new ListType(new MixedType());
             case 2:
                 return new ListType($this->parse($node->getChild(1)));
             case 3:
-                /**
-                 * @psalm-suppress MixedArgumentTypeCoercion
-                 * @psalm-suppress MixedTypeCoercion
-                 */
                 return new MapType($this->parse($node->getChild(1)), $this->parse($node->getChild(2)));
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));

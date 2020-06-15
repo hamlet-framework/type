@@ -2,8 +2,6 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\Resolver;
-
 /**
  * @template T as callable
  * @extends Type<T>
@@ -53,7 +51,7 @@ class CallableType extends Type
      * @param mixed $value
      * @return callable
      * @psalm-return T
-     * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress InvalidReturnStatement not sure we can do more than that
      */
     public function cast($value)
     {

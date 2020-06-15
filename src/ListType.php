@@ -2,7 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\Resolver;
+use Hamlet\Cast\Resolvers\DefaultResolver;
 
 /**
  * @template T
@@ -48,11 +48,11 @@ class ListType extends Type
 
     /**
      * @param mixed $value
-     * @param Resolver $resolver
+     * @param DefaultResolver $resolver
      * @return array
      * @psalm-return array<T>
      */
-    public function resolveAndCast($value, Resolver $resolver): array
+    public function resolveAndCast($value, DefaultResolver $resolver): array
     {
         if (!is_array($value)) {
             throw new CastException($value, $this);

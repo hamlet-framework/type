@@ -2,8 +2,6 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\Resolver;
-
 /**
  * @extends Type<bool>
  */

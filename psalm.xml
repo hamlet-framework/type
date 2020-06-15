@@ -18,5 +18,6 @@
     </projectFiles>
     <issueHandlers>
         <ReservedWord errorLevel="suppress"/>
+        <RedundantConditionGivenDocblockType errorLevel="suppress"/>
     </issueHandlers>
 </psalm>

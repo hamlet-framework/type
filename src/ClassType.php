@@ -2,10 +2,7 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Parser\DocBlockParser;
-use Hamlet\Cast\Resolvers\Resolver;
-use ReflectionClass;
-use ReflectionException;
+use Hamlet\Cast\Resolvers\DefaultResolver;
 use stdClass;
 
 /**
@@ -41,37 +38,39 @@ class ClassType extends Type
 
     /**
      * @param mixed $value
-     * @param Resolver $resolver
+     * @param DefaultResolver $resolver
      * @return object
-     * @throws ReflectionException
      * @psalm-return T
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress InvalidReturnStatement
      * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
      */
-    public function resolveAndCast($value, Resolver $resolver)
+    public function resolveAndCast($value, DefaultResolver $resolver)
     {
         if ($this->matches($value)) {
             return $value;
         }
 
-        if (is_object($value) && is_a($value, stdClass::class) || is_array($value)) {
-            $reflectionClass = $resolver->getReflectionClass($this->type, $value);
-            $result = $reflectionClass->newInstanceWithoutConstructor();
-            foreach ($reflectionClass->getProperties() as $property) {
-                $propertyName = $property->getName();
-                $resolution = $resolver->getValue($this->type, $propertyName, $value);
-                $propertyType = $resolver->getPropertyType($property);
-                if (!$resolution->successful() && !$propertyType->matches(null)) {
-                    throw new CastException($value, $this);
-                }
-                $propertyValue = $resolution->value();
-                $result = $resolver->setValue($result, $propertyName, $propertyType->resolveAndCast($propertyValue, $resolver));
-            }
-            return $result;
+        if (!(is_object($value) && is_a($value, stdClass::class) || is_array($value))) {
+            throw new CastException($value, $this);
         }
 
-        throw new CastException($value, $this);
+        $subTypeResolution = $resolver->resolveSubType($this->type, $value);
+        $reflectionClass   = $subTypeResolution->reflectionClass();
+        $subTreeResolver   = $subTypeResolution->subTreeResolver();
+
+        $result = $reflectionClass->newInstanceWithoutConstructor();
+        foreach ($reflectionClass->getProperties() as $property) {
+            $propertyName    = $property->getName();
+            $valueResolution = $subTreeResolver->getValue($this->type, $propertyName, $value);
+            $propertyType    = $subTreeResolver->getPropertyType($property);
+
+            if (!$valueResolution->successful() && !$propertyType->matches(null)) {
+                throw new CastException($value, $this);
+            }
+
+            $result = $resolver->setValue($result, $propertyName, $propertyType->resolveAndCast($valueResolution->value(), $subTreeResolver));
+        }
+        return $result;
     }
 
     public function __toString(): string
