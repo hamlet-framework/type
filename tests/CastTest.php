@@ -64,7 +64,7 @@ class CastTest extends TestCase
     {
         try {
             $result = _float()->cast($value);
-            Assert::assertSame((float) $value, $result);
+            Assert::assertEquals((float) $value, $result);
         } catch (CastException $e) {
             // @todo need to check that the warning would have been thrown
             Assert::assertTrue(true);
@@ -109,6 +109,36 @@ class CastTest extends TestCase
     {
         $result = _object()->cast($value);
         Assert::assertEquals((object) $value, $result);
+    }
+
+    /**
+     * @dataProvider values()
+     * @param mixed $value
+     */
+    public function testNumericCast($value)
+    {
+        try {
+            $result = _numeric()->cast($value);
+            Assert::assertIsNumeric($result);
+        } catch (CastException $exception) {
+            Assert::assertIsObject($value);
+            Assert::assertFalse(method_exists($value, '__toString'));
+        }
+    }
+
+    /**
+     * @dataProvider values()
+     * @param mixed $value
+     */
+    public function testScalarCast($value)
+    {
+        try {
+            $result = _scalar()->cast($value);
+            Assert::assertIsScalar($result);
+        } catch (CastException $exception) {
+            Assert::assertIsObject($value);
+            Assert::assertFalse(method_exists($value, '__toString'));
+        }
     }
 
     public function testIllegalFloatCastWithinList()

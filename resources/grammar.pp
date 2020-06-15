@@ -1,6 +1,6 @@
 %skip   space           \s
 
-%token  built_in        (integer|int|string|float|boolean|bool|object|iterable|mixed|numeric-string|double|real|resource|self|static|scalar|numeric|array-key)
+%token  built_in        (integer|int|string|float|boolean|bool|object|iterable|mixed|numeric-string|double|real|resource|self|static|scalar|numeric|array-key|class-string)
 
 %token  array           (array|non-empty-array)
 %token  callable        (callable|Closure)

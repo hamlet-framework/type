@@ -67,7 +67,7 @@ assert($type->matches($record));
 
 ## Todo
 
-- Create plugin methods to accommodate fully functional json mapper
+- Add types for iterable|self|static|class-string
 - Add more tests for PHPDoc and Namespace resolver
 - Add PHPStan analyser
 - Add more tests for agreements between psalm/phpstan and Type assertions

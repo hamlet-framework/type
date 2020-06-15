@@ -56,7 +56,34 @@ function _int(): Type
  */
 function _numeric_string(): Type
 {
-    return new NumericStringType();
+    return new NumericStringType;
+}
+
+/**
+ * @return NumericType
+ * @psalm-return Type<numeric>
+ */
+function _numeric(): Type
+{
+    return new NumericType;
+}
+
+/**
+ * @return ScalarType
+ * @psalm-return Type<scalar>
+ */
+function _scalar(): Type
+{
+    return new ScalarType;
+}
+
+/**
+ * @return ArrayKeyType
+ * @psalm-return Type<array-key>
+ */
+function _array_key(): Type
+{
+    return new ArrayKeyType;
 }
 
 /**
