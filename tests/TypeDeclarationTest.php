@@ -143,4 +143,10 @@ class TypeDeclarationTest extends TestCase
         Assert::assertNull(_null()->cast([]));
         Assert::assertNull(_null()->cast(false));
     }
+
+    public function testNumericStringCastsToString()
+    {
+        $value = _list(_numeric_string())->cast([1.0, "2.34", -1]);
+        Assert::assertSame(['1', '2.34', '-1'], $value);
+    }
 }

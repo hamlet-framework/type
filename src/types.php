@@ -51,6 +51,15 @@ function _int(): Type
 }
 
 /**
+ * @return NumericStringType
+ * @psalm-return Type<numeric-string>
+ */
+function _numeric_string(): Type
+{
+    return new NumericStringType();
+}
+
+/**
  * @template A
  * @param Type $type
  * @psalm-param Type<A> $type

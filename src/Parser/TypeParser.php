@@ -12,6 +12,7 @@ use Hamlet\Cast\LiteralType;
 use Hamlet\Cast\MapType;
 use Hamlet\Cast\MixedType;
 use Hamlet\Cast\NullType;
+use Hamlet\Cast\NumericStringType;
 use Hamlet\Cast\ObjectType;
 use Hamlet\Cast\StringType;
 use Hamlet\Cast\Type;
@@ -115,6 +116,8 @@ class TypeParser
             case 'float':
             case 'double':
                 return new FloatType();
+            case 'numeric-string':
+                return new NumericStringType();
             case 'string':
                 return new StringType();
             case 'object':
