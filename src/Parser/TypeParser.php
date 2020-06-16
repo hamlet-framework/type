@@ -1,26 +1,28 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Parser;
+namespace Hamlet\Type\Parser;
 
-use Hamlet\Cast\BoolType;
-use Hamlet\Cast\CallableType;
-use Hamlet\Cast\ClassType;
-use Hamlet\Cast\FloatType;
-use Hamlet\Cast\IntType;
-use Hamlet\Cast\ListType;
-use Hamlet\Cast\LiteralType;
-use Hamlet\Cast\MapType;
-use Hamlet\Cast\MixedType;
-use Hamlet\Cast\NullType;
-use Hamlet\Cast\NumericStringType;
-use Hamlet\Cast\ObjectType;
-use Hamlet\Cast\StringType;
-use Hamlet\Cast\Type;
-use Hamlet\Cast\UnionType;
+use Hamlet\Type\ArrayKeyType;
+use Hamlet\Type\BoolType;
+use Hamlet\Type\CallableType;
+use Hamlet\Type\ClassType;
+use Hamlet\Type\FloatType;
+use Hamlet\Type\IntType;
+use Hamlet\Type\ListType;
+use Hamlet\Type\LiteralType;
+use Hamlet\Type\MapType;
+use Hamlet\Type\MixedType;
+use Hamlet\Type\NullType;
+use Hamlet\Type\NumericStringType;
+use Hamlet\Type\NumericType;
+use Hamlet\Type\ObjectType;
+use Hamlet\Type\StringType;
+use Hamlet\Type\Type;
+use Hamlet\Type\UnionType;
 use Hoa\Compiler\Llk\TreeNode;
 use RuntimeException;
-use function Hamlet\Cast\_list;
-use function Hamlet\Cast\_object_like;
+use function Hamlet\Type\_list;
+use function Hamlet\Type\_object_like;
 
 class TypeParser
 {
@@ -109,21 +111,25 @@ class TypeParser
         switch ($node->getValueValue()) {
             case 'boolean':
             case 'bool':
-                return new BoolType();
+                return new BoolType;
             case 'integer':
             case 'int':
-                return new IntType();
+                return new IntType;
             case 'float':
             case 'double':
-                return new FloatType();
+                return new FloatType;
             case 'numeric-string':
-                return new NumericStringType();
+                return new NumericStringType;
+            case 'numeric':
+                return new NumericType;
+            case 'array-key':
+                return new ArrayKeyType;
             case 'string':
-                return new StringType();
+                return new StringType;
             case 'object':
-                return new ObjectType();
+                return new ObjectType;
             case 'mixed':
-                return new MixedType();
+                return new MixedType;
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }

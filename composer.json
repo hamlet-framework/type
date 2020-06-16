@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Hamlet\\Cast\\": "src"
+      "Hamlet\\Type\\": "src"
     },
     "files": [
       "src/types.php"
@@ -36,7 +36,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Hamlet\\Cast\\": "tests"
+      "Hamlet\\Type\\": "tests"
     }
   },
   "archive": {

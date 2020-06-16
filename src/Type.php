@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Parser\TypeParser;
-use Hamlet\Cast\Resolvers\DefaultResolver;
-use Hamlet\Cast\Resolvers\Resolver;
+use Hamlet\Type\Parser\TypeParser;
+use Hamlet\Type\Resolvers\DefaultResolver;
+use Hamlet\Type\Resolvers\Resolver;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\Compiler\Llk\TreeNode;

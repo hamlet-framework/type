@@ -7,12 +7,13 @@ php:
   - '7.2'
   - '7.3'
   - '7.4'
+  - nightly
 
 before_script:
   - composer update
 
 script:
   - ./vendor/bin/parallel-lint src
-  - ./vendor/bin/phpunit --verbose # --testdox
+  - ./vendor/bin/phpunit --verbose
   - php -v | grep -q 'PHP 7.0' || ./vendor/bin/psalm
   - ./vendor/bin/phpcs --standard=PSR2 -n src

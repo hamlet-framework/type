@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Parser;
+namespace Hamlet\Type\Parser;
 
-use Hamlet\Cast\MixedType;
-use Hamlet\Cast\Type;
+use Hamlet\Type\MixedType;
+use Hamlet\Type\Type;
 use ReflectionProperty;
 use RuntimeException;
 

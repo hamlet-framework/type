@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
 /**
  * @extends Type<bool>

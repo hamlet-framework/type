@@ -1,15 +1,15 @@
 <?php
 
-namespace Hamlet\Cast\Parser;
+namespace Hamlet\Type\Parser;
 
-use Hamlet\Cast\Type;
+use Hamlet\Type\Type;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Compiler\Visitor\Dump;
 use Hoa\File\Read;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use function Hamlet\Cast\_class;
+use function Hamlet\Type\_class;
 use ReflectionClass;
 use ReflectionException;
 
@@ -148,6 +148,6 @@ class ParserTest extends TestCase
         $typeB = DocBlockParser::fromProperty($type->getProperty('b'));
 
         Assert::assertEquals('array<int,array<array{0:\DateTime}>>', (string) $typeA);
-        Assert::assertEquals("'x'|'y'|'z'|\Hamlet\Cast\CastException|\DateTime|null", (string) $typeB);
+        Assert::assertEquals("'x'|'y'|'z'|\Hamlet\Type\CastException|\DateTime|null", (string) $typeB);
     }
 }

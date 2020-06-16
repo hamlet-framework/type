@@ -54,7 +54,7 @@ $type = _object_like([
 ]);
 ``` 
 
-Quite a mouthful. Also note the required `@var` as psalm currently have no support for dependent types. 
+Quite a mouthful. Also, note the required `@var` as psalm currently have no support for dependent types. 
 
 If you want to assert types matching your PHPDoc you can use the type parser (WiP):
 
@@ -70,5 +70,8 @@ assert($type->matches($record));
 - Add types for iterable|self|static|class-string
 - Add more tests for PHPDoc and Namespace resolver
 - Add PHPStan analyser
+- Use php-parser to resolve names
+- Add support for PHP 7.4 typed properties
+- Add PHP 8.0 in travis
 - Add more tests for agreements between psalm/phpstan and Type assertions
 

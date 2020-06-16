@@ -2,21 +2,21 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Hamlet\Cast\Type;
-use function Hamlet\Cast\_bool;
-use function Hamlet\Cast\_callable;
-use function Hamlet\Cast\_class;
-use function Hamlet\Cast\_float;
-use function Hamlet\Cast\_int;
-use function Hamlet\Cast\_list;
-use function Hamlet\Cast\_literal;
-use function Hamlet\Cast\_map;
-use function Hamlet\Cast\_mixed;
-use function Hamlet\Cast\_null;
-use function Hamlet\Cast\_object;
-use function Hamlet\Cast\_object_like;
-use function Hamlet\Cast\_string;
-use function Hamlet\Cast\_union;
+use Hamlet\Type\Type;
+use function Hamlet\Type\_bool;
+use function Hamlet\Type\_callable;
+use function Hamlet\Type\_class;
+use function Hamlet\Type\_float;
+use function Hamlet\Type\_int;
+use function Hamlet\Type\_list;
+use function Hamlet\Type\_literal;
+use function Hamlet\Type\_map;
+use function Hamlet\Type\_mixed;
+use function Hamlet\Type\_null;
+use function Hamlet\Type\_object;
+use function Hamlet\Type\_object_like;
+use function Hamlet\Type\_string;
+use function Hamlet\Type\_union;
 
 class Example
 {

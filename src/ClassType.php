@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Resolvers\Resolver;
+use Hamlet\Type\Resolvers\Resolver;
 use stdClass;
 
 /**
@@ -68,7 +68,11 @@ class ClassType extends Type
                 throw new CastException($value, $this);
             }
 
-            $result = $resolver->setValue($result, $propertyName, $propertyType->resolveAndCast($valueResolution->value(), $subTreeResolver));
+            $result = $resolver->setValue(
+                $result,
+                $propertyName,
+                $propertyType->resolveAndCast($valueResolution->value(), $subTreeResolver)
+            );
         }
         return $result;
     }
