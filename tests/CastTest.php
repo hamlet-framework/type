@@ -119,10 +119,9 @@ class CastTest extends TestCase
     {
         try {
             $result = _numeric()->cast($value);
-            Assert::assertIsNumeric($result);
+            Assert::assertTrue(is_numeric($result));
         } catch (CastException $exception) {
-            Assert::assertIsObject($value);
-            Assert::assertFalse(method_exists($value, '__toString'));
+            Assert::assertTrue(is_object($value) && !method_exists($value, '__toString'));
         }
     }
 
@@ -134,10 +133,9 @@ class CastTest extends TestCase
     {
         try {
             $result = _scalar()->cast($value);
-            Assert::assertIsScalar($result);
+            Assert::assertTrue(is_scalar($result));
         } catch (CastException $exception) {
-            Assert::assertIsObject($value);
-            Assert::assertFalse(method_exists($value, '__toString'));
+            Assert::assertTrue(is_object($value) && !method_exists($value, '__toString'));
         }
     }
 
