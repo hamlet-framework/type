@@ -11,30 +11,49 @@ use RuntimeException;
 
 class DocBlockParser
 {
-    public static function fromProperty(ReflectionProperty $property): Type
+    /**
+     * @param ReflectionProperty $reflectionProperty
+     * @return Type
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     */
+    public static function fromProperty(ReflectionProperty $reflectionProperty): Type
     {
-        $fileName = $property->getDeclaringClass()->getFileName();
+        $reflectionClass = $reflectionProperty->getDeclaringClass();
+        $cacheKey = $reflectionClass->getName() . '::' . $reflectionProperty->getName();
+        $fileName = $reflectionClass->getFileName();
         if ($fileName === false) {
             throw new RuntimeException('Cannot find declaring file name');
         }
+
+        /** @psalm-suppress MixedAssignment */
+        $propertyType = Cache::get($cacheKey, filemtime($fileName));
+        if ($propertyType !== null) {
+            return $propertyType;
+        }
+
         $body = file_get_contents($fileName);
 
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         $traverser = new NodeTraverser;
-        $visitor = new PropertyVisitor($property->getDeclaringClass());
+        $visitor = new PropertyVisitor($reflectionProperty->getDeclaringClass());
         $traverser->addVisitor($visitor);
         $statements = $parser->parse($body);
         if ($statements) {
             $traverser->traverse($statements);
         }
 
-        $properties = $visitor->properties();
-        if (isset($properties[$property->getName()])) {
-            list($declaration, $nameResolver) = $properties[$property->getName()];
-            return Type::of($declaration, $nameResolver);
-        } else {
-            return new MixedType;
+        $result = null;
+        foreach ($visitor->properties() as $propertyName => list($declaration, $nameResolver)) {
+            $key = $reflectionClass->getName() . '::' . $propertyName;
+            $propertyType = Type::of($declaration, $nameResolver);
+            Cache::set($key, $propertyType);
+            if ($propertyName == $reflectionProperty->getName()) {
+                $result = $propertyType;
+            }
         }
+        assert($result !== null);
+        return $result;
     }
 
     /**
