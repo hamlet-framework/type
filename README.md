@@ -74,3 +74,4 @@ assert($type->matches($record));
 - Add more tests for agreements between psalm/phpstan and Type assertions
 - Add option for catching unmapped properties in ClassType
 - Test cases for multiple classes per file with nested namespaces
+- Check if the cache is really all that useful
