@@ -62,6 +62,7 @@ class PropertyVisitor extends NameResolver
                  * @psalm-suppress MixedAssignment
                  * @psalm-suppress MixedMethodCall
                  * @psalm-suppress MixedOperand
+                 * @psalm-suppress UndefinedMethod
                  */
                 if (version_compare(phpversion(), '7.4', ">=")) {
                     /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
