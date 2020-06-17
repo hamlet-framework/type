@@ -3,7 +3,9 @@
 namespace Hamlet\Type\Parser;
 
 use Hamlet\Type\MixedType;
+use Hamlet\Type\NullType;
 use Hamlet\Type\Type;
+use Hamlet\Type\UnionType;
 use ReflectionProperty;
 use RuntimeException;
 
@@ -12,7 +14,11 @@ class DocBlockParser
     public static function fromProperty(ReflectionProperty $property): Type
     {
         $doc = $property->getDocComment();
-        $fields = self::parse($doc);
+        if ($doc) {
+            $fields = self::parse($doc);
+        } else {
+            $fields = [];
+        }
 
         $fileName = $property->getDeclaringClass()->getFileName();
         if ($fileName === false) {
@@ -28,7 +34,6 @@ class DocBlockParser
         } else {
             $namespace = '\\';
         }
-
 
         preg_match_all('|^\s*use\s+([^\s]+)\s*(\s+as\s+([^\s]+))?;|m', $body, $matches);
         $aliases = [];
@@ -55,7 +60,23 @@ class DocBlockParser
                 return Type::of($field['type'], $namespace, $aliases);
             }
         }
-        return new MixedType();
+        /**
+         * @psalm-suppress MixedArgument
+         * @psalm-suppress MixedAssignment
+         * @psalm-suppress MixedMethodCall
+         */
+        if (version_compare(PHP_VERSION, '7.4.0') >= 0) {
+            $reflectionType = $property->getType();
+            if ($reflectionType !== null) {
+                $type = Type::of($reflectionType->getName(), $namespace, $aliases);
+                if ($reflectionType->allowsNull()) {
+                    return new UnionType($type, new NullType);
+                } else {
+                    return $type;
+                }
+            }
+        }
+        return new MixedType;
     }
 
     /**
