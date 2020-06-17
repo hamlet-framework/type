@@ -71,7 +71,7 @@ assert($type->matches($record));
 - Add more tests for PHPDoc and Namespace resolver
 - Add PHPStan analyser
 - Use php-parser to resolve names
-- Add support for PHP 7.4 typed properties
 - Add PHP 8.0 in travis
 - Add more tests for agreements between psalm/phpstan and Type assertions
 - Add option for catching unmapped properties in ClassType
+- Ideally all Type object should be singletons so that === operation could be applied to them
