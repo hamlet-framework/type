@@ -5,8 +5,8 @@ namespace Hamlet\Type\Parser;
 use DateTime as AliasDateTime;
 use Hamlet\Type\CastException;
 
-class TestClass {
-
+class TestClass
+{
     /**
      * @var array
      * @psalm-var array<int,array{0:AliasDateTime}[]>

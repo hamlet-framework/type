@@ -23,7 +23,7 @@ class ParserTest extends TestCase
             ['false'],
             ['null'],
             ["'a'|'b'"],
-            ['\\Hamlet\\Cast\\Type'],
+            ['\\Hamlet\\Type\\Type'],
             ['array'],
             ['array<string>'],
             ["array<string, array<string, int|'a'|false>>"],
@@ -147,7 +147,7 @@ class ParserTest extends TestCase
         $typeA = DocBlockParser::fromProperty($type->getProperty('a'));
         $typeB = DocBlockParser::fromProperty($type->getProperty('b'));
 
-        Assert::assertEquals('array<int,array<array{0:\DateTime}>>', (string) $typeA);
-        Assert::assertEquals("'x'|'y'|'z'|\Hamlet\Type\CastException|\DateTime|null", (string) $typeB);
+        Assert::assertEquals('array<int,array<array{0:DateTime}>>', (string) $typeA);
+        Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|\DateTime|null", (string) $typeB);
     }
 }

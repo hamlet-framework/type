@@ -6,6 +6,11 @@ use Hamlet\Type\MixedType;
 use Hamlet\Type\NullType;
 use Hamlet\Type\Type;
 use Hamlet\Type\UnionType;
+use PhpParser\Node;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor;
+use PhpParser\NodeVisitorAbstract;
+use PhpParser\ParserFactory;
 use ReflectionProperty;
 use RuntimeException;
 
@@ -13,70 +18,22 @@ class DocBlockParser
 {
     public static function fromProperty(ReflectionProperty $property): Type
     {
-        $doc = $property->getDocComment();
-        if ($doc) {
-            $fields = self::parse($doc);
-        } else {
-            $fields = [];
-        }
-
         $fileName = $property->getDeclaringClass()->getFileName();
         if ($fileName === false) {
             throw new RuntimeException('Cannot find declaring file name');
         }
         $body = file_get_contents($fileName);
-        if ($body === false) {
-            throw new RuntimeException('Cannot load file ' . $fileName);
-        }
 
-        if (preg_match('|namespace\s+([^\s]+);|', $body, $matches)) {
-            $namespace = '\\' . $matches[1];
-        } else {
-            $namespace = '\\';
-        }
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $traverser = new NodeTraverser;
+        $visitor = new PropertyVisitor($property->getDeclaringClass());
+        $traverser->addVisitor($visitor);
+        $statements = $parser->parse($body);
+        $traverser->traverse($statements);
 
-        preg_match_all('|^\s*use\s+([^\s]+)\s*(\s+as\s+([^\s]+))?;|m', $body, $matches);
-        $aliases = [];
-        /**
-         * @var array<int,array<int,string>> $matches
-         */
-        foreach ($matches[1] as $i => $name) {
-            if (!empty($matches[3][$i])) {
-                $shortName = $matches[3][$i];
-            } else {
-                $tokens = explode('\\', $name);
-                $shortName = array_pop($tokens);
-            }
-            $aliases[$shortName] = '\\' . $name;
-        }
-
-        foreach ($fields as $field) {
-            if ($field['tag'] == '@psalm-var') {
-                return Type::of($field['type'], $namespace, $aliases);
-            }
-        }
-        foreach ($fields as $field) {
-            if ($field['tag'] == '@var') {
-                return Type::of($field['type'], $namespace, $aliases);
-            }
-        }
-        /**
-         * @psalm-suppress MixedArgument
-         * @psalm-suppress MixedAssignment
-         * @psalm-suppress MixedMethodCall
-         */
-        if (version_compare(PHP_VERSION, '7.4.0') >= 0) {
-            $reflectionType = $property->getType();
-            if ($reflectionType !== null) {
-                $type = Type::of($reflectionType->getName(), $namespace, $aliases);
-                if ($reflectionType->allowsNull()) {
-                    return new UnionType($type, new NullType);
-                } else {
-                    return $type;
-                }
-            }
-        }
-        return new MixedType;
+        $properties = $visitor->properties();
+        list($declaration, $nameResolver) = $properties[$property->getName()];
+        return Type::of($declaration, $nameResolver);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Hamlet\Type\Parser;
 use Hamlet\Type\ArrayKeyType;
 use Hamlet\Type\BoolType;
 use Hamlet\Type\CallableType;
+use Hamlet\Type\CastException;
 use Hamlet\Type\ClassType;
 use Hamlet\Type\FloatType;
 use Hamlet\Type\IntType;
@@ -20,6 +21,9 @@ use Hamlet\Type\StringType;
 use Hamlet\Type\Type;
 use Hamlet\Type\UnionType;
 use Hoa\Compiler\Llk\TreeNode;
+use PHP_CodeSniffer\Reports\Full;
+use PhpParser\NameContext;
+use PhpParser\Node\Name;
 use RuntimeException;
 use function Hamlet\Type\_list;
 use function Hamlet\Type\_object_like;
@@ -27,25 +31,16 @@ use function Hamlet\Type\_object_like;
 class TypeParser
 {
     /**
-     * @var string
+     * @var NameContext|null
      */
-    private $namespace;
+    private $nameContext;
 
     /**
-     * @var string[]
-     * @psalm-var array<string,string>
+     * @param NameContext|null $nameContext
      */
-    private $aliases;
-
-    /**
-     * @param string $namespace
-     * @param string[] $aliases
-     * @psalm-param array<string,string> $aliases
-     */
-    public function __construct(string $namespace, array $aliases)
+    public function __construct(NameContext $nameContext = null)
     {
-        $this->namespace = $namespace;
-        $this->aliases = $aliases;
+        $this->nameContext = $nameContext;
     }
 
     public function parse(TreeNode $node): Type
@@ -151,18 +146,20 @@ class TypeParser
                 throw new RuntimeException('Unexpected ID ' . print_r($child, true));
             }
         }
-        /**
-         * @psalm-suppress ArgumentTypeCoercion
-         */
-        if ($path[0] == '\\') {
-            return new ClassType($path);
-        } elseif (isset($this->aliases[$path])) {
-            return new ClassType($this->aliases[$path]);
-        } elseif (class_exists($this->namespace . '\\' . $path)) {
-            return new ClassType($this->namespace . '\\' . $path);
+
+        if ($this->nameContext) {
+            if ($path[0] == '\\') {
+                $className = new Name\FullyQualified($path);
+            } else {
+                $className = new Name($path);
+            }
+            $resolvedClassName = $this->nameContext->getResolvedClassName($className)->toString();
+        } elseif (class_exists($path)) {
+            $resolvedClassName = $path;
         } else {
-            return new ClassType($path);
+            throw new RuntimeException('Unknown class ' . $path);
         }
+        return new ClassType($resolvedClassName);
     }
 
     private function fromArray(TreeNode $node): Type

@@ -9,6 +9,8 @@ use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\File\Read;
+use PhpParser\NameContext;
+use PhpParser\NodeVisitor\NameResolver;
 
 /**
  * @template T
@@ -71,11 +73,10 @@ abstract class Type
 
     /**
      * @param string $declaration
-     * @param string $namespace
-     * @param array<string,string> $aliases
+     * @param NameContext|null $nameContext
      * @return Type
      */
-    public static function of(string $declaration, string $namespace = '', array $aliases = []): Type
+    public static function of(string $declaration, NameContext $nameContext = null): Type
     {
         switch ($declaration) {
             case 'string':
@@ -92,17 +93,12 @@ abstract class Type
             case 'resource':
                 return new ResourceType;
         }
-        $key = $declaration . ';' . $namespace . ';' . var_export($aliases, true);
-        if (!isset(self::$typeCache[$key])) {
-            if (self::$compiler === null) {
-                self::$compiler = Llk::load(new Read(__DIR__ . '/../resources/grammar.pp'));
-            }
-            /** @var TreeNode $node */
-            $node = self::$compiler->parse($declaration, 'expression');
-            $parser = new TypeParser($namespace, $aliases);
-            return self::$typeCache[$key] = $parser->parse($node);
-        } else {
-            return self::$typeCache[$key];
+        if (self::$compiler === null) {
+            self::$compiler = Llk::load(new Read(__DIR__ . '/../resources/grammar.pp'));
         }
+        /** @var TreeNode $node */
+        $node = self::$compiler->parse($declaration, 'expression');
+        $parser = new TypeParser($nameContext);
+        return $parser->parse($node);
     }
 }
