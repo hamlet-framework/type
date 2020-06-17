@@ -64,7 +64,7 @@ class PropertyVisitor extends NameResolver
                  * @psalm-suppress MixedOperand
                  * @psalm-suppress UndefinedMethod
                  */
-                if (version_compare(phpversion(), '7.4', ">=")) {
+                if (version_compare(phpversion(), '7.4') >= 0) {
                     /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
                     $reflectionType = $this->reflectionClass->getProperty($node->name)->getType();
                     if ($reflectionType !== null) {

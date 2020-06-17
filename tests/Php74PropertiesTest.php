@@ -10,7 +10,7 @@ class Php74PropertiesTest extends TestCase
 {
     public function testTypedProperties()
     {
-        if (version_compare(phpversion(), '7.4', '<')) {
+        if (version_compare(phpversion(), '7.4') < 0) {
             $this->assertTrue(true);
             return;
         }
