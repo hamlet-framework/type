@@ -89,7 +89,7 @@ class TypeParser
                 case 'false':
                     return new LiteralType(false);
                 case 'null':
-                    return new NullType();
+                    return new NullType;
                 case 'int_number':
                     return new LiteralType((int) $firstChild->getValueValue());
                 case 'float_number':
@@ -154,9 +154,10 @@ class TypeParser
                 $className = new Name($path);
             }
             $resolvedClassName = $this->nameContext->getResolvedClassName($className)->toString();
-        } elseif (class_exists($path)) {
-            $resolvedClassName = $path;
         } else {
+            $resolvedClassName = $path;
+        }
+        if (!class_exists($resolvedClassName)) {
             throw new RuntimeException('Unknown class ' . $path);
         }
         return new ClassType($resolvedClassName);

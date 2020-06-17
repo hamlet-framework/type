@@ -24,7 +24,10 @@ class Php74PropertiesTest extends TestCase
         $this->assertEquals('string|null', (string) $typeOfB);
 
         $typeOfProp = DocBlockParser::fromProperty($reflectionClass->getProperty('prop'));
-        $this->assertEquals('Hamlet\Type\Foo', (string) $typeOfProp);
+        $this->assertEquals('Hamlet\Type\Parser\TestClass', (string) $typeOfProp);
+
+        $typeOfDate = DocBlockParser::fromProperty($reflectionClass->getProperty('date'));
+        $this->assertEquals('DateTime|null', (string) $typeOfDate);
 
         $typeOfStatic = DocBlockParser::fromProperty($reflectionClass->getProperty('static'));
         $this->assertEquals('string', (string) $typeOfStatic);

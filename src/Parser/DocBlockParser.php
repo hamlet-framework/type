@@ -3,13 +3,8 @@
 namespace Hamlet\Type\Parser;
 
 use Hamlet\Type\MixedType;
-use Hamlet\Type\NullType;
 use Hamlet\Type\Type;
-use Hamlet\Type\UnionType;
-use PhpParser\Node;
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor;
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use ReflectionProperty;
 use RuntimeException;
@@ -29,11 +24,17 @@ class DocBlockParser
         $visitor = new PropertyVisitor($property->getDeclaringClass());
         $traverser->addVisitor($visitor);
         $statements = $parser->parse($body);
-        $traverser->traverse($statements);
+        if ($statements) {
+            $traverser->traverse($statements);
+        }
 
         $properties = $visitor->properties();
-        list($declaration, $nameResolver) = $properties[$property->getName()];
-        return Type::of($declaration, $nameResolver);
+        if (isset($properties[$property->getName()])) {
+            list($declaration, $nameResolver) = $properties[$property->getName()];
+            return Type::of($declaration, $nameResolver);
+        } else {
+            return new MixedType;
+        }
     }
 
     /**
