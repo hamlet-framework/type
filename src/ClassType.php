@@ -86,6 +86,4 @@ class ClassType extends Type
     {
         return 'new ' . static::class . '(' . $this->type . '::class)';
     }
-
-
 }

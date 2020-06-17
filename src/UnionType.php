@@ -79,6 +79,4 @@ class UnionType extends Type
         }
         return 'new ' . static::class . '(' . join(', ', $arguments) . ')';
     }
-
-
 }
