@@ -38,11 +38,31 @@ class DocBlockParser
     }
 
     /**
-     * @param string $specification
+     * @param string $doc
+     * @return string|null
+     */
+    public static function varTypeDeclarationFrom(string $doc)
+    {
+        $fields = self::parseDoc($doc);
+        foreach ($fields as $field) {
+            if ($field['tag'] == '@psalm-var') {
+                return $field['type'];
+            }
+        }
+        foreach ($fields as $field) {
+            if ($field['tag'] == '@var') {
+                return $field['type'];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $doc
      * @return array
      * @psalm-return array<int, array{tag:string, type:string, variable?:string}>
      */
-    public static function parse(string $specification)
+    public static function parseDoc(string $doc)
     {
         $lines = preg_split(
             '|$\R?^|m',
@@ -56,7 +76,7 @@ class DocBlockParser
                         '|^/[*]+\s*|',
                         '',
                         trim(
-                            $specification
+                            $doc
                         )
                     )
                 )

@@ -38,23 +38,13 @@ class PropertyVisitor extends NameResolver
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Property) {
+            $this->currentProperty = true;
             $docComment = $node->getDocComment();
             if ($docComment) {
-                $fields = DocBlockParser::parse($docComment->getText());
-                foreach ($fields as $field) {
-                    if ($field['tag'] == '@psalm-var') {
-                        $this->currentProperty = [$field['type'], $this->getNameContext()];
-                    }
+                $typeDeclaration = DocBlockParser::varTypeDeclarationFrom($docComment->getText());
+                if ($typeDeclaration) {
+                    $this->currentProperty = [$typeDeclaration, $this->getNameContext()];
                 }
-                if ($this->currentProperty === null) {
-                    foreach ($fields as $field) {
-                        if ($field['tag'] == '@var') {
-                            $this->currentProperty = [$field['type'], $this->getNameContext()];
-                        }
-                    }
-                }
-            } else {
-                $this->currentProperty = true;
             }
         } elseif ($node instanceof VarLikeIdentifier) {
             if ($this->currentProperty === true) {

@@ -76,3 +76,4 @@ assert($type->matches($record));
 - Add more tests for agreements between psalm/phpstan and Type assertions
 - Add option for catching unmapped properties in ClassType
 - Ideally all Type object should be singletons so that === operation could be applied to them
+- Use cases for multiple classes per file with nested namespaces

@@ -132,7 +132,7 @@ class ParserTest extends TestCase
      */
     public function testPhpDocParser(string $specification)
     {
-        $data = DocBlockParser::parse($specification);
+        $data = DocBlockParser::parseDoc($specification);
         Assert::assertNotNull($data);
     }
 
