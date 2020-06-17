@@ -81,4 +81,11 @@ class ClassType extends Type
     {
         return $this->type;
     }
+
+    public function serialize(): string
+    {
+        return 'new ' . static::class . '(' . $this->type . '::class)';
+    }
+
+
 }

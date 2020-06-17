@@ -70,4 +70,15 @@ class UnionType extends Type
         }
         return join('|', $tokens);
     }
+
+    public function serialize(): string
+    {
+        $arguments = [];
+        foreach ($this->as as $a) {
+            $arguments[] = $a->serialize();
+        }
+        return 'new ' . static::class . '(' . join(', ', $arguments) . ')';
+    }
+
+
 }

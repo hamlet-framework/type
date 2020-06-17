@@ -83,4 +83,10 @@ class CallableType extends Type
 
         return $this->tag . '(' . join(',', $arguments) . ')' . $return;
     }
+
+    public function serialize(): string
+    {
+        // @todo this is incomplete
+        return 'new ' . static::class . '(' . var_export($this->tag, true) . ')';
+    }
 }

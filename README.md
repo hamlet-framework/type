@@ -70,10 +70,7 @@ assert($type->matches($record));
 - Add types for iterable|self|static|class-string
 - Add more tests for PHPDoc and Namespace resolver
 - Add PHPStan analyser
-- Fix PHPParser visitor for traversing elements of Properties
-- Use internal & external caching to reduce parsing efforts
 - Add PHP 8.0 in travis
 - Add more tests for agreements between psalm/phpstan and Type assertions
 - Add option for catching unmapped properties in ClassType
-- Ideally all Type object should be singletons so that === operation could be applied to them
-- Use cases for multiple classes per file with nested namespaces
+- Test cases for multiple classes per file with nested namespaces

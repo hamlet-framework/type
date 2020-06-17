@@ -82,4 +82,13 @@ class LiteralType extends Type
             return $escape($this->values[0]);
         }
     }
+
+    public function serialize(): string
+    {
+        $properties = [];
+        foreach ($this->values as $value) {
+            $properties[] = var_export($value, true);
+        }
+        return 'new ' . static::class . '(' . join(', ', $properties) . ')';
+    }
 }

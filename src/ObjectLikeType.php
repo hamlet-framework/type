@@ -93,4 +93,13 @@ class ObjectLikeType extends Type
         }
         return 'array{' . join(',', $keys) . '}';
     }
+
+    public function serialize(): string
+    {
+        $arguments = [];
+        foreach ($this->fields as $name => $type) {
+            $arguments[] = var_export($name, true) . ' => ' . $type->serialize();
+        }
+        return 'new ' . static::class . '([' . join(', ', $arguments) . '])';
+    }
 }

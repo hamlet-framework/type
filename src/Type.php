@@ -2,6 +2,7 @@
 
 namespace Hamlet\Type;
 
+use Hamlet\Type\Parser\Cache;
 use Hamlet\Type\Parser\TypeParser;
 use Hamlet\Type\Resolvers\DefaultResolver;
 use Hamlet\Type\Resolvers\Resolver;
@@ -10,7 +11,6 @@ use Hoa\Compiler\Llk\Parser;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\File\Read;
 use PhpParser\NameContext;
-use PhpParser\NodeVisitor\NameResolver;
 
 /**
  * @template T
@@ -71,6 +71,11 @@ abstract class Type
 
     abstract public function __toString(): string;
 
+    public function serialize(): string
+    {
+        return 'new ' . static::class;
+    }
+
     /**
      * @param string $declaration
      * @param NameContext|null $nameContext
@@ -93,12 +98,22 @@ abstract class Type
             case 'resource':
                 return new ResourceType;
         }
+        if ($nameContext === null) {
+            $type = Cache::get($declaration, 0);
+            if ($type !== null) {
+                return $type;
+            }
+        }
         if (self::$compiler === null) {
             self::$compiler = Llk::load(new Read(__DIR__ . '/../resources/grammar.pp'));
         }
         /** @var TreeNode $node */
         $node = self::$compiler->parse($declaration, 'expression');
         $parser = new TypeParser($nameContext);
-        return $parser->parse($node);
+        $type = $parser->parse($node);
+        if ($nameContext === null) {
+            Cache::set($declaration, $type);
+        }
+        return $type;
     }
 }

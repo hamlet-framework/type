@@ -83,4 +83,9 @@ class MapType extends Type
     {
         return 'array<' . $this->keyType . ',' . $this->valueType . '>';
     }
+
+    public function serialize(): string
+    {
+        return 'new ' . static::class . '(' . $this->keyType->serialize() . ', ' . $this->valueType->serialize() . ')';
+    }
 }

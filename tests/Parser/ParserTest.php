@@ -148,6 +148,22 @@ class ParserTest extends TestCase
         $typeB = DocBlockParser::fromProperty($type->getProperty('b'));
 
         Assert::assertEquals('array<int,array<array{0:DateTime}>>', (string) $typeA);
-        Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|\DateTime|null", (string) $typeB);
+        Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|DateTime|null", (string) $typeB);
     }
+
+    /**
+     * @dataProvider typeDeclarations()
+     * @param string $specification
+     */
+    /*
+     @todo fix
+
+    public function testSerialization(string $specification)
+    {
+        $type = Type::of($specification);
+
+        echo eval('return ' . $type->serialize() . ';') . PHP_EOL;
+        $this->assertTrue(true);
+    }
+    */
 }

@@ -21,6 +21,11 @@ class PropertyVisitor extends NameResolver
     private $properties = [];
 
     /**
+     * @var string|null
+     */
+    private $currentClass = null;
+
+    /**
      * @var array|true|null
      * @psalm-var array{0:string,1:\PhpParser\NameContext|null}|true|null
      */
@@ -37,7 +42,10 @@ class PropertyVisitor extends NameResolver
 
     public function enterNode(Node $node)
     {
-        if ($node instanceof Node\Stmt\Property) {
+        if ($node instanceof Node\Stmt\Class_) {
+            $className = (string) $node->name;
+            $this->currentClass = $this->nameContext->getResolvedClassName(new Node\Name($className))->toString();
+        } elseif ($node instanceof Node\Stmt\Property) {
             $this->currentProperty = true;
             $docComment = $node->getDocComment();
             if ($docComment) {
@@ -47,6 +55,8 @@ class PropertyVisitor extends NameResolver
                 }
             }
         } elseif ($node instanceof VarLikeIdentifier) {
+            assert($this->currentClass !== null);
+            $key = $this->currentClass . '::' . $node->name;
             if ($this->currentProperty === true) {
                 /**
                  * @psalm-suppress MixedAssignment
@@ -63,14 +73,14 @@ class PropertyVisitor extends NameResolver
                         if ($reflectionType->allowsNull()) {
                             $type .= '|null';
                         }
-                        $this->properties[$node->name] = [$type, null];
+                        $this->properties[$key] = [$type, null];
                     }
                 } else {
-                    $this->properties[$node->name] = ['mixed', null];
+                    $this->properties[$key] = ['mixed', null];
                 }
                 $this->currentProperty = null;
             } elseif ($this->currentProperty !== null) {
-                $this->properties[$node->name] = $this->currentProperty;
+                $this->properties[$key] = $this->currentProperty;
                 $this->currentProperty = null;
             }
         }

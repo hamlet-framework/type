@@ -2,7 +2,6 @@
 
 namespace Hamlet\Type\Parser;
 
-use Hamlet\Type\MixedType;
 use Hamlet\Type\Type;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
@@ -44,11 +43,10 @@ class DocBlockParser
         }
 
         $result = null;
-        foreach ($visitor->properties() as $propertyName => list($declaration, $nameResolver)) {
-            $key = $reflectionClass->getName() . '::' . $propertyName;
+        foreach ($visitor->properties() as $key => list($declaration, $nameResolver)) {
             $propertyType = Type::of($declaration, $nameResolver);
             Cache::set($key, $propertyType);
-            if ($propertyName == $reflectionProperty->getName()) {
+            if ($cacheKey == $key) {
                 $result = $propertyType;
             }
         }

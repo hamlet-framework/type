@@ -71,4 +71,9 @@ class ListType extends Type
     {
         return 'array<' . $this->elementType . '>';
     }
+
+    public function serialize(): string
+    {
+        return 'new ' . static::class . '(' . $this->elementType->serialize() . ')';
+    }
 }
