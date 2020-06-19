@@ -59,10 +59,10 @@ class ClassType extends Type
         $subTreeResolver   = $subTypeResolution->subTreeResolver();
 
         $result = $reflectionClass->newInstanceWithoutConstructor();
-        foreach ($reflectionClass->getProperties() as $property) {
-            $propertyName    = $property->getName();
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $propertyName    = $reflectionProperty->getName();
             $valueResolution = $subTreeResolver->getValue($this->type, $propertyName, $value);
-            $propertyType    = $subTreeResolver->getPropertyType($property);
+            $propertyType    = $subTreeResolver->getPropertyType($reflectionClass, $reflectionProperty);
 
             if (!$valueResolution->successful() && !$propertyType->matches(null)) {
                 throw new CastException($value, $this);

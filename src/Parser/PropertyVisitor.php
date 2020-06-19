@@ -2,6 +2,8 @@
 
 namespace Hamlet\Type\Parser;
 
+use Hamlet\Type\MixedType;
+use Hamlet\Type\Type;
 use PhpParser\Node;
 use PhpParser\Node\VarLikeIdentifier;
 use PhpParser\NodeVisitor\NameResolver;
@@ -16,7 +18,7 @@ class PropertyVisitor extends NameResolver
 
     /**
      * @var array
-     * @psalm-var array<string,array{0:string,1:\PhpParser\NameContext|null}>
+     * @psalm-var array<string,Type>
      */
     private $properties = [];
 
@@ -27,7 +29,7 @@ class PropertyVisitor extends NameResolver
 
     /**
      * @var array|true|null
-     * @psalm-var array{0:string,1:\PhpParser\NameContext|null}|true|null
+     * @psalm-var Type|true|null
      */
     private $currentProperty = null;
 
@@ -45,13 +47,14 @@ class PropertyVisitor extends NameResolver
         if ($node instanceof Node\Stmt\Class_) {
             $className = (string) $node->name;
             $this->currentClass = $this->nameContext->getResolvedClassName(new Node\Name($className))->toString();
+            echo $this->currentClass . PHP_EOL;
         } elseif ($node instanceof Node\Stmt\Property) {
             $this->currentProperty = true;
             $docComment = $node->getDocComment();
             if ($docComment) {
                 $typeDeclaration = DocBlockParser::varTypeDeclarationFrom($docComment->getText());
                 if ($typeDeclaration) {
-                    $this->currentProperty = [$typeDeclaration, $this->getNameContext()];
+                    $this->currentProperty = Type::of($typeDeclaration, $this->getNameContext());
                 }
             }
         } elseif ($node instanceof VarLikeIdentifier) {
@@ -69,14 +72,14 @@ class PropertyVisitor extends NameResolver
                     $reflectionType = $this->reflectionClass->getProperty($node->name)->getType();
                     if ($reflectionType !== null) {
                         /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-                        $type = (string) $reflectionType->getName();
+                        $typeDeclaration = (string) $reflectionType->getName();
                         if ($reflectionType->allowsNull()) {
-                            $type .= '|null';
+                            $typeDeclaration .= '|null';
                         }
-                        $this->properties[$key] = [$type, null];
+                        $this->properties[$key] = Type::of($typeDeclaration);
                     }
                 } else {
-                    $this->properties[$key] = ['mixed', null];
+                    $this->properties[$key] = new MixedType;
                 }
                 $this->currentProperty = null;
             } elseif ($this->currentProperty !== null) {
@@ -89,7 +92,7 @@ class PropertyVisitor extends NameResolver
 
     /**
      * @return array
-     * @psalm-return array<string,array{0:string,1:\PhpParser\NameContext|null}>
+     * @psalm-return array<string,Type>
      */
     public function properties(): array
     {

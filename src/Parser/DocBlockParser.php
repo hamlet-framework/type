@@ -5,22 +5,24 @@ namespace Hamlet\Type\Parser;
 use Hamlet\Type\Type;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
+use ReflectionClass;
 use ReflectionProperty;
 use RuntimeException;
 
 class DocBlockParser
 {
     /**
+     * @param ReflectionClass $reflectionClass
      * @param ReflectionProperty $reflectionProperty
      * @return Type
      * @psalm-suppress MixedInferredReturnType
      * @psalm-suppress MixedReturnStatement
      */
-    public static function fromProperty(ReflectionProperty $reflectionProperty): Type
+    public static function fromProperty(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type
     {
-        $reflectionClass = $reflectionProperty->getDeclaringClass();
-        $cacheKey = $reflectionClass->getName() . '::' . $reflectionProperty->getName();
-        $fileName = $reflectionClass->getFileName();
+        $declaringReflectionClass = $reflectionProperty->getDeclaringClass();
+        $cacheKey = $declaringReflectionClass->getName() . '::' . $reflectionProperty->getName();
+        $fileName = $declaringReflectionClass->getFileName();
         if ($fileName === false) {
             throw new RuntimeException('Cannot find declaring file name');
         }
@@ -43,8 +45,7 @@ class DocBlockParser
         }
 
         $result = null;
-        foreach ($visitor->properties() as $key => list($declaration, $nameResolver)) {
-            $propertyType = Type::of($declaration, $nameResolver);
+        foreach ($visitor->properties() as $key => $propertyType) {
             Cache::set($key, $propertyType);
             if ($cacheKey == $key) {
                 $result = $propertyType;

@@ -23,7 +23,7 @@ class ParserTest extends TestCase
             ['false'],
             ['null'],
             ["'a'|'b'"],
-            ['\\Hamlet\\Type\\Type'],
+            ['Hamlet\\Type\\Type'],
             ['array'],
             ['array<string>'],
             ["array<string, array<string, int|'a'|false>>"],
@@ -39,9 +39,9 @@ class ParserTest extends TestCase
             ['array{0: string, 1: string, foo: stdClass, 28: false}'],
             ['array|array{id:int}'],
             ['non-empty-array{0:string,1:string,foo:non-empty-array,23:boolean}'],
-            ['array<string,\DateTime>'],
+            ['array<string,DateTime>'],
             ['callable()'],
-            ["callable(('a'|'b'), int):(string|array{\\DateTime}|callable():int)"],
+            ["callable(('a'|'b'), int):(string|array{DateTime}|callable():int)"],
             ['Closure(bool):int'],
             ['Generator<T0, int, mixed, T0>'],
             ['callable(array{0:int}[]):(int|null)'],
@@ -144,8 +144,8 @@ class ParserTest extends TestCase
         $type = new ReflectionClass(TestClass::class);
         $type->getProperty('a');
 
-        $typeA = DocBlockParser::fromProperty($type->getProperty('a'));
-        $typeB = DocBlockParser::fromProperty($type->getProperty('b'));
+        $typeA = DocBlockParser::fromProperty($type, $type->getProperty('a'));
+        $typeB = DocBlockParser::fromProperty($type, $type->getProperty('b'));
 
         Assert::assertEquals('array<int,array<array{0:DateTime}>>', (string) $typeA);
         Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|DateTime|null", (string) $typeB);
@@ -155,15 +155,36 @@ class ParserTest extends TestCase
      * @dataProvider typeDeclarations()
      * @param string $specification
      */
-    /*
-     @todo fix
-
     public function testSerialization(string $specification)
     {
         $type = Type::of($specification);
 
-        echo eval('return ' . $type->serialize() . ';') . PHP_EOL;
-        $this->assertTrue(true);
+        $copy = eval('return ' . $type->serialize() . ';');
+        $this->assertEquals((string) $type, (string) $copy);
     }
-    */
+
+    public function testParsingOfUglyNestedStructures()
+    {
+        require_once __DIR__ . '/UglyNestedStructure.php';
+        $typeA = new ReflectionClass(\Hamlet\Type\Parser\A::class);
+        $typeB = new ReflectionClass(\Hamlet\Type\Parser\N0\N1\B::class);
+        $typeC = new ReflectionClass(\C::class);
+
+        $this->assertEquals(
+            \DateTime::class,
+            (string) DocBlockParser::fromProperty($typeA, $typeA->getProperty('c'))
+        );
+        $this->assertEquals(
+            \Hamlet\Type\Parser\A::class,
+            (string) DocBlockParser::fromProperty($typeB, $typeB->getProperty('a'))
+        );
+        $this->assertEquals(
+            \Hamlet\Type\Parser\A::class,
+            (string) DocBlockParser::fromProperty($typeC, $typeC->getProperty('a'))
+        );
+        $this->assertEquals(
+            \Hamlet\Type\Parser\N0\N1\B::class,
+            (string) DocBlockParser::fromProperty($typeC, $typeC->getProperty('b'))
+        );
+    }
 }

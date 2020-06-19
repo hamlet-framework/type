@@ -84,18 +84,20 @@ class DefaultResolver implements Resolver
 
     /**
      * @template P
-     * @param ReflectionProperty $property
+     * @param ReflectionClass $reflectionClass
+     * @param ReflectionProperty $reflectionProperty
      * @return Type
      * @psalm-return Type<P>
      */
-    public function getPropertyType(ReflectionProperty $property): Type
+    public function getPropertyType(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type
     {
-        $type = $property->getDeclaringClass()->getName();
-        $propertyName = $property->getName();
+        $className = $reflectionClass->getName();
+        $propertyName = $reflectionProperty->getName();
 
-        if (!isset(self::$propertyTypes[$type][$propertyName])) {
-            self::$propertyTypes[$type][$propertyName] = DocBlockParser::fromProperty($property);
+        if (!isset(self::$propertyTypes[$className][$propertyName])) {
+            self::$propertyTypes[$className][$propertyName] =
+                DocBlockParser::fromProperty($reflectionClass, $reflectionProperty);
         }
-        return self::$propertyTypes[$type][$propertyName];
+        return self::$propertyTypes[$className][$propertyName];
     }
 }

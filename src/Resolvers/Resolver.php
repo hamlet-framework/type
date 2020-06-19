@@ -3,6 +3,7 @@
 namespace Hamlet\Type\Resolvers;
 
 use Hamlet\Type\Type;
+use ReflectionClass;
 use ReflectionProperty;
 use stdClass;
 
@@ -40,9 +41,10 @@ interface Resolver
 
     /**
      * @template P
-     * @param ReflectionProperty $property
+     * @param ReflectionClass $reflectionClass
+     * @param ReflectionProperty $reflectionProperty
      * @return Type
      * @psalm-return Type<P>
      */
-    public function getPropertyType(ReflectionProperty $property): Type;
+    public function getPropertyType(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type;
 }

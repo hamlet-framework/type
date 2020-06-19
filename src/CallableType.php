@@ -86,7 +86,17 @@ class CallableType extends Type
 
     public function serialize(): string
     {
-        // @todo this is incomplete
-        return 'new ' . static::class . '(' . var_export($this->tag, true) . ')';
+        $line = var_export($this->tag, true);
+        if ($this->returnType) {
+            $line .= ', ' . $this->returnType->serialize();
+            if ($this->argumentTypes) {
+                $arguments = [];
+                foreach ($this->argumentTypes as $argumentType) {
+                    $arguments[] .= $argumentType->serialize();
+                }
+                $line .= ', [' . join(', ', $arguments) . ']';
+            }
+        }
+        return 'new ' . static::class . '(' . $line . ')';
     }
 }

@@ -17,19 +17,19 @@ class Php74PropertiesTest extends TestCase
 
         $reflectionClass = new ReflectionClass(Foo::class);
 
-        $typeOfA = DocBlockParser::fromProperty($reflectionClass->getProperty('a'));
+        $typeOfA = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('a'));
         $this->assertEquals('int', (string) $typeOfA);
 
-        $typeOfB = DocBlockParser::fromProperty($reflectionClass->getProperty('b'));
+        $typeOfB = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('b'));
         $this->assertEquals('string|null', (string) $typeOfB);
 
-        $typeOfProp = DocBlockParser::fromProperty($reflectionClass->getProperty('prop'));
+        $typeOfProp = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('prop'));
         $this->assertEquals('Hamlet\Type\Parser\TestClass', (string) $typeOfProp);
 
-        $typeOfDate = DocBlockParser::fromProperty($reflectionClass->getProperty('date'));
+        $typeOfDate = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('date'));
         $this->assertEquals('DateTime|null', (string) $typeOfDate);
 
-        $typeOfStatic = DocBlockParser::fromProperty($reflectionClass->getProperty('static'));
+        $typeOfStatic = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('static'));
         $this->assertEquals('string', (string) $typeOfStatic);
     }
 }
