@@ -15,10 +15,11 @@ class Cache
      */
     public static function set(string $key, Type $type)
     {
+        $safeKey = __CLASS__ . '::' . $key;
         if (extension_loaded('apcu')) {
-            apcu_store($key, [$type, time()]);
+            apcu_store($safeKey, [$type, time()]);
         } else {
-            $fileName = sys_get_temp_dir() . '/' . md5($key);
+            $fileName = sys_get_temp_dir() . '/' . md5($safeKey);
             $payload = $type->serialize();
             $tempFileName = $fileName . '.tmp';
             file_put_contents($tempFileName, '<?php $value = ' . $payload . ';');
@@ -37,15 +38,17 @@ class Cache
      */
     public static function get(string $key, int $timeThreshold)
     {
+        $safeKey = __CLASS__ . '::' . $key;
         if (extension_loaded('apcu')) {
-            $entry = apcu_fetch($key, $success);
+            $entry = apcu_fetch($safeKey, $success);
             if ($success && $entry[1] > $timeThreshold) {
                 return $entry[0];
             } else {
                 return null;
             }
         } else {
-            $fileName = sys_get_temp_dir() . '/' . md5($key);
+            // return null;
+            $fileName = sys_get_temp_dir() . '/' . md5($safeKey);
             if (!file_exists($fileName) || filemtime($fileName) < $timeThreshold) {
                 return null;
             }

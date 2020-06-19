@@ -165,6 +165,11 @@ class ParserTest extends TestCase
 
     public function testParsingOfUglyNestedStructures()
     {
+        if (version_compare(phpversion(), '7.4') < 0) {
+            $this->assertTrue(true);
+            return;
+        }
+
         require_once __DIR__ . '/UglyNestedStructure.php';
         $typeA = new ReflectionClass(\Hamlet\Type\Parser\A::class);
         $typeB = new ReflectionClass(\Hamlet\Type\Parser\N0\N1\B::class);

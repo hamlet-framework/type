@@ -23,7 +23,11 @@ class ClassType extends Type
      */
     public function __construct(string $type)
     {
-        $this->type = $type;
+        if ($type[0] == '\\') {
+            $this->type = substr($type, 1);
+        } else {
+            $this->type = $type;
+        }
     }
 
     /**

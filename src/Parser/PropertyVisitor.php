@@ -47,7 +47,6 @@ class PropertyVisitor extends NameResolver
         if ($node instanceof Node\Stmt\Class_) {
             $className = (string) $node->name;
             $this->currentClass = $this->nameContext->getResolvedClassName(new Node\Name($className))->toString();
-            echo $this->currentClass . PHP_EOL;
         } elseif ($node instanceof Node\Stmt\Property) {
             $this->currentProperty = true;
             $docComment = $node->getDocComment();
@@ -69,7 +68,7 @@ class PropertyVisitor extends NameResolver
                  */
                 if (version_compare(phpversion(), '7.4') >= 0) {
                     /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-                    $reflectionType = $this->reflectionClass->getProperty($node->name)->getType();
+                    $reflectionType = (new ReflectionClass($this->currentClass))->getProperty($node->name)->getType();
                     if ($reflectionType !== null) {
                         /** @noinspection PhpPossiblePolymorphicInvocationInspection */
                         $typeDeclaration = (string) $reflectionType->getName();

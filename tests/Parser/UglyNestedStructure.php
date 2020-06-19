@@ -15,8 +15,7 @@ namespace Hamlet\Type\Parser\N0\N1
 
     class B
     {
-        /** @var A */
-        private $a;
+        private A $a;
     }
 }
 
