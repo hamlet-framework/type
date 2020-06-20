@@ -130,7 +130,6 @@ class PropertyVisitor extends NameResolver
             } catch (ReflectionException $exception) {
                 throw new RuntimeException('Cannot load class ' . $type, 0, $exception);
             }
-
         }
     }
 }

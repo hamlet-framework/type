@@ -73,5 +73,4 @@ assert($type->matches($record));
 - Add PHP 8.0 in travis
 - Add more tests for agreements between Psalm/PHPStan and Type assertions
 - Add option for catching unmapped properties in ClassType
-- Test cases for multiple classes per file with nested namespaces
 - Check if the cache is really all that useful
