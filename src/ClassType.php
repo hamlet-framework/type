@@ -24,6 +24,7 @@ class ClassType extends Type
     public function __construct(string $type)
     {
         if ($type[0] == '\\') {
+            /** @psalm-suppress PropertyTypeCoercion */
             $this->type = substr($type, 1);
         } else {
             $this->type = $type;

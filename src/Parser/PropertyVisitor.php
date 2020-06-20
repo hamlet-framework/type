@@ -8,6 +8,8 @@ use PhpParser\Node;
 use PhpParser\Node\VarLikeIdentifier;
 use PhpParser\NodeVisitor\NameResolver;
 use ReflectionClass;
+use ReflectionException;
+use RuntimeException;
 
 class PropertyVisitor extends NameResolver
 {
@@ -17,6 +19,12 @@ class PropertyVisitor extends NameResolver
     private $reflectionClass;
 
     /**
+     * @var ReflectionClass[]
+     * @psalm-var array<class-string,ReflectionClass>
+     */
+    private static $reflectionClasses = [];
+
+    /**
      * @var array
      * @psalm-var array<string,Type>
      */
@@ -24,6 +32,7 @@ class PropertyVisitor extends NameResolver
 
     /**
      * @var string|null
+     * @psalm-var class-string|null
      */
     private $currentClass = null;
 
@@ -40,12 +49,14 @@ class PropertyVisitor extends NameResolver
             'replaceNodes' => false,
         ]);
         $this->reflectionClass = $reflectionClass;
+        self::$reflectionClasses[$reflectionClass->getName()] = $reflectionClass;
     }
 
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {
             $className = (string) $node->name;
+            /** @psalm-suppress PropertyTypeCoercion */
             $this->currentClass = $this->nameContext->getResolvedClassName(new Node\Name($className))->toString();
         } elseif ($node instanceof Node\Stmt\Property) {
             $this->currentProperty = true;
@@ -57,7 +68,9 @@ class PropertyVisitor extends NameResolver
                 }
             }
         } elseif ($node instanceof VarLikeIdentifier) {
-            assert($this->currentClass !== null);
+            if ($this->currentClass === null) {
+                throw new RuntimeException('Invalid class context');
+            }
             $key = $this->currentClass . '::' . $node->name;
             if ($this->currentProperty === true) {
                 /**
@@ -67,8 +80,9 @@ class PropertyVisitor extends NameResolver
                  * @psalm-suppress UndefinedMethod
                  */
                 if (version_compare(phpversion(), '7.4') >= 0) {
+                    $currentReflectionClass = $this->reflectionClassByName($this->currentClass);
                     /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
-                    $reflectionType = (new ReflectionClass($this->currentClass))->getProperty($node->name)->getType();
+                    $reflectionType = $currentReflectionClass->getProperty($node->name)->getType();
                     if ($reflectionType !== null) {
                         /** @noinspection PhpPossiblePolymorphicInvocationInspection */
                         $typeDeclaration = (string) $reflectionType->getName();
@@ -96,5 +110,27 @@ class PropertyVisitor extends NameResolver
     public function properties(): array
     {
         return $this->properties;
+    }
+
+    /**
+     * @param string|null $type
+     * @psalm-param class-string|null $type
+     * @return ReflectionClass
+     */
+    private function reflectionClassByName($type): ReflectionClass
+    {
+        if ($type === null) {
+            throw new RuntimeException('Type information missing');
+        }
+        if (isset(self::$reflectionClasses[$type])) {
+            return self::$reflectionClasses[$type];
+        } else {
+            try {
+                return self::$reflectionClasses[$type] = new ReflectionClass($type);
+            } catch (ReflectionException $exception) {
+                throw new RuntimeException('Cannot load class ' . $type, 0, $exception);
+            }
+
+        }
     }
 }
