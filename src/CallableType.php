@@ -92,7 +92,7 @@ class CallableType extends Type
             if ($this->argumentTypes) {
                 $arguments = [];
                 foreach ($this->argumentTypes as $argumentType) {
-                    $arguments[] .= $argumentType->serialize();
+                    $arguments[] = $argumentType->serialize();
                 }
                 $line .= ', [' . join(', ', $arguments) . ']';
             }

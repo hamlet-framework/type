@@ -15,4 +15,5 @@ script:
   - ./vendor/bin/parallel-lint src
   - ./vendor/bin/phpunit --verbose
   - php -v | grep -q 'PHP 7.0' || ./vendor/bin/psalm
+  - php -v | grep -q 'PHP 7.0' || ./vendor/bin/phpstan analyse src psalm-cases --level 1
   - ./vendor/bin/phpcs --standard=PSR2 -n src

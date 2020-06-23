@@ -2,7 +2,6 @@
 
 namespace Hamlet\Type;
 
-use Hamlet\Type\Parser\Cache;
 use Hamlet\Type\Parser\TypeParser;
 use Hamlet\Type\Resolvers\DefaultResolver;
 use Hamlet\Type\Resolvers\Resolver;
