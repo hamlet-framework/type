@@ -1,9 +1,9 @@
 <?php
 
-namespace Hamlet\Type\Parser;
+namespace Hamlet\Cast\Parser;
 
-use Hamlet\Type\MixedType;
-use Hamlet\Type\Type;
+use Hamlet\Cast\MixedType;
+use Hamlet\Cast\Type;
 use PhpParser\Node;
 use PhpParser\Node\VarLikeIdentifier;
 use PhpParser\NodeVisitor\NameResolver;

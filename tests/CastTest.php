@@ -1,6 +1,6 @@
 <?php
 
-namespace Hamlet\Type;
+namespace Hamlet\Cast;
 
 use DateTime;
 use PHPUnit\Framework\Assert;

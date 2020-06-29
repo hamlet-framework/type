@@ -1,13 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type\Parser;
+namespace Hamlet\Cast\Parser;
 
-use Hamlet\Type\Type;
+use Exception;
+use Hamlet\Cast\Type;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use ReflectionClass;
 use ReflectionProperty;
 use RuntimeException;
+use Throwable;
 
 class DocBlockParser
 {
@@ -27,11 +29,16 @@ class DocBlockParser
             throw new RuntimeException('Cannot find declaring file name');
         }
 
-        /** @psalm-suppress MixedAssignment */
-        $propertyType = Cache::get($cacheKey, filemtime($fileName));
-        if ($propertyType !== null) {
-            return $propertyType;
+        try {
+            /** @psalm-suppress MixedAssignment */
+            $propertyType = Cache::get($cacheKey, filemtime($fileName));
+            if ($propertyType !== null) {
+                return $propertyType;
+            }
+        } catch (Exception $exception) {
+            Cache::remove($cacheKey);
         }
+
 
         $body = file_get_contents($fileName);
 

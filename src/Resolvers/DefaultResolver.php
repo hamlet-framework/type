@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type\Resolvers;
+namespace Hamlet\Cast\Resolvers;
 
-use Hamlet\Type\Parser\DocBlockParser;
-use Hamlet\Type\Type;
+use Hamlet\Cast\Parser\DocBlockParser;
+use Hamlet\Cast\Type;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionProperty;

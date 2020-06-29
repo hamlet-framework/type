@@ -2,10 +2,10 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use function Hamlet\Type\_int;
-use function Hamlet\Type\_map;
-use function Hamlet\Type\_mixed;
-use function Hamlet\Type\_string;
+use function Hamlet\Cast\_int;
+use function Hamlet\Cast\_map;
+use function Hamlet\Cast\_mixed;
+use function Hamlet\Cast\_string;
 
 /**
  * @param array<string,mixed> $a

@@ -30,7 +30,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Hamlet\\Type\\": "src"
+      "Hamlet\\Cast\\": "src"
     },
     "files": [
       "src/types.php"
@@ -38,13 +38,12 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Hamlet\\Type\\": "tests"
+      "Hamlet\\Cast\\": "tests"
     }
   },
   "archive": {
     "exclude": [
       "psalm-cases",
-      "src/Test",
       "tests"
     ]
   }

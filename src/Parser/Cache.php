@@ -1,8 +1,8 @@
 <?php
 
-namespace Hamlet\Type\Parser;
+namespace Hamlet\Cast\Parser;
 
-use Hamlet\Type\Type;
+use Hamlet\Cast\Type;
 
 class Cache
 {
@@ -54,6 +54,21 @@ class Cache
             }
             include($fileName);
             return $value ?? null;
+        }
+    }
+
+    /**
+     * @param string $key
+     * @return void
+     */
+    public static function remove(string $key)
+    {
+        $safeKey = __CLASS__ . '::' . $key;
+        if (extension_loaded('apcu')) {
+            apcu_delete($safeKey);
+        } else {
+            $fileName = sys_get_temp_dir() . '/' . md5($safeKey);
+            unlink($fileName);
         }
     }
 }

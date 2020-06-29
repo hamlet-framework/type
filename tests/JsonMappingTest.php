@@ -1,6 +1,6 @@
 <?php
 
-namespace Hamlet\Type;
+namespace Hamlet\Cast;
 
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;

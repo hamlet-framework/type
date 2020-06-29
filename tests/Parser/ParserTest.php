@@ -1,17 +1,17 @@
 <?php
 
-namespace Hamlet\Type\Parser;
+namespace Hamlet\Cast\Parser;
 
-use Hamlet\Type\Type;
+use Hamlet\Cast\Type;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Compiler\Visitor\Dump;
 use Hoa\File\Read;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use function Hamlet\Type\_class;
 use ReflectionClass;
 use ReflectionException;
+use function Hamlet\Cast\_class;
 
 class ParserTest extends TestCase
 {
@@ -23,7 +23,7 @@ class ParserTest extends TestCase
             ['false'],
             ['null'],
             ["'a'|'b'"],
-            ['Hamlet\\Type\\Type'],
+            ['Hamlet\\Cast\\Type'],
             ['array'],
             ['array<string>'],
             ["array<string, array<string, int|'a'|false>>"],
@@ -148,7 +148,7 @@ class ParserTest extends TestCase
         $typeB = DocBlockParser::fromProperty($type, $type->getProperty('b'));
 
         Assert::assertEquals('array<int,array<array{0:DateTime}>>', (string) $typeA);
-        Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|DateTime|null", (string) $typeB);
+        Assert::assertEquals("'x'|'y'|'z'|Hamlet\Cast\CastException|DateTime|null", (string) $typeB);
     }
 
     /**
@@ -171,8 +171,8 @@ class ParserTest extends TestCase
         }
 
         require_once __DIR__ . '/UglyNestedStructure.php';
-        $typeA = new ReflectionClass(\Hamlet\Type\Parser\A::class);
-        $typeB = new ReflectionClass(\Hamlet\Type\Parser\N0\N1\B::class);
+        $typeA = new ReflectionClass(\Hamlet\Cast\Parser\A::class);
+        $typeB = new ReflectionClass(\Hamlet\Cast\Parser\N0\N1\B::class);
         $typeC = new ReflectionClass(\C::class);
 
         $this->assertEquals(
@@ -180,15 +180,15 @@ class ParserTest extends TestCase
             (string) DocBlockParser::fromProperty($typeA, $typeA->getProperty('c'))
         );
         $this->assertEquals(
-            \Hamlet\Type\Parser\A::class,
+            \Hamlet\Cast\Parser\A::class,
             (string) DocBlockParser::fromProperty($typeB, $typeB->getProperty('a'))
         );
         $this->assertEquals(
-            \Hamlet\Type\Parser\A::class,
+            \Hamlet\Cast\Parser\A::class,
             (string) DocBlockParser::fromProperty($typeC, $typeC->getProperty('a'))
         );
         $this->assertEquals(
-            \Hamlet\Type\Parser\N0\N1\B::class,
+            \Hamlet\Cast\Parser\N0\N1\B::class,
             (string) DocBlockParser::fromProperty($typeC, $typeC->getProperty('b'))
         );
     }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Hamlet\Type;
+namespace Hamlet\Cast;
 
-use Hamlet\Type\Parser\DocBlockParser;
+use Hamlet\Cast\Parser\DocBlockParser;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -24,7 +24,7 @@ class Php74PropertiesTest extends TestCase
         $this->assertEquals('string|null', (string) $typeOfB);
 
         $typeOfProp = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('prop'));
-        $this->assertEquals('Hamlet\Type\Parser\TestClass', (string) $typeOfProp);
+        $this->assertEquals('Hamlet\Cast\Parser\TestClass', (string) $typeOfProp);
 
         $typeOfDate = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('date'));
         $this->assertEquals('DateTime|null', (string) $typeOfDate);
