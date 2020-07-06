@@ -52,6 +52,7 @@ class CallableType extends Type
      * @return callable
      * @psalm-return T
      * @psalm-suppress InvalidReturnStatement not sure we can do more than that
+     * @psalm-suppress InvalidReturnType
      */
     public function cast($value)
     {
