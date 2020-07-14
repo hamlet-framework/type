@@ -3,6 +3,7 @@
 namespace Hamlet\Cast\Parser;
 
 use Exception;
+use Hamlet\Cast\MixedType;
 use Hamlet\Cast\Type;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
@@ -58,7 +59,9 @@ class DocBlockParser
                 $result = $propertyType;
             }
         }
-        assert($result !== null);
+        if ($result === null) {
+            $result = new MixedType;
+        }
         return $result;
     }
 
