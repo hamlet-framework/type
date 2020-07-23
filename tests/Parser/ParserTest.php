@@ -141,6 +141,8 @@ class ParserTest extends TestCase
      */
     public function testNameResolver()
     {
+        require_once __DIR__ . '/../../psalm-cases/TestClass.php';
+
         $type = new ReflectionClass(TestClass::class);
         $type->getProperty('a');
 
@@ -170,7 +172,7 @@ class ParserTest extends TestCase
             return;
         }
 
-        require_once __DIR__ . '/UglyNestedStructure.php';
+        require_once __DIR__ . '/../../psalm-cases/UglyNestedStructure.php';
         $typeA = new ReflectionClass(\Hamlet\Cast\Parser\A::class);
         $typeB = new ReflectionClass(\Hamlet\Cast\Parser\N0\N1\B::class);
         $typeC = new ReflectionClass(\C::class);

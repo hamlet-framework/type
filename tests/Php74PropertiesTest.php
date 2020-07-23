@@ -15,6 +15,7 @@ class Php74PropertiesTest extends TestCase
             return;
         }
 
+        require_once __DIR__ . '/../psalm-cases/Foo.php';
         $reflectionClass = new ReflectionClass(Foo::class);
 
         $typeOfA = DocBlockParser::fromProperty($reflectionClass, $reflectionClass->getProperty('a'));

@@ -139,6 +139,21 @@ class CastTest extends TestCase
         }
     }
 
+    public function testObjectMatch()
+    {
+        $this->assertTrue(_object()->matches(new stdClass));
+        $this->assertTrue(_object()->matches(new DateTime));
+        $this->assertTrue(_object()->matches(function () {
+        }));
+
+        $this->assertFalse(_object()->matches(null));
+        $this->assertFalse(_object()->matches(false));
+        $this->assertFalse(_object()->matches(true));
+        $this->assertFalse(_object()->matches(1));
+        $this->assertFalse(_object()->matches(1.1));
+        $this->assertFalse(_object()->matches('s'));
+    }
+
     public function testIllegalFloatCastWithinList()
     {
         $this->expectException(CastException::class);

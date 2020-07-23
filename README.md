@@ -67,6 +67,8 @@ assert($type->matches($record));
 
 ## Todo
 
+- Rework all Cast and Match tests to deal with complete set of basic types
+- Add test coverage metrics to travis, add badge
 - Add types for iterable|self|static|class-string
 - Add more tests for PHPDoc and Namespace resolver
 - Add PHP 8.0 in travis

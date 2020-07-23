@@ -8,7 +8,9 @@
 >
     <projectFiles>
         <directory name="src" />
-        <directory name="psalm-cases" />
+        <file name="psalm-cases/00-random-casts.php"/>
+        <file name="psalm-cases/01-maps-narrowing-array-keys.php"/>
+        <file name="psalm-cases/02-object-like-array.php"/>
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>

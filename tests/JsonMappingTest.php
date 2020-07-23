@@ -2,7 +2,6 @@
 
 namespace Hamlet\Cast;
 
-use DateTimeImmutable;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -39,6 +38,9 @@ class JsonMappingTest extends TestCase
 
     public function testObjectMapping()
     {
+        require_once __DIR__ . '/../psalm-cases/User.php';
+        require_once __DIR__ . '/../psalm-cases/Address.php';
+
         $json = '
             [
                 {
