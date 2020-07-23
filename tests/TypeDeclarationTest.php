@@ -3,7 +3,6 @@
 namespace Hamlet\Cast;
 
 use DateTime;
-use PhpParser\Node\Expr\Cast;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -177,7 +176,7 @@ class TypeDeclarationTest extends TestCase
         _numeric_string()->cast($value);
     }
 
-    public function testNumericString()
+    public function testNumericStringMatchAndCast()
     {
         $type = _numeric_string();
         $this->assertTrue($type->matches('1.2'));
@@ -223,10 +222,62 @@ class TypeDeclarationTest extends TestCase
      * @dataProvider values()
      * @param mixed $value
      */
-    public function testMixedType($value)
+    public function testMixedTypeMatchAndCast($value)
     {
         $this->assertTrue(_mixed()->matches($value));
         $this->assertSame($value, _mixed()->cast($value));
+    }
+
+    public function testMapMatch()
+    {
+        $type = _map(_string(), _string());
+        $this->assertTrue($type->matches([]));
+        $this->assertTrue($type->matches(['a' => 'b']));
+        $this->assertFalse($type->matches(['a' => false]));
+        $this->assertFalse($type->matches(new stdClass));
+        $this->assertFalse($type->matches(false));
+        $this->assertFalse($type->matches(null));
+    }
+
+    public function testMapCast()
+    {
+        $type = _map(_string(), _int());
+        $this->assertEquals(['a' => 1], $type->cast(['a' => 1]));
+        $this->assertEquals(['a' => 1], $type->cast(['a' => true]));
+        $this->assertEquals(['a' => 0], $type->cast(['a' => false]));
+        $this->assertEquals(['0' => 1], $type->cast([0 => 1]));
+        $this->assertEquals([], $type->cast(new stdClass));
+
+        $object = new stdClass;
+        $object->a = 1;
+        $this->assertEquals(['a' => 1], $type->cast($object));
+    }
+
+    public function invalidMaps()
+    {
+        return [
+            ['hey'],
+            ['null'],
+            [[new stdClass]],
+            [[new DateTime]],
+            [new class() {
+                public function __toString()
+                {
+                    return 'sousage';
+                }
+            }],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidMaps()
+     * @param mixed $value
+     */
+    public function testMapCastFail($value)
+    {
+        $type = _map(_string(), _int());
+        $this->expectException(CastException::class);
+        $type->cast($value);
     }
 
     public function testObjectLikeType()
