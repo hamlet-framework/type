@@ -22,10 +22,16 @@ class NumericStringType extends Type
         if (is_array($value)) {
             throw new CastException($value, $this);
         }
-        if (is_object($value) && !method_exists($value, '__toString')) {
-            throw new CastException($value, $this);
+        if ($value === true) {
+            return '1';
+        } elseif ($value === false || $value === null) {
+            return '0';
+        } else {
+            if (is_object($value) && !method_exists($value, '__toString')) {
+                throw new CastException($value, $this);
+            }
+            $string = (string) $value;
         }
-        $string = (string) $value;
         if (!is_numeric($string)) {
             throw new CastException($value, $this);
         }

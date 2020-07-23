@@ -2,6 +2,7 @@
 
 namespace Hamlet\Cast;
 
+use DateTimeImmutable;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -23,11 +24,17 @@ class JsonMappingTest extends TestCase
                 }
             ]
         ';
-        $value = $type->cast(json_decode($json));
+        $value1 = $type->cast(json_decode($json));
 
-        Assert::assertCount(2, $value);
-        Assert::assertEquals(10, $value[0]['age']);
-        Assert::assertArrayNotHasKey('age', $value[1]);
+        Assert::assertCount(2, $value1);
+        Assert::assertEquals(10, $value1[0]['age']);
+        Assert::assertArrayNotHasKey('age', $value1[1]);
+
+        $value2 = $type->cast(json_decode($json, true));
+
+        Assert::assertCount(2, $value2);
+        Assert::assertEquals(10, $value2[0]['age']);
+        Assert::assertArrayNotHasKey('age', $value2[1]);
     }
 
     public function testObjectMapping()

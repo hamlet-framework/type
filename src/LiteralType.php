@@ -49,7 +49,7 @@ class LiteralType extends Type
             return $value;
         }
         foreach ($this->values as $v) {
-            if ($value == $v) {
+            if (is_scalar($value) && $v == $value || $v === $value) {
                 return $v;
             }
         }
