@@ -38,8 +38,8 @@ class JsonMappingTest extends TestCase
 
     public function testObjectMapping()
     {
-        require_once __DIR__ . '/../psalm-cases/User.php';
-        require_once __DIR__ . '/../psalm-cases/Address.php';
+        require_once __DIR__ . '/../psalm-cases/classes/User.php';
+        require_once __DIR__ . '/../psalm-cases/classes/Address.php';
 
         $json = '
             [
