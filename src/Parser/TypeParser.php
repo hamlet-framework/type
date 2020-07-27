@@ -16,6 +16,7 @@ use Hamlet\Cast\NullType;
 use Hamlet\Cast\NumericStringType;
 use Hamlet\Cast\NumericType;
 use Hamlet\Cast\ObjectType;
+use Hamlet\Cast\ResourceType;
 use Hamlet\Cast\StringType;
 use Hamlet\Cast\Type;
 use Hamlet\Cast\UnionType;
@@ -123,6 +124,8 @@ class TypeParser
                 return new ObjectType;
             case 'mixed':
                 return new MixedType;
+            case 'resource':
+                return new ResourceType;
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }

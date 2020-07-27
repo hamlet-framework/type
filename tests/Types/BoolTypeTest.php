@@ -3,6 +3,7 @@
 namespace Hamlet\Cast\Types;
 
 use DateTime;
+use Exception;
 use Hamlet\Cast\CastException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -51,6 +52,22 @@ class BoolTypeTest extends TestCase
     public function testMatch($value, bool $success)
     {
         $this->assertEquals($success, _bool()->matches($value));
+    }
+
+    /**
+     * @dataProvider matchCases()
+     * @param mixed $value
+     * @param bool $success
+     */
+    public function testAssert($value, bool $success)
+    {
+        $exceptionThrown = false;
+        try {
+            _bool()->assert($value);
+        } catch (Exception $error) {
+            $exceptionThrown = true;
+        }
+        $this->assertEquals(!$success, $exceptionThrown);
     }
 
     public function castCases()

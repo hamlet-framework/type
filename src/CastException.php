@@ -31,7 +31,7 @@ class CastException extends RuntimeException
      */
     public function __construct($value, Type $targetType, string $details = '')
     {
-        $message = 'Cannot convert ' . var_export($value, true) . ' to ' . $targetType;
+        $message = 'Cannot convert [' . var_export($value, true) . '] to ' . $targetType;
         if ($details) {
             $message .= '. ' . $details;
         }

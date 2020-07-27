@@ -3,6 +3,7 @@
 namespace Hamlet\Cast\Types;
 
 use DateTime;
+use Exception;
 use Hamlet\Cast\CastException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -51,6 +52,22 @@ class ArrayKeyTypeTest extends TestCase
     public function testMatch($value, bool $success)
     {
         $this->assertEquals($success, _array_key()->matches($value));
+    }
+
+    /**
+     * @dataProvider matchCases()
+     * @param mixed $value
+     * @param bool $success
+     */
+    public function testAssert($value, bool $success)
+    {
+        $exceptionThrown = false;
+        try {
+            _array_key()->assert($value);
+        } catch (Exception $error) {
+            $exceptionThrown = true;
+        }
+        $this->assertEquals(!$success, $exceptionThrown);
     }
 
     public function castCases()

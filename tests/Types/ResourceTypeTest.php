@@ -7,9 +7,9 @@ use Exception;
 use Hamlet\Cast\CastException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Hamlet\Cast\_callable;
+use function Hamlet\Cast\_resource;
 
-class CallableTypeTest extends TestCase
+class ResourceTypeTest extends TestCase
 {
     public function matchCases()
     {
@@ -39,15 +39,15 @@ class CallableTypeTest extends TestCase
             ['',            false],
             ['0',           false],
             ['abc',         false],
-            ['strtoupper',  true],
+            ['strtoupper',  false],
             [[],            false],
             [[1],           false],
             [new stdClass,  false],
             [$object,       false],
             [new DateTime,  false],
-            [$callable,     true],
-            [$invokable,    true],
-            [$resource,     false],
+            [$callable,     false],
+            [$invokable,    false],
+            [$resource,     true],
             [null,          false],
         ];
     }
@@ -59,7 +59,7 @@ class CallableTypeTest extends TestCase
      */
     public function testMatch($value, bool $success)
     {
-        $this->assertEquals($success, _callable()->matches($value));
+        $this->assertEquals($success, _resource()->matches($value));
     }
 
     /**
@@ -71,7 +71,7 @@ class CallableTypeTest extends TestCase
     {
         $exceptionThrown = false;
         try {
-            _callable()->assert($value);
+            _resource()->assert($value);
         } catch (Exception $error) {
             $exceptionThrown = true;
         }
@@ -105,7 +105,7 @@ class CallableTypeTest extends TestCase
             [-1,            null,       true],
             ['',            null,       true],
             ['0',           null,       true],
-            ['x1',      null,           true],
+            ['x1',          null,       true],
             [[],            null,       true],
             [[false],       null,       true],
             [[1],           null,       true],
@@ -113,10 +113,10 @@ class CallableTypeTest extends TestCase
             [new stdClass,  null,       true],
             [$object,       null,       true],
             [new DateTime,  null,       true],
-            ['abs',         'abs',      false],
-            [$callable,     $callable,  false],
-            [$invokable,    $invokable, false],
-            [$resource,     null,       true],
+            ['abs',         null,       true],
+            [$callable,     null,       true],
+            [$invokable,    null,       true],
+            [$resource,     $resource, false],
             [null,          null,       true],
         ];
     }
@@ -131,9 +131,9 @@ class CallableTypeTest extends TestCase
     {
         if ($exceptionThrown) {
             $this->expectException(CastException::class);
-            _callable()->cast($value);
+            _resource()->cast($value);
         } else {
-            $this->assertSame($result, _callable()->cast($value));
+            $this->assertSame($result, _resource()->cast($value));
         }
     }
 }
