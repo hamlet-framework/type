@@ -2,6 +2,7 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Resolvers\MappingUtils;
 use Hamlet\Cast\Resolvers\Resolver;
 use stdClass;
 
@@ -63,11 +64,21 @@ class ClassType extends Type
         $reflectionClass   = $subTypeResolution->reflectionClass();
         $subTreeResolver   = $subTypeResolution->subTreeResolver();
 
+        $validateUnmappedProperties = !$resolver->ignoreUnmappedProperties();
+        $mappedProperties = [];
+
         $result = $reflectionClass->newInstanceWithoutConstructor();
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             $propertyName    = $reflectionProperty->getName();
             $valueResolution = $subTreeResolver->getValue($this->type, $propertyName, $value);
             $propertyType    = $subTreeResolver->getPropertyType($reflectionClass, $reflectionProperty);
+
+            if ($validateUnmappedProperties) {
+                $sourceFieldName = $valueResolution->sourceFieldName();
+                if ($sourceFieldName) {
+                    $mappedProperties[$sourceFieldName] = 1;
+                }
+            }
 
             if (!$valueResolution->successful() && !$propertyType->matches(null)) {
                 throw new CastException($value, $this);
@@ -78,6 +89,9 @@ class ClassType extends Type
                 $propertyName,
                 $propertyType->resolveAndCast($valueResolution->value(), $subTreeResolver)
             );
+        }
+        if ($validateUnmappedProperties) {
+            MappingUtils::checkMapping($value, $mappedProperties, $this);
         }
         return $result;
     }

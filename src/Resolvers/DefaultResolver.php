@@ -26,12 +26,12 @@ class DefaultResolver implements Resolver
     public function getValue($type, string $propertyName, $source): ValueResolution
     {
         if (is_array($source) && array_key_exists($propertyName, $source)) {
-            return ValueResolution::success($source[$propertyName]);
+            return ValueResolution::success($source[$propertyName], $propertyName);
         } elseif (is_object($source) && is_a($source, stdClass::class) && property_exists($source, $propertyName)) {
             /**
              * @psalm-suppress MixedArgument
              */
-            return ValueResolution::success($source->{$propertyName});
+            return ValueResolution::success($source->{$propertyName}, $propertyName);
         }
         return ValueResolution::failure();
     }
@@ -99,5 +99,10 @@ class DefaultResolver implements Resolver
                 DocBlockParser::fromProperty($reflectionClass, $reflectionProperty);
         }
         return self::$propertyTypes[$className][$propertyName];
+    }
+
+    public function ignoreUnmappedProperties(): bool
+    {
+        return true;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Hamlet\Cast;
 
+use Hamlet\Cast\Resolvers\DefaultResolver;
+use Hamlet\Cast\Resolvers\MappingUtils;
 use Hamlet\Cast\Resolvers\Resolver;
 use stdClass;
 
@@ -63,6 +65,9 @@ class ObjectLikeType extends Type
         if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);
         }
+        $validateUnmappedProperties = !$resolver->ignoreUnmappedProperties();
+        $mappedProperties = [];
+
         foreach ($this->fields as $field => $fieldType) {
             $tokens = explode('?', $field, 2);
             $fieldName = $tokens[0];
@@ -72,6 +77,12 @@ class ObjectLikeType extends Type
              * @psalm-suppress ArgumentTypeCoercion
              */
             $resolution = $resolver->getValue(null, $fieldName, $value);
+            if ($validateUnmappedProperties) {
+                $sourceFieldName = $resolution->sourceFieldName();
+                if ($sourceFieldName) {
+                    $mappedProperties[$sourceFieldName] = 1;
+                }
+            }
             if (!$resolution->successful()) {
                 if ($required) {
                     throw new CastException($value, $this);
@@ -81,6 +92,9 @@ class ObjectLikeType extends Type
             }
             $fieldValue = $fieldType->resolveAndCast($resolution->value(), $resolver);
             $value = $resolver->setValue($value, $fieldName, $fieldValue);
+        }
+        if ($validateUnmappedProperties) {
+            MappingUtils::checkMapping($value, $mappedProperties, $this);
         }
         return (array) $value;
     }

@@ -47,4 +47,6 @@ interface Resolver
      * @psalm-return Type<P>
      */
     public function getPropertyType(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type;
+
+    public function ignoreUnmappedProperties(): bool;
 }

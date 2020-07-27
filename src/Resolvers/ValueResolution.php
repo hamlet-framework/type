@@ -19,26 +19,34 @@ final class ValueResolution
     private $value;
 
     /**
+     * @var string|null
+     */
+    private $sourceFieldName;
+
+    /**
      * @param bool $successful
      * @param mixed $value
      * @psalm-param T $value
+     * @param string|null $sourceFieldName
      */
-    private function __construct(bool $successful, $value)
+    private function __construct(bool $successful, $value, $sourceFieldName)
     {
         $this->successful = $successful;
         $this->value = $value;
+        $this->sourceFieldName = $sourceFieldName;
     }
 
     /**
      * @template Q
      * @param mixed $value
      * @psalm-param Q $value
+     * @param string $sourceFieldName
      * @return self
      * @psalm-return self<Q>
      */
-    public static function success($value): self
+    public static function success($value, string $sourceFieldName): self
     {
-        return new self(true, $value);
+        return new self(true, $value, $sourceFieldName);
     }
 
     /**
@@ -47,7 +55,7 @@ final class ValueResolution
      */
     public static function failure(): self
     {
-        return new self(false, null);
+        return new self(false, null, null);
     }
 
     public function successful(): bool
@@ -62,5 +70,13 @@ final class ValueResolution
     public function value()
     {
         return $this->value;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function sourceFieldName()
+    {
+        return $this->sourceFieldName;
     }
 }
