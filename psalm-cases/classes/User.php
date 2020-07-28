@@ -5,13 +5,13 @@ namespace Hamlet\Cast;
 class User
 {
     /** @var int */
-    private $id;
+    protected $id;
 
     /** @var string */
-    private $name;
+    protected $name;
 
     /** @var Address|null */
-    private $address;
+    protected $address;
 
     public function id(): int
     {

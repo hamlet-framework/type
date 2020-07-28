@@ -76,20 +76,24 @@ class ObjectLikeType extends Type
             /**
              * @psalm-suppress ArgumentTypeCoercion
              */
+
             $resolution = $resolver->getValue(null, $fieldName, $value);
-            if ($validateUnmappedProperties) {
-                $sourceFieldName = $resolution->sourceFieldName();
-                if ($sourceFieldName) {
-                    $mappedProperties[$sourceFieldName] = 1;
+            if ($resolution->successful()) {
+                if ($validateUnmappedProperties) {
+                    $sourceFieldName = $resolution->sourceFieldName();
+                    if ($sourceFieldName) {
+                        $mappedProperties[$sourceFieldName] = 1;
+                    }
                 }
-            }
-            if (!$resolution->successful()) {
-                if ($required) {
-                    throw new CastException($value, $this);
-                } else {
+            } else {
+                if (!$required) {
+                    $mappedProperties[$fieldName] = 1;
                     continue;
+                } else {
+                    throw new CastException($value, $this);
                 }
             }
+
             $fieldValue = $fieldType->resolveAndCast($resolution->value(), $resolver);
             $value = $resolver->setValue($value, $fieldName, $fieldValue);
         }

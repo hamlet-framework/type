@@ -73,15 +73,19 @@ class ClassType extends Type
             $valueResolution = $subTreeResolver->getValue($this->type, $propertyName, $value);
             $propertyType    = $subTreeResolver->getPropertyType($reflectionClass, $reflectionProperty);
 
-            if ($validateUnmappedProperties) {
-                $sourceFieldName = $valueResolution->sourceFieldName();
-                if ($sourceFieldName) {
-                    $mappedProperties[$sourceFieldName] = 1;
+            if ($valueResolution->successful()) {
+                if ($validateUnmappedProperties) {
+                    $sourceFieldName = $valueResolution->sourceFieldName();
+                    if ($sourceFieldName) {
+                        $mappedProperties[$sourceFieldName] = 1;
+                    }
                 }
-            }
-
-            if (!$valueResolution->successful() && !$propertyType->matches(null)) {
-                throw new CastException($value, $this);
+            } else {
+                if ($propertyType->matches(null)) {
+                    $mappedProperties[$propertyName] = 1;
+                } else {
+                    throw new CastException($value, $this);
+                }
             }
 
             $result = $resolver->setValue(

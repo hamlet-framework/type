@@ -4,9 +4,18 @@ namespace Hamlet\Cast\Resolvers;
 
 use Hamlet\Cast\CastException;
 use Hamlet\Cast\Type;
+use ReflectionClass;
+use ReflectionException;
+use RuntimeException;
 
 class MappingUtils
 {
+    /**
+     * @var ReflectionClass[]
+     * @psalm-var array<string,ReflectionClass>
+     */
+    private static $properties = [];
+
     /**
      * @param mixed $value
      * @param array $mappedProperties
@@ -22,20 +31,38 @@ class MappingUtils
                  * @psalm-suppress MixedArrayTypeCoercion
                  */
                 if (!isset($mappedProperties[$property])) {
-                    throw new CastException($value, $context, 'Property ' . $property . ' not mapped');
+                    throw new CastException($value, $context, 'Property [' . $property . '] not mapped');
                 }
             }
         } elseif (is_object($value)) {
-            foreach (get_object_vars($value) as $property => $_) {
-                /**
-                 * @psalm-suppress MixedArrayTypeCoercion
-                 */
+            if (is_a($value, \stdClass::class)) {
+                $properties = array_keys(get_object_vars($value));
+            } else {
+                $className = get_class($value);
+                if (isset(self::$properties[$className])) {
+                    $properties = self::$properties[$className];
+                } else {
+                    $properties = [];
+                    try {
+                        $reflectionClass = new ReflectionClass($className);
+                    } catch (ReflectionException $e) {
+                        throw new RuntimeException('Cannot read reflection information for ' . $className, 0, $e);
+                    }
+
+                    foreach ($reflectionClass->getProperties() as $property) {
+                        $properties[] = $property->getName();
+                    }
+                    self::$properties[$className] = $properties;
+                }
+            }
+
+            foreach ($properties as $property) {
                 if (!isset($mappedProperties[$property])) {
-                    throw new CastException($value, $context, 'Property ' . $property . ' not mapped');
+                    throw new CastException($value, $context, 'Property [' . $property . '] not mapped');
                 }
             }
         } else {
-            throw new CastException($value, $context, 'Unexpected value type');
+            throw new RuntimeException('Unexpected value type: ' . gettype($value));
         }
     }
 }
