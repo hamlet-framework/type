@@ -11,8 +11,8 @@ use RuntimeException;
 class MappingUtils
 {
     /**
-     * @var ReflectionClass[]
-     * @psalm-var array<string,ReflectionClass>
+     * @var string[][]
+     * @psalm-var array<string,array<string>>
      */
     private static $properties = [];
 
