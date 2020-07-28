@@ -10,7 +10,6 @@ use PhpParser\ParserFactory;
 use ReflectionClass;
 use ReflectionProperty;
 use RuntimeException;
-use Throwable;
 
 class DocBlockParser
 {

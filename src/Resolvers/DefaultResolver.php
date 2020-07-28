@@ -38,20 +38,23 @@ class DefaultResolver implements Resolver
 
     public function setValue($object, string $propertyName, $value)
     {
-        if (is_object($object) && is_a($object, stdClass::class)) {
-            $object->{$propertyName} = $value;
-            return $object;
-        } elseif (is_array($object)) {
+        if (is_array($object)) {
             $object[$propertyName] = $value;
             return $object;
         } elseif (is_object($object)) {
-            $reflectionClass = $this->getReflectionClass(get_class($object));
-            $property = $reflectionClass->getProperty($propertyName);
-            $property->setAccessible(true);
-            $property->setValue($object, $value);
-            return $object;
+            if (is_a($object, stdClass::class)) {
+                $object->{$propertyName} = $value;
+                return $object;
+            } else {
+                $reflectionClass = $this->getReflectionClass(get_class($object));
+                $property = $reflectionClass->getProperty($propertyName);
+                $property->setAccessible(true);
+                $property->setValue($object, $value);
+                return $object;
+            }
+        } else {
+            throw new InvalidArgumentException('Unexpected type ' . var_export($object, true));
         }
-        throw new InvalidArgumentException('Unexpected type ' . var_export($object, true));
     }
 
     protected function getReflectionClass(string $type): ReflectionClass
