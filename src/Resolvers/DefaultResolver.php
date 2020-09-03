@@ -6,6 +6,7 @@ use Hamlet\Cast\Parser\DocBlockParser;
 use Hamlet\Cast\Type;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
 use stdClass;
 
@@ -57,6 +58,15 @@ class DefaultResolver implements Resolver
         }
     }
 
+    /**
+     * @template T
+     * @param string $type
+     * @psalm-param class-string<T> $type
+     * @return ReflectionClass
+     * @psalm-return ReflectionClass<T>
+     * @psalm-suppress MixedReturnTypeCoercion
+     * @throws ReflectionException
+     */
     protected function getReflectionClass(string $type): ReflectionClass
     {
         if (!isset(self::$reflectionClasses[$type])) {
@@ -78,6 +88,8 @@ class DefaultResolver implements Resolver
      * @psalm-suppress InvalidReturnType
      * @psalm-suppress MixedArgumentTypeCoercion
      * @psalm-suppress MixedReturnTypeCoercion
+     *
+     * @throws ReflectionException
      */
     public function resolveSubType(string $type, $value): SubTypeResolution
     {
