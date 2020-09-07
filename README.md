@@ -32,7 +32,7 @@ $type->assert($records);
 
 Cast `$records` to `array<int,DateTime|null>>` and throw an exception when `$records` cannot be cast to `array<int,DateTime|null>>`:
 ```php
-return $type->resolveAndCast($records);
+return $type->cast($records);
 ```
 
 Combine type with other types, for example, making it nullable `array<int,DateTime|null>>|null`:
