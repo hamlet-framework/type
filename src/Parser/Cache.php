@@ -41,6 +41,7 @@ class Cache
         }
         /** @noinspection PhpIncludeInspection */
         include($fileName);
+        /** @psalm-suppress UndefinedVariable */
         return $value ?? null;
     }
 
