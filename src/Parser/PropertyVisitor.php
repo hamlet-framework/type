@@ -57,7 +57,7 @@ class PropertyVisitor extends NameResolver
         if ($node instanceof Node\Stmt\Class_) {
             $className = (string) $node->name;
             /** @psalm-suppress PropertyTypeCoercion */
-            $this->currentClass = $this->nameContext->getResolvedClassName(new Node\Name($className))->toString();
+            $this->currentClass = $this->getNameContext()->getResolvedClassName(new Node\Name($className))->toString();
         } elseif ($node instanceof Node\Stmt\Property) {
             $this->currentProperty = true;
             $docComment = $node->getDocComment();

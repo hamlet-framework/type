@@ -17,14 +17,14 @@
   },
   "require": {
     "php": ">=7",
-    "hoa/compiler": "@stable",
-    "nikic/php-parser": "@stable"
+    "hoa/compiler": "^3",
+    "nikic/php-parser": "^4"
   },
   "require-dev": {
     "ext-json": "*",
     "php-parallel-lint/php-parallel-lint": "@stable",
     "phpstan/phpstan": "@stable",
-    "phpunit/phpunit": "@stable",
+    "phpunit/phpunit": "^6 || ^7 || ^8",
     "squizlabs/php_codesniffer": "@stable",
     "vimeo/psalm": "@stable"
   },
