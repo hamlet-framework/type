@@ -16,7 +16,7 @@
     "sort-packages": true
   },
   "require": {
-    "php": ">=7",
+    "php": "^7 || ^8",
     "hoa/compiler": "^3",
     "nikic/php-parser": "^4"
   },
