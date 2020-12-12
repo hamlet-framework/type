@@ -10,7 +10,6 @@ php:
   - 8.0snapshot
 
 before_script:
-  - composer self-update --rollback
   - composer update
 
 script:
