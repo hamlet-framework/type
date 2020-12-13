@@ -16,7 +16,6 @@ class NumericStringType extends Type
      * @param mixed $value
      * @return string
      * @psalm-return numeric-string
-     * @psalm-suppress MoreSpecificReturnType
      */
     public function cast($value): string
     {
@@ -24,14 +23,8 @@ class NumericStringType extends Type
             throw new CastException($value, $this);
         }
         if ($value === true) {
-            /**
-             * @psalm-suppress LessSpecificReturnStatement
-             */
             return '1';
         } elseif ($value === false || $value === null) {
-            /**
-             * @psalm-suppress LessSpecificReturnStatement
-             */
             return '0';
         } else {
             if (is_object($value) && !method_exists($value, '__toString')) {
