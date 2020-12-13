@@ -3,7 +3,7 @@
 namespace Hamlet\Cast;
 
 /**
- * @extends UnionType<int|bool|float|string>
+ * @extends UnionType<scalar>
  */
 class ScalarType extends UnionType
 {

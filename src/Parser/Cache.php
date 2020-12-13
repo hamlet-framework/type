@@ -39,9 +39,14 @@ class Cache
         if (!file_exists($fileName) || filemtime($fileName) < $timeThreshold) {
             return null;
         }
-        /** @noinspection PhpIncludeInspection */
+        /**
+         * @noinspection PhpIncludeInspection
+         * @psalm-suppress UnresolvableInclude
+         */
         include($fileName);
-        /** @psalm-suppress UndefinedVariable */
+        /**
+         * @psalm-suppress UndefinedVariable
+         */
         return $value ?? null;
     }
 

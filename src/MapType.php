@@ -6,7 +6,7 @@ use Hamlet\Cast\Resolvers\Resolver;
 use stdClass;
 
 /**
- * @template K as array-key
+ * @template K as int|string
  * @template V
  * @extends Type<array<K,V>>
  */

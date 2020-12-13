@@ -11,7 +11,6 @@ php:
 
 before_script:
   - composer update
-  - composer info
 
 script:
   - ./vendor/bin/parallel-lint src

@@ -26,6 +26,9 @@ class MappingUtils
     public static function checkMapping($value, array $mappedProperties, Type $context)
     {
         if (is_array($value)) {
+            /**
+             * @psalm-suppress MixedAssignment
+             */
             foreach ($value as $property => $_) {
                 /**
                  * @psalm-suppress MixedArrayTypeCoercion

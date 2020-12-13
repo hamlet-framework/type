@@ -79,7 +79,7 @@ function _scalar(): Type
 
 /**
  * @return ArrayKeyType
- * @psalm-return Type<array-key>
+ * @psalm-return Type<int|string>
  */
 function _array_key(): Type
 {
@@ -111,7 +111,7 @@ function _literal(...$as): Type
 }
 
 /**
- * @template A as array-key
+ * @template A as int|string
  * @template B
  * @param Type $keyType
  * @psalm-param Type<A> $keyType
