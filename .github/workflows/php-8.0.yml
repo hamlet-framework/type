@@ -11,16 +11,8 @@ jobs:
         php-version: '8.0'
         tools: composer:v2
     - uses: actions/checkout@v2
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-80-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ runner.os }}-php-80-
     - name: Install dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: composer update --no-progress --no-suggest
     - name: Run linter
       run: ./vendor/bin/parallel-lint src
     - name: Run PHPUnit
