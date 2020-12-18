@@ -16,8 +16,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: ${{ runner.os }}-php-
+        key: ${{ runner.os }}-php-80-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-php-80-
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
@@ -27,5 +27,5 @@ jobs:
       run: ./vendor/bin/phpunit --verbose
     - name: Run Psalm
       run: ./vendor/bin/psalm
-    - name: Check Style
+    - name: Check style
       run: ./vendor/bin/phpcs --standard=PSR2 -n src
