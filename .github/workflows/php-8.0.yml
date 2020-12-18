@@ -17,14 +17,15 @@ jobs:
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+        restore-keys: ${{ runner.os }}-php-
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
-    - name: Run Linter
+    - name: Run linter
       run: ./vendor/bin/parallel-lint src
     - name: Run PHPUnit
       run: ./vendor/bin/phpunit --verbose
+    - name: Run Psalm
+      run: ./vendor/bin/psalm
     - name: Check Style
       run: ./vendor/bin/phpcs --standard=PSR2 -n src
