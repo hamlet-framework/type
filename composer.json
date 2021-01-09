@@ -26,7 +26,7 @@
     "phpunit/phpunit": "^6 || ^7 || ^8",
     "squizlabs/php_codesniffer": "@stable",
     "vimeo/psalm": "@stable",
-    "symfony/polyfill-mbstring": "1.20.0"
+    "symfony/polyfill-mbstring": "<=1.20.0"
   },
   "autoload": {
     "psr-4": {
