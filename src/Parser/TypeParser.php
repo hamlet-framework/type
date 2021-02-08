@@ -158,8 +158,8 @@ class TypeParser
         } else {
             $resolvedClassName = $path;
         }
-        if (!class_exists($resolvedClassName)) {
-            throw new RuntimeException('Unknown class ' . $path);
+        if (!class_exists($resolvedClassName) && !interface_exists($resolvedClassName)) {
+            throw new RuntimeException('Unknown type ' . $path);
         }
         return new ClassType($resolvedClassName);
     }
