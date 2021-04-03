@@ -16,5 +16,11 @@
     <issueHandlers>
         <ReservedWord errorLevel="suppress"/>
         <RedundantConditionGivenDocblockType errorLevel="suppress"/>
+        <UnnecessaryVarAnnotation errorLevel="suppress"/>
+        <UnusedParam>
+            <errorLevel type="suppress">
+                <directory name="psalm-cases"/>
+            </errorLevel>
+        </UnusedParam>
     </issueHandlers>
 </psalm>
