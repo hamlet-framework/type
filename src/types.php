@@ -91,7 +91,7 @@ function _array_key(): Type
  * @param Type $type
  * @psalm-param Type<A> $type
  * @return ListType
- * @psalm-return Type<array<A>>
+ * @psalm-return Type<list<A>>
  */
 function _list(Type $type): Type
 {

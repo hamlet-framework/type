@@ -7,7 +7,7 @@ php:
   - 7.2
   - 7.3
   - 7.4
-  - 8.0snapshot
+  - 8.0
 
 before_script:
   - composer update
@@ -15,5 +15,5 @@ before_script:
 script:
   - ./vendor/bin/parallel-lint src
   - ./vendor/bin/phpunit --verbose
-  - php -v | grep -q 'PHP 7.0' || ./vendor/bin/psalm
+  - php -v | grep -q 'PHP 7.[0-2]' || ./vendor/bin/psalm
   - ./vendor/bin/phpcs --standard=PSR2 -n src
