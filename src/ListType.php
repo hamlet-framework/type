@@ -17,12 +17,19 @@ class ListType extends Type
     private $elementType;
 
     /**
+     * @var bool
+     */
+    private $nonEmpty;
+
+    /**
      * @param Type $elementType
      * @psalm-param Type<T> $elementType
+     * @param bool $nonEmpty
      */
-    public function __construct(Type $elementType)
+    public function __construct(Type $elementType, bool $nonEmpty = false)
     {
         $this->elementType = $elementType;
+        $this->nonEmpty = $nonEmpty;
     }
 
     /**
@@ -33,6 +40,9 @@ class ListType extends Type
     public function matches($value): bool
     {
         if (!is_array($value)) {
+            return false;
+        }
+        if ($this->nonEmpty && empty($value)) {
             return false;
         }
         /**
@@ -59,7 +69,7 @@ class ListType extends Type
      */
     public function resolveAndCast($value, Resolver $resolver): array
     {
-        if (!is_array($value)) {
+        if (!is_array($value) || ($this->nonEmpty && empty($value))) {
             throw new CastException($value, $this);
         }
         $result = [];

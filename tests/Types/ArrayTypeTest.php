@@ -7,12 +7,12 @@ use Hamlet\Cast\CastException;
 use Hamlet\Cast\Type;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use function Hamlet\Cast\_array;
 use function Hamlet\Cast\_int;
-use function Hamlet\Cast\_list;
 use function Hamlet\Cast\_mixed;
 use function Hamlet\Cast\_string;
 
-class ListTypeTest extends TestCase
+class ArrayTypeTest extends TestCase
 {
     public function matchCases()
     {
@@ -52,8 +52,8 @@ class ListTypeTest extends TestCase
             [$invokable,    false],
             [$resource,     false],
             [null,          false],
-            [[1 => 2],      false],
-            [['a' => 0],    false],
+            [[1 => 2],      true],
+            [['a' => 0],    true],
         ];
     }
 
@@ -64,7 +64,7 @@ class ListTypeTest extends TestCase
      */
     public function testMatch($value, bool $success)
     {
-        $this->assertEquals($success, _list(_mixed())->matches($value), 'Failed on ' . print_r($value, true));
+        $this->assertEquals($success, _array(_mixed())->matches($value), 'Failed on ' . print_r($value, true));
     }
 
     /**
@@ -77,38 +77,38 @@ class ListTypeTest extends TestCase
         if (!$success) {
             $this->expectException(CastException::class);
         }
-        _list(_mixed())->assert($value);
+        _array(_mixed())->assert($value);
         $this->assertTrue(true);
     }
 
     public function testListOfStrings()
     {
         $a = [0 => 'a', 1 => 'b'];
-        $this->assertTrue(_list(_string())->matches($a));
+        $this->assertTrue(_array(_string())->matches($a));
     }
 
     public function testWrongOrder()
     {
         $a = [1 => 'a', 0 => 'b'];
-        $this->assertFalse(_list(_string())->matches($a));
+        $this->assertTrue(_array(_string())->matches($a));
     }
 
     public function testSkippedIndex()
     {
         $a = [0 => 'a', 2 => 'b'];
-        $this->assertFalse(_list(_string())->matches($a));
+        $this->assertTrue(_array(_string())->matches($a));
     }
 
     public function testInvalidType()
     {
         $a = [1, 2, 'a'];
-        $this->assertFalse(_list(_int())->matches($a));
+        $this->assertFalse(_array(_int())->matches($a));
     }
 
     public function testParsing()
     {
-        $type = Type::of('list<int>');
+        $type = Type::of('array<int>');
         $this->assertTrue($type->matches([1, 2, 3]));
-        $this->assertFalse($type->matches([1 => 2]));
+        $this->assertTrue($type->matches([1 => 2]));
     }
 }

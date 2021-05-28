@@ -95,7 +95,19 @@ function _array_key(): Type
  */
 function _list(Type $type): Type
 {
-    return new ListType($type);
+    return new ListType($type, false);
+}
+
+/**
+ * @template A
+ * @param Type $type
+ * @psalm-param Type<A> $type
+ * @return MapType
+ * @psalm-return Type<array<A>>
+ */
+function _array(Type $type): Type
+{
+    return new MapType(new ArrayKeyType, $type, false);
 }
 
 /**
@@ -122,7 +134,7 @@ function _literal(...$as): Type
  */
 function _map(Type $keyType, Type $valueType): Type
 {
-    return new MapType($keyType, $valueType);
+    return new MapType($keyType, $valueType, false);
 }
 
 /**

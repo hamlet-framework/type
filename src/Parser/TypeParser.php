@@ -166,16 +166,30 @@ class TypeParser
 
     private function fromArray(TreeNode $node): Type
     {
+        $tag = $node->getChild(0)->getValueValue();
+        $nonEmpty = $tag == 'non-empty-array' || $tag == 'non-empty-list';
+        $list = $tag == 'list' || $tag == 'non-empty-list';
+
         /**
          * @psalm-suppress MixedArgumentTypeCoercion
          */
         switch ($node->getChildrenNumber()) {
             case 1:
-                return new ListType(new MixedType());
+                if ($list) {
+                    return new ListType(new MixedType(), $nonEmpty);
+                } else {
+                    return new MapType(new ArrayKeyType(), new MixedType(), $nonEmpty);
+                }
             case 2:
-                return new ListType($this->parse($node->getChild(1)));
+                if ($list) {
+                    return new ListType($this->parse($node->getChild(1)), $nonEmpty);
+                } else {
+                    return new MapType(new ArrayKeyType(), $this->parse($node->getChild(1)), $nonEmpty);
+                }
             case 3:
-                return new MapType($this->parse($node->getChild(1)), $this->parse($node->getChild(2)));
+                if (!$list) {
+                    return new MapType($this->parse($node->getChild(1)), $this->parse($node->getChild(2)), $nonEmpty);
+                }
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }

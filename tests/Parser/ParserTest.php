@@ -175,7 +175,7 @@ class ParserTest extends TestCase
         $type = Type::of($specification);
 
         $copy = eval('return ' . $type->serialize() . ';');
-        $this->assertEquals((string) $type, (string) $copy);
+        $this->assertEquals((string) $type, (string) $copy, 'Failed on ' . $specification);
     }
 
     public function testParsingOfUglyNestedStructures()
