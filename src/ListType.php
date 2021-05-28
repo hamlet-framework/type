@@ -84,7 +84,7 @@ class ListType extends Type
 
     public function __toString(): string
     {
-        return 'array<' . $this->elementType . '>';
+        return 'list<' . $this->elementType . '>';
     }
 
     public function serialize(): string
