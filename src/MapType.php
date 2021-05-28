@@ -25,22 +25,15 @@ class MapType extends Type
     private $valueType;
 
     /**
-     * @var bool
-     */
-    private $nonEmpty;
-
-    /**
      * @param Type $keyType
      * @psalm-param Type<K> $keyType
      * @param Type $valueType
      * @psalm-param Type<V> $valueType
-     * @param bool $nonEmpty
      */
-    public function __construct(Type $keyType, Type $valueType, bool $nonEmpty = false)
+    public function __construct(Type $keyType, Type $valueType)
     {
         $this->keyType = $keyType;
         $this->valueType = $valueType;
-        $this->nonEmpty = $nonEmpty;
     }
 
     /**
@@ -51,9 +44,6 @@ class MapType extends Type
     public function matches($value): bool
     {
         if (!is_array($value)) {
-            return false;
-        }
-        if ($this->nonEmpty && empty($value)) {
             return false;
         }
         /**
@@ -85,9 +75,6 @@ class MapType extends Type
          */
         foreach (((array) $value) as $k => $v) {
             $result[$this->keyType->resolveAndCast($k, $resolver)] = $this->valueType->resolveAndCast($v, $resolver);
-        }
-        if ($this->nonEmpty && empty($result)) {
-            throw new CastException($value, $this);
         }
         return $result;
     }

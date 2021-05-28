@@ -3,6 +3,7 @@
 namespace Hamlet\Cast\Parser;
 
 use Hamlet\Cast\ArrayKeyType;
+use Hamlet\Cast\ArrayType;
 use Hamlet\Cast\BoolType;
 use Hamlet\Cast\CallableType;
 use Hamlet\Cast\ClassType;
@@ -24,7 +25,7 @@ use Hoa\Compiler\Llk\TreeNode;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 use RuntimeException;
-use function Hamlet\Cast\_list;
+use function Hamlet\Cast\_array;
 use function Hamlet\Cast\_object_like;
 
 class TypeParser
@@ -66,7 +67,7 @@ class TypeParser
                 $type = $this->parse($node->getChild(0));
                 for ($i = 1; $i < $node->getChildrenNumber(); $i++) {
                     if ($node->getChild($i)->getId() == '#brackets') {
-                        $type = _list($type);
+                        $type = new ArrayType($type);
                     }
                 }
                 return $type;
@@ -167,7 +168,6 @@ class TypeParser
     private function fromArray(TreeNode $node): Type
     {
         $tag = $node->getChild(0)->getValueValue();
-        $nonEmpty = $tag == 'non-empty-array' || $tag == 'non-empty-list';
         $list = $tag == 'list' || $tag == 'non-empty-list';
 
         /**
@@ -176,19 +176,19 @@ class TypeParser
         switch ($node->getChildrenNumber()) {
             case 1:
                 if ($list) {
-                    return new ListType(new MixedType(), $nonEmpty);
+                    return new ListType(new MixedType());
                 } else {
-                    return new MapType(new ArrayKeyType(), new MixedType(), $nonEmpty);
+                    return new MapType(new ArrayKeyType(), new MixedType());
                 }
             case 2:
                 if ($list) {
-                    return new ListType($this->parse($node->getChild(1)), $nonEmpty);
+                    return new ListType($this->parse($node->getChild(1)));
                 } else {
-                    return new MapType(new ArrayKeyType(), $this->parse($node->getChild(1)), $nonEmpty);
+                    return new MapType(new ArrayKeyType(), $this->parse($node->getChild(1)));
                 }
             case 3:
                 if (!$list) {
-                    return new MapType($this->parse($node->getChild(1)), $this->parse($node->getChild(2)), $nonEmpty);
+                    return new MapType($this->parse($node->getChild(1)), $this->parse($node->getChild(2)));
                 }
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));

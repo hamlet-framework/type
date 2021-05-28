@@ -6,9 +6,9 @@ use Hamlet\Cast\Resolvers\Resolver;
 
 /**
  * @template T
- * @extends Type<list<T>>
+ * @extends Type<array<T>>
  */
-class ListType extends Type
+class ArrayType extends Type
 {
     /**
      * @var Type
@@ -28,7 +28,7 @@ class ListType extends Type
     /**
      * @param mixed $value
      * @return bool
-     * @psalm-assert-if-true list<T> $value
+     * @psalm-assert-if-true array<T> $value
      */
     public function matches($value): bool
     {
@@ -38,15 +38,10 @@ class ListType extends Type
         /**
          * @psalm-suppress MixedAssignment
          */
-        $i = 0;
-        foreach ($value as $k => $v) {
-            if ($i !== $k) {
-                return false;
-            }
+        foreach ($value as $v) {
             if (!$this->elementType->matches($v)) {
                 return false;
             }
-            $i++;
         }
         return true;
     }
@@ -55,7 +50,7 @@ class ListType extends Type
      * @param mixed $value
      * @param Resolver $resolver
      * @return array
-     * @psalm-return list<T>
+     * @psalm-return array<T>
      */
     public function resolveAndCast($value, Resolver $resolver): array
     {
@@ -74,7 +69,7 @@ class ListType extends Type
 
     public function __toString(): string
     {
-        return 'list<' . $this->elementType . '>';
+        return 'array<' . $this->elementType . '>';
     }
 
     public function serialize(): string

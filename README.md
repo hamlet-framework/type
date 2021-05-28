@@ -68,6 +68,7 @@ assert($type->matches($record));
 ## Todo
 
 - Add union types in PHP 8.0
+- Add non-empty-* handling  
 - Support for enums once this is added to PHP
 - Add more tests around class/object-like nullable,? properties
 - Rework all Cast and Match tests to deal with complete set of basic types

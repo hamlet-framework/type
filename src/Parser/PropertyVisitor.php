@@ -85,6 +85,7 @@ class PropertyVisitor extends NameResolver
                     $reflectionType = $currentReflectionClass->getProperty($node->name)->getType();
                     if ($reflectionType !== null) {
                         /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+                        /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
                         $typeDeclaration = (string) $reflectionType->getName();
                         if ($reflectionType->allowsNull()) {
                             $typeDeclaration .= '|null';

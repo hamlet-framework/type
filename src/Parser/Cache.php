@@ -16,7 +16,7 @@ class Cache
     public static function set(string $key, Type $type)
     {
         $safeKey = __CLASS__ . '::' . $key;
-        $fileName = sys_get_temp_dir() . '/' . md5($safeKey);
+        $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);
         $payload = $type->serialize();
         $tempFileName = $fileName . '.tmp';
         file_put_contents($tempFileName, '<?php $value = ' . $payload . ';');
@@ -35,7 +35,7 @@ class Cache
     public static function get(string $key, int $timeThreshold)
     {
         $safeKey = __CLASS__ . '::' . $key;
-        $fileName = sys_get_temp_dir() . '/' . md5($safeKey);
+        $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);
         if (!file_exists($fileName) || filemtime($fileName) < $timeThreshold) {
             return null;
         }
@@ -57,7 +57,7 @@ class Cache
     public static function remove(string $key)
     {
         $safeKey = __CLASS__ . '::' . $key;
-        $fileName = sys_get_temp_dir() . '/' . md5($safeKey);
+        $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);
         unlink($fileName);
     }
 }
