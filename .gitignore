@@ -1,6 +1,6 @@
 vendor/
 composer.lock
 .idea/
-.phpunit.result.cache
+.phpunit.cache/
 composer.phar
 INTERNAL.md
