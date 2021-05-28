@@ -2,6 +2,7 @@
 
 namespace Hamlet\Cast\Parser;
 
+use Hamlet\Cast\CastException;
 use Hamlet\Cast\Type;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\TreeNode;
@@ -15,6 +16,17 @@ use function Hamlet\Cast\_class;
 
 class ParserTest extends TestCase
 {
+    /**
+     * @before
+     */
+    public function _setUp()
+    {
+        $dir = sys_get_temp_dir();
+        foreach (glob("$dir/type-cache.*") as $f) {
+            unlink($f);
+        }
+    }
+
     public function typeDeclarations()
     {
         return [
@@ -58,6 +70,7 @@ class ParserTest extends TestCase
             ['Closure(bool):int'],
             ['Generator<T0, int, mixed, T0>'],
             ['callable(array{0:int}[]):(int|null)'],
+            ['list<array<array<int,string|null>>|bool|null>'],
         ];
     }
 

@@ -3,16 +3,19 @@
 namespace Hamlet\Cast\Types;
 
 use DateTime;
+use DateTimeImmutable;
+use Hamlet\Cast\Address;
 use Hamlet\Cast\CastException;
 use Hamlet\Cast\Type;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use function Hamlet\Cast\_array;
+use function Hamlet\Cast\_class;
 use function Hamlet\Cast\_int;
 use function Hamlet\Cast\_mixed;
 use function Hamlet\Cast\_string;
 
-class ArrayTypeTest extends TestCase
+class ClassTypeTest extends TestCase
 {
     public function matchCases()
     {
@@ -43,17 +46,17 @@ class ArrayTypeTest extends TestCase
             ['0',           false],
             ['abc',         false],
             ['strtoupper',  false],
-            [[],            true],
-            [[1],           true],
-            [new stdClass,  false],
+            [[],            false],
+            [[1],           false],
+            [new stdClass,  true],
             [$object,       false],
             [new DateTime,  false],
             [$callable,     false],
             [$invokable,    false],
             [$resource,     false],
             [null,          false],
-            [[1 => 2],      true],
-            [['a' => 0],    true],
+            [[1 => 2],      false],
+            [['a' => 0],    false],
         ];
     }
 
@@ -64,7 +67,7 @@ class ArrayTypeTest extends TestCase
      */
     public function testMatch($value, bool $success)
     {
-        $this->assertEquals($success, _array(_mixed())->matches($value), 'Failed on ' . print_r($value, true));
+        $this->assertEquals($success, _class(stdClass::class)->matches($value), 'Failed on ' . print_r($value, true));
     }
 
     /**
@@ -77,39 +80,15 @@ class ArrayTypeTest extends TestCase
         if (!$success) {
             $this->expectException(CastException::class);
         }
-        _array(_mixed())->assert($value);
+        _class(stdClass::class)->assert($value);
         $this->assertTrue(true);
-    }
-
-    public function testArrayOfStrings()
-    {
-        $a = [0 => 'a', 1 => 'b'];
-        $this->assertTrue(_array(_string())->matches($a));
-    }
-
-    public function testWrongOrder()
-    {
-        $a = [1 => 'a', 0 => 'b'];
-        $this->assertTrue(_array(_string())->matches($a));
-    }
-
-    public function testSkippedIndex()
-    {
-        $a = [0 => 'a', 2 => 'b'];
-        $this->assertTrue(_array(_string())->matches($a));
-    }
-
-    public function testInvalidType()
-    {
-        $a = [1, 2, 'a'];
-        $this->assertFalse(_array(_int())->matches($a));
     }
 
     public function testParsing()
     {
-        $type = Type::of('array<int>');
-        $this->assertTrue($type->matches([1, 2, 3]));
-        $this->assertTrue($type->matches([1 => 2]));
+        $type = Type::of('\\DateTime');
+        $this->assertTrue($type->matches(new DateTime));
+        $this->assertFalse($type->matches(new DateTimeImmutable));
     }
 
     public function castCases()
@@ -130,39 +109,54 @@ class ArrayTypeTest extends TestCase
             {
             }
         };
+        $stdObject = new stdClass;
 
         return [
-            [true,       null,      true],
-            [false,      null,      true],
-            [0,          null,      true],
-            [1,          null,      true],
-            [-1,         null,      true],
-            ['',         null,      true],
-            ['0',        null,      true],
-            ['x1',       null,      true],
-            [[],         [],        false],
-            [[false],    [false],   false],
-            [[1],        [1],       false],
-            [[1, 3],     [1, 3],    false],
-            [$object,    null,      true],
-            [$callable,  null,      true],
-            [$invokable, null,      true],
-            [$resource,  null,      true],
-            [null,       null,      true],
+            [true,       true],
+            [false,      true],
+            [0,          true],
+            [1,          true],
+            [-1,         true],
+            ['',         true],
+            ['0',        true],
+            ['x1',       true],
+            [[],         false],
+            [[false],    false],
+            [[1],        false],
+            [[1, 3],     false],
+            [$object,    true],
+            [$callable,  true],
+            [$invokable, true],
+            [$resource,  true],
+            [null,       true],
+            [$stdObject, false]
         ];
     }
 
     /**
      * @dataProvider castCases()
      * @param mixed $value
-     * @param mixed $result
      * @param bool $exceptionThrown
      */
-    public function testCast($value, $result, bool $exceptionThrown)
+    public function testCast($value, bool $exceptionThrown)
     {
         if ($exceptionThrown) {
             $this->expectException(CastException::class);
         }
-        $this->assertSame($result, _array(_mixed())->cast($value), 'Failed on ' . print_r($value, true));
+        _class(stdClass::class)->cast($value);
+        $this->assertTrue(true);
+    }
+
+    public function testNonNullableField()
+    {
+        require_once __DIR__ . '/../../psalm-cases/classes/Address.php';
+        try {
+            _class(Address::class)->cast(['country' => 'Thailand']);
+        } catch (CastException $e) {
+            $this->assertSame(['country' => 'Thailand'], $e->value());
+            $this->assertEquals(Address::class, (string) $e->targetType());
+            return;
+        }
+        $this->fail('Exception excepted');
     }
 }
