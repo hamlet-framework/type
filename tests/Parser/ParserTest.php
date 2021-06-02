@@ -2,7 +2,6 @@
 
 namespace Hamlet\Cast\Parser;
 
-use Hamlet\Cast\CastException;
 use Hamlet\Cast\Type;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\TreeNode;
@@ -21,10 +20,7 @@ class ParserTest extends TestCase
      */
     public function _setUp()
     {
-        $dir = sys_get_temp_dir();
-        foreach (glob("$dir/type-cache.*") as $f) {
-            unlink($f);
-        }
+        Cache::purge();
     }
 
     public function typeDeclarations()

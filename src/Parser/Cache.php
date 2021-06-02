@@ -60,4 +60,14 @@ class Cache
         $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);
         unlink($fileName);
     }
+
+    /**
+     * @return void
+     */
+    public static function purge()
+    {
+        foreach (glob(sys_get_temp_dir() . '/type-cache.*') as $fileName) {
+            unlink($fileName);
+        }
+    }
 }
