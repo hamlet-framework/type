@@ -74,11 +74,13 @@ class ArrayTypeTest extends TestCase
      */
     public function testAssert($value, bool $success)
     {
-        if (!$success) {
+        if ($success) {
+            _array(_mixed())->assert($value);
+            $this->assertTrue(true, 'Failed to assert that ' . print_r($value, true) . ' is convertible to an array');
+        } else {
             $this->expectException(CastException::class);
+            _array(_mixed())->assert($value);
         }
-        _array(_mixed())->assert($value);
-        $this->assertTrue(true);
     }
 
     public function testArrayOfStrings()
