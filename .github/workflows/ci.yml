@@ -28,4 +28,4 @@ jobs:
           - uses: actions/checkout@v2
           - run: composer update
           - run: vendor/bin/psalm
-          - run: vendor/bin/phpunit
+          - run: vendor/bin/phpunit -v
