@@ -1,7 +1,7 @@
 Hamlet Type 
 ===
 
-[![CI Status](https://github.com/hamlet-framework/type/workflows/CI/badge.svg?branch=master&event=push)]]
+[![CI Status](https://github.com/hamlet-framework/type/workflows/main/badge.svg?branch=master&event=push)]]
 [![Packagist](https://img.shields.io/packagist/v/hamlet-framework/type.svg)](https://packagist.org/packages/hamlet-framework/type)
 [![Packagist](https://img.shields.io/packagist/dt/hamlet-framework/type.svg)](https://packagist.org/packages/hamlet-framework/type)
 [![Coverage Status](https://coveralls.io/repos/github/hamlet-framework/type/badge.svg)](https://coveralls.io/github/hamlet-framework/type)
