@@ -1,4 +1,4 @@
-Hamlet Cast 
+Hamlet Type 
 ===
 
 [![Build Status](https://travis-ci.org/hamlet-framework/type.svg)](https://travis-ci.org/hamlet-framework/type)
