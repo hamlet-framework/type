@@ -20,6 +20,7 @@ class Cache
         $payload = $type->serialize();
         $tempFileName = $fileName . '.tmp';
         file_put_contents($tempFileName, '<?php $value = ' . $payload . ';');
+        chmod($tempFileName, 0755);
         rename($tempFileName, $fileName);
     }
 
@@ -43,7 +44,13 @@ class Cache
          * @noinspection PhpIncludeInspection
          * @psalm-suppress UnresolvableInclude
          */
-        include($fileName);
+        try {
+            include($fileName);
+        } catch (\Throwable $e) {
+            unlink($fileName);
+            return null;
+        }
+
         /**
          * @psalm-suppress UndefinedVariable
          */
