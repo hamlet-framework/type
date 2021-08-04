@@ -65,6 +65,23 @@ $type = Type::of('array{id:int}');
 assert($type->matches($record));
 ```
 
+## Background
+
+PHP Type "system" is a soup. There are multiple ingredients that cause its unforgettable taste:
+
+- Different versions of PHP
+- Super globals
+- Patchy support for types in PHP
+- Default casts
+- Largely untyped core PHP library with baroque API surface
+- Outdated PHPDoc specification
+- Uncoordinated attempt by Psalm to clean it up
+- Adhoc generics
+- PHPStorm patchy support for advanced types
+- Array/List/HashMap/ObjectLike all in one breakfast 
+
+This library is an attempt to give the developer some kind of certainty whilst applying for Java jobs.
+
 ## Todo
 
 - Add union types in PHP 8.0
