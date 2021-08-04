@@ -41,7 +41,6 @@ class Cache
             return null;
         }
         /**
-         * @noinspection PhpIncludeInspection
          * @psalm-suppress UnresolvableInclude
          */
         try {
@@ -52,6 +51,7 @@ class Cache
         }
 
         /**
+         * @noinspection PhpExpressionAlwaysNullInspection
          * @psalm-suppress UndefinedVariable
          */
         return $value ?? null;

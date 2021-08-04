@@ -14,11 +14,6 @@ use RuntimeException;
 class PropertyVisitor extends NameResolver
 {
     /**
-     * @var ReflectionClass
-     */
-    private $reflectionClass;
-
-    /**
      * @var ReflectionClass[]
      * @psalm-var array<class-string,ReflectionClass>
      */
@@ -48,7 +43,6 @@ class PropertyVisitor extends NameResolver
             'preserveOriginalNames' => false,
             'replaceNodes' => false,
         ]);
-        $this->reflectionClass = $reflectionClass;
         self::$reflectionClasses[$reflectionClass->getName()] = $reflectionClass;
     }
 
@@ -81,11 +75,14 @@ class PropertyVisitor extends NameResolver
                  */
                 if (version_compare(phpversion(), '7.4') >= 0) {
                     $currentReflectionClass = $this->reflectionClassByName($this->currentClass);
-                    /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
+                    /**
+                     * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
+                     */
                     $reflectionType = $currentReflectionClass->getProperty($node->name)->getType();
                     if ($reflectionType !== null) {
-                        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-                        /** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
+                        /**
+                         * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
+                         */
                         $typeDeclaration = (string) $reflectionType->getName();
                         if ($reflectionType->allowsNull()) {
                             $typeDeclaration .= '|null';
