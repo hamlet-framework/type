@@ -66,14 +66,14 @@ class CallableType extends Type
     {
         $arguments = [];
         foreach ($this->argumentTypes as $argumentType) {
-            if ($argumentType instanceof UnionType) {
+            if ($argumentType instanceof Union2Type) {
                 $arguments[] = '(' . $argumentType . ')';
             } else {
                 $arguments[] = (string) $argumentType;
             }
         }
         if ($this->returnType) {
-            if ($this->returnType instanceof UnionType) {
+            if ($this->returnType instanceof Union2Type) {
                 $return = ':(' . $this->returnType . ')';
             } else {
                 $return = ':' . $this->returnType;

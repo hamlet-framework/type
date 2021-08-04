@@ -6,33 +6,50 @@ use Hamlet\Cast\Resolvers\Resolver;
 
 /**
  * @template A
- * @extends Type<A>
+ * @template B
+ * @extends Type<A|B>
  */
-class UnionType extends Type
+class Union2Type extends Type
 {
     /**
-     * @var Type[]
-     * @psalm-var array<Type<A>>
+     * @var Type
+     * @psalm-var Type<A>
      */
-    private $as;
+    protected $a;
 
     /**
-     * @param Type ...$as
-     * @psalm-param Type<A> ...$as
+     * @var Type
+     * @psalm-var Type<B>
      */
-    public function __construct(...$as)
+    protected $b;
+
+    /**
+     * @psalm-param Type<A> $a
+     * @psalm-param Type<B> $b
+     */
+    public function __construct(Type $a, Type $b)
     {
-        $this->as = $as;
+        $this->a = $a;
+        $this->b = $b;
+    }
+
+    /**
+     * @return array<Type>
+     * @psalm-return array{Type<A>,Type<B>}
+     */
+    protected function types(): array
+    {
+        return [$this->a, $this->b];
     }
 
     /**
      * @param mixed $value
      * @return bool
-     * @psalm-assert-if-true A $value
+     * @psalm-assert-if-true A|B $value
      */
     public function matches($value): bool
     {
-        foreach ($this->as as $a) {
+        foreach ($this->types() as $a) {
             if ($a->matches($value)) {
                 return true;
             }
@@ -44,16 +61,16 @@ class UnionType extends Type
      * @param mixed $value
      * @param Resolver $resolver
      * @return mixed
-     * @psalm-return A
+     * @psalm-return A|B
      */
     public function resolveAndCast($value, Resolver $resolver)
     {
-        foreach ($this->as as $a) {
+        foreach ($this->types() as $a) {
             if ($a->matches($value)) {
                 return $value;
             }
         }
-        foreach ($this->as as $a) {
+        foreach ($this->types() as $a) {
             try {
                 return $a->resolveAndCast($value, $resolver);
             } catch (CastException $e) {
@@ -65,7 +82,7 @@ class UnionType extends Type
     public function __toString(): string
     {
         $tokens = [];
-        foreach ($this->as as $a) {
+        foreach ($this->types() as $a) {
             $tokens[] = (string) $a;
         }
         return join('|', $tokens);
@@ -74,7 +91,7 @@ class UnionType extends Type
     public function serialize(): string
     {
         $arguments = [];
-        foreach ($this->as as $a) {
+        foreach ($this->types() as $a) {
             $arguments[] = $a->serialize();
         }
         return 'new ' . static::class . '(' . join(', ', $arguments) . ')';

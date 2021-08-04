@@ -3,9 +3,9 @@
 namespace Hamlet\Cast;
 
 /**
- * @extends UnionType<int|float|numeric-string>
+ * @extends Union3Type<int,float,numeric-string>
  */
-class NumericType extends UnionType
+class NumericType extends Union3Type
 {
     public function __construct()
     {

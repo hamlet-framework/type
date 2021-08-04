@@ -89,7 +89,7 @@ class DocBlockParser
      * @return array
      * @psalm-return array<int, array{tag:string, type:string, variable?:string}>
      */
-    public static function parseDoc(string $doc)
+    public static function parseDoc(string $doc): array
     {
         $lines = preg_split(
             '|$\R?^|m',

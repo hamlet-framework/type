@@ -65,7 +65,6 @@ class DefaultResolver implements Resolver
      * @return ReflectionClass
      * @psalm-return ReflectionClass<T>
      * @psalm-suppress MixedReturnTypeCoercion
-     * @throws ReflectionException
      */
     protected function getReflectionClass(string $type): ReflectionClass
     {

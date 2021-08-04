@@ -21,7 +21,7 @@ class StringType extends Type
      * @param mixed $value
      * @return string
      */
-    public function cast($value)
+    public function cast($value): string
     {
         if (is_array($value)) {
             throw new CastException($value, $this);

@@ -20,13 +20,12 @@ use Hamlet\Cast\ObjectType;
 use Hamlet\Cast\ResourceType;
 use Hamlet\Cast\StringType;
 use Hamlet\Cast\Type;
-use Hamlet\Cast\UnionType;
 use Hoa\Compiler\Llk\TreeNode;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 use RuntimeException;
-use function Hamlet\Cast\_array;
 use function Hamlet\Cast\_object_like;
+use function Hamlet\Cast\_union;
 
 class TypeParser
 {
@@ -58,7 +57,7 @@ class TypeParser
                 for ($i = 0; $i < $node->getChildrenNumber(); $i++) {
                     $subTypes[] = $this->parse($node->getChild($i));
                 }
-                return new UnionType(...$subTypes);
+                return _union(...$subTypes);
             case '#array':
                 return $this->fromArray($node);
             case '#object_like_array':

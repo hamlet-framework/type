@@ -3,9 +3,9 @@
 namespace Hamlet\Cast;
 
 /**
- * @extends UnionType<int|string>
+ * @extends Union2Type<int,string>
  */
-class ArrayKeyType extends UnionType
+class ArrayKeyType extends Union2Type
 {
     public function __construct()
     {

@@ -3,9 +3,9 @@
 namespace Hamlet\Cast;
 
 /**
- * @extends UnionType<scalar>
+ * @extends Union4Type<int,bool,float,string>
  */
-class ScalarType extends UnionType
+class ScalarType extends Union4Type
 {
     public function __construct()
     {

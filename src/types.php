@@ -2,9 +2,12 @@
 
 namespace Hamlet\Cast;
 
+use RuntimeException;
+
 /**
  * @return BoolType
  * @psalm-return Type<bool>
+ * @psalm-suppress InvalidReturnType
  */
 function _bool(): Type
 {
@@ -17,6 +20,7 @@ function _bool(): Type
  * @psalm-param class-string<T> $type
  * @return ClassType
  * @psalm-return Type<T>
+ * @psalm-suppress InvalidReturnType
  */
 function _class(string $type): Type
 {
@@ -26,6 +30,7 @@ function _class(string $type): Type
 /**
  * @return CallableType
  * @psalm-return Type<callable>
+ * @psalm-suppress InvalidReturnType
  */
 function _callable(): Type
 {
@@ -35,6 +40,7 @@ function _callable(): Type
 /**
  * @return FloatType
  * @pslam-return Type<float>
+ * @psalm-suppress InvalidReturnType
  */
 function _float(): Type
 {
@@ -44,6 +50,7 @@ function _float(): Type
 /**
  * @return IntType
  * @psalm-return Type<int>
+ * @psalm-suppress InvalidReturnType
  */
 function _int(): Type
 {
@@ -53,6 +60,7 @@ function _int(): Type
 /**
  * @return NumericStringType
  * @psalm-return Type<numeric-string>
+ * @psalm-suppress InvalidReturnType
  */
 function _numeric_string(): Type
 {
@@ -62,6 +70,8 @@ function _numeric_string(): Type
 /**
  * @return NumericType
  * @psalm-return Type<numeric>
+ * @psalm-suppress InvalidReturnStatement
+ * @psalm-suppress InvalidReturnType
  */
 function _numeric(): Type
 {
@@ -71,6 +81,8 @@ function _numeric(): Type
 /**
  * @return ScalarType
  * @psalm-return Type<scalar>
+ * @psalm-suppress InvalidReturnStatement
+ * @psalm-suppress InvalidReturnType
  */
 function _scalar(): Type
 {
@@ -80,6 +92,7 @@ function _scalar(): Type
 /**
  * @return ArrayKeyType
  * @psalm-return Type<array-key>
+ * @psalm-suppress InvalidReturnType
  */
 function _array_key(): Type
 {
@@ -158,6 +171,7 @@ function _null(): Type
 /**
  * @return ObjectType
  * @pslam-return Type<object>
+ * @psalm-suppress InvalidReturnType
  */
 function _object(): Type
 {
@@ -170,6 +184,7 @@ function _object(): Type
  * @psalm-param array<string,Type<T>> $properties
  * @return ObjectLikeType
  * @psalm-return ObjectLikeType<T>
+ * @psalm-suppress InvalidReturnType
  */
 function _object_like(array $properties): Type
 {
@@ -179,6 +194,7 @@ function _object_like(array $properties): Type
 /**
  * @return ResourceType
  * @psalm-return Type<resource>
+ * @psalm-suppress InvalidReturnType
  */
 function _resource(): Type
 {
@@ -188,6 +204,7 @@ function _resource(): Type
 /**
  * @return StringType
  * @psalm-return Type<string>
+ * @psalm-suppress InvalidReturnType
  */
 function _string(): Type
 {
@@ -196,12 +213,69 @@ function _string(): Type
 
 /**
  * @template A
- * @param Type[] $as
- * @psalm-param Type<A> ...$as
- * @return UnionType
- * @psalm-return Type<A>
+ * @template B
+ * @template C
+ * @template D
+ * @template E
+ * @template F
+ * @template G
+ * @template H
+ * @param Type $a
+ * @param Type $b
+ * @param Type|null $c
+ * @param Type|null $d
+ * @param Type|null $e
+ * @param Type|null $f
+ * @param Type|null $g
+ * @param Type|null $h
+ * @psalm-param Type<A> $a
+ * @psalm-param Type<B> $b
+ * @psalm-param Type<C>|null $c
+ * @psalm-param Type<D>|null $d
+ * @psalm-param Type<E>|null $e
+ * @psalm-param Type<F>|null $f
+ * @psalm-param Type<G>|null $g
+ * @psalm-param Type<H>|null $h
+ * @return Type
+ * @psalm-return (func_num_args() is 2 ? Type<A|B> : (func_num_args() is 3 ? Type<A|B|C> : (func_num_args() is 4 ? Type<A|B|C|D> : (func_num_args() is 5 ? Type<A|B|C|D|E> : (func_num_args() is 6 ? Type<A|B|C|D|E|F> : (func_num_args() is 7 ? Type<A|B|C|D|E|F|G> : Type<A|B|C|D|E|F|G|H>))))))
+ * @psalm-suppress InvalidReturnType
  */
-function _union(Type ...$as): Type
+function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
 {
-    return new UnionType(...$as);
+    switch (func_num_args()) {
+        case 2:
+            return new Union2Type($a, $b);
+        case 3:
+            if ($c === null) {
+                throw new RuntimeException('Type cannot be null');
+            }
+            return new Union3Type($a, $b, $c);
+        case 4:
+            if ($c === null || $d === null) {
+                throw new RuntimeException('Type cannot be null');
+            }
+            return new Union4Type($a, $b, $c, $d);
+        case 5:
+            if ($c === null || $d === null || $e === null) {
+                throw new RuntimeException('Type cannot be null');
+            }
+            return new Union5Type($a, $b, $c, $d, $e);
+        case 6:
+            if ($c === null || $d === null || $e === null || $f === null) {
+                throw new RuntimeException('Type cannot be null');
+            }
+            return new Union6Type($a, $b, $c, $d, $e, $f);
+        case 7:
+            if ($c === null || $d === null || $e === null || $f === null || $g === null) {
+                throw new RuntimeException('Type cannot be null');
+            }
+            return new Union7Type($a, $b, $c, $d, $e, $f, $g);
+        case 8:
+            if ($c === null || $d === null || $e === null || $f === null || $g === null || $h === null) {
+                throw new RuntimeException('Type cannot be null');
+            }
+            return new Union8Type($a, $b, $c, $d, $e, $f, $g, $h);
+        default:
+            throw new RuntimeException('Unsupported number of arguments');
+    }
 }

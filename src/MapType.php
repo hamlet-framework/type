@@ -64,7 +64,7 @@ class MapType extends Type
      * @return array
      * @psalm-return array<K,V>
      */
-    public function resolveAndCast($value, Resolver $resolver)
+    public function resolveAndCast($value, Resolver $resolver): array
     {
         if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);

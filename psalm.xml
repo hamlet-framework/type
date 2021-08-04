@@ -14,6 +14,8 @@
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
+        <DuplicateClass errorLevel="suppress"/>
+        <DuplicateFunction errorLevel="suppress"/>
         <ReservedWord errorLevel="suppress"/>
         <RedundantConditionGivenDocblockType errorLevel="suppress"/>
         <UnnecessaryVarAnnotation errorLevel="suppress"/>
