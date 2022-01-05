@@ -14,28 +14,21 @@ use RuntimeException;
 class PropertyVisitor extends NameResolver
 {
     /**
-     * @var ReflectionClass[]
-     * @psalm-var array<class-string,ReflectionClass>
+     * @var array<class-string,ReflectionClass>
      */
-    private static $reflectionClasses = [];
+    private static array $reflectionClasses = [];
 
     /**
-     * @var array
-     * @psalm-var array<string,Type>
+     * @var array<string,Type>
      */
-    private $properties = [];
+    private array $properties = [];
 
     /**
-     * @var string|null
-     * @psalm-var class-string|null
+     * @var class-string|null
      */
-    private $currentClass = null;
+    private ?string $currentClass = null;
 
-    /**
-     * @var array|true|null
-     * @psalm-var Type|true|null
-     */
-    private $currentProperty = null;
+    private Type|bool|null $currentProperty = null;
 
     public function __construct(ReflectionClass $reflectionClass)
     {
@@ -93,7 +86,7 @@ class PropertyVisitor extends NameResolver
                     $this->properties[$key] = new MixedType;
                 }
                 $this->currentProperty = null;
-            } elseif ($this->currentProperty !== null) {
+            } elseif ($this->currentProperty) {
                 $this->properties[$key] = $this->currentProperty;
                 $this->currentProperty = null;
             }

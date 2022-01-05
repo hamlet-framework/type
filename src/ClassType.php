@@ -13,14 +13,12 @@ use stdClass;
 class ClassType extends Type
 {
     /**
-     * @var string
-     * @psalm-var class-string<T>
+     * @var class-string<T>
      */
-    private $type;
+    private string $type;
 
     /**
-     * @param string $type
-     * @psalm-param class-string<T> $type
+     * @param class-string<T> $type
      */
     public function __construct(string $type)
     {

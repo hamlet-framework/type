@@ -13,11 +13,14 @@
   "config": {
     "optimize-autoloader": true,
     "classmap-authoritative": true,
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true
+    }
   },
   "require": {
-    "php": "^7 || ^8",
-    "hoa/compiler": "^3",
+    "php": ">=8.1",
+    "hamlet-framework/hoa-compiler": "@stable",
     "nikic/php-parser": "^4"
   },
   "require-dev": {

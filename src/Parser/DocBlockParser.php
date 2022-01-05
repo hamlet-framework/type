@@ -129,9 +129,11 @@ class DocBlockParser
             $sections[] = $section;
         }
 
+        /**
+         * @var array<array{string,string}> $sections
+         */
         $entries = [];
-        /** @var array<array{0:string,1:string}> $sections */
-        foreach ($sections as list($tag, $body)) {
+        foreach ($sections as [$tag, $body]) {
             if (preg_match('|(.*)\s+(\$[_a-zA-Z][_a-zA-Z0-9]*)|', $body, $matches)) {
                 $entries[] = [
                     'tag' => $tag,

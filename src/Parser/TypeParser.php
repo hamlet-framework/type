@@ -29,17 +29,8 @@ use function Hamlet\Cast\_union;
 
 class TypeParser
 {
-    /**
-     * @var NameContext|null
-     */
-    private $nameContext;
-
-    /**
-     * @param NameContext|null $nameContext
-     */
-    public function __construct(NameContext $nameContext = null)
+    public function __construct(private ?NameContext $nameContext = null)
     {
-        $this->nameContext = $nameContext;
     }
 
     public function parse(TreeNode $node): Type
@@ -55,7 +46,9 @@ class TypeParser
             case '#union':
                 $subTypes = [];
                 for ($i = 0; $i < $node->getChildrenNumber(); $i++) {
-                    $subTypes[] = $this->parse($node->getChild($i));
+                    $child = $node->getChild($i);
+                    assert($child !== null);
+                    $subTypes[] = $this->parse($child);
                 }
                 return _union(...$subTypes);
             case '#array':
@@ -63,9 +56,13 @@ class TypeParser
             case '#object_like_array':
                 return $this->fromObjectLikeArray($node);
             case '#basic_type':
-                $type = $this->parse($node->getChild(0));
+                $firstChild = $node->getChild(0);
+                assert($firstChild !== null);
+                $type = $this->parse($firstChild);
                 for ($i = 1; $i < $node->getChildrenNumber(); $i++) {
-                    if ($node->getChild($i)->getId() == '#brackets') {
+                    $child = $node->getChild($i);
+                    assert($child !== null);
+                    if ($child->getId() == '#brackets') {
                         $type = new ArrayType($type);
                     }
                 }
@@ -81,8 +78,9 @@ class TypeParser
     private function fromLiteral(TreeNode $node): Type
     {
         $firstChild = $node->getChild(0);
+        assert($firstChild !== null);
         if ($firstChild->isToken()) {
-            switch ($node->getChild(0)->getValueToken()) {
+            switch ($firstChild->getValueToken()) {
                 case 'true':
                     return new LiteralType(true);
                 case 'false':
@@ -133,16 +131,20 @@ class TypeParser
     /**
      * @param TreeNode $node
      * @return Type
+     * @psalm-suppress RedundantCondition
      */
     private function fromClassName(TreeNode $node): Type
     {
         $path = '';
         for ($i = 0; $i < $node->getChildrenNumber(); $i++) {
             $child = $node->getChild($i);
+            assert($child !== null);
             if ($child->getId() === '#backslash') {
                 $path .= '\\';
             } elseif ($child->getId() === 'token' && $child->getValueToken() === 'id') {
-                $path .= $child->getValueValue();
+                $valueValue = $child->getValueValue();
+                assert($valueValue !== null);
+                $path .= $valueValue;
             } else {
                 throw new RuntimeException('Unexpected ID ' . print_r($child, true));
             }
@@ -166,7 +168,9 @@ class TypeParser
 
     private function fromArray(TreeNode $node): Type
     {
-        $tag = $node->getChild(0)->getValueValue();
+        $firstChild = $node->getChild(0);
+        assert($firstChild !== null);
+        $tag = $firstChild->getValueValue();
         $list = $tag == 'list' || $tag == 'non-empty-list';
 
         /**
@@ -180,14 +184,19 @@ class TypeParser
                     return new MapType(new ArrayKeyType(), new MixedType());
                 }
             case 2:
+                $secondChild = $node->getChild(1);
+                assert($secondChild !== null);
                 if ($list) {
-                    return new ListType($this->parse($node->getChild(1)));
+                    return new ListType($this->parse($secondChild));
                 } else {
-                    return new MapType(new ArrayKeyType(), $this->parse($node->getChild(1)));
+                    return new MapType(new ArrayKeyType(), $this->parse($secondChild));
                 }
             case 3:
                 if (!$list) {
-                    return new MapType($this->parse($node->getChild(1)), $this->parse($node->getChild(2)));
+                    $secondChild = $node->getChild(1);
+                    $thirdChild = $node->getChild(2);
+                    assert($secondChild !== null && $thirdChild !== null);
+                    return new MapType($this->parse($secondChild), $this->parse($thirdChild));
                 }
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
@@ -201,13 +210,21 @@ class TypeParser
     {
         switch ($node->getChildrenNumber()) {
             case 1:
-                return ['', true, $this->parse($node->getChild(0))];
+                $firstChild = $node->getChild(0);
+                assert($firstChild !== null);
+                return ['', true, $this->parse($firstChild)];
             case 2:
-                $name = $node->getChild(0)->getChild(0)->getValueValue();
-                return [$name, true, $this->parse($node->getChild(1))];
+                $name = $node->getChild(0)?->getChild(0)?->getValueValue();
+                assert($name !== null);
+                $secondChild = $node->getChild(1);
+                assert($secondChild !== null);
+                return [$name, true, $this->parse($secondChild)];
             case 3:
-                $name = $node->getChild(0)->getChild(0)->getValueValue();
-                return [$name, false, $this->parse($node->getChild(2))];
+                $name = $node->getChild(0)?->getChild(0)?->getValueValue();
+                assert($name !== null);
+                $thirdChild = $node->getChild(2);
+                assert($thirdChild !== null);
+                return [$name, false, $this->parse($thirdChild)];
         }
         throw new RuntimeException('Cannot convert node ' . print_r($node, true));
     }
@@ -217,6 +234,7 @@ class TypeParser
         $properties = [];
         for ($i = 1; $i < $node->getChildrenNumber(); $i++) {
             $child = $node->getChild($i);
+            assert($child !== null);
             if ($child->getId() == '#property') {
                 list($name, $required, $type) = $this->fromProperty($child);
                 $properties[$name . ($required ? '' : '?')] = $type;
@@ -229,21 +247,28 @@ class TypeParser
 
     private function fromCallable(TreeNode $node): Type
     {
-        $tag = $node->getChild(0)->getValueValue();
+        $firstChild = $node->getChild(0);
+        assert($firstChild !== null);
+        $tag = $firstChild->getValueValue();
         $types = [];
         for ($i = 1; $i < $node->getChildrenNumber(); $i++) {
-            $types[] = $this->parse($node->getChild($i));
+            $child = $node->getChild($i);
+            assert($child !== null);
+            $types[] = $this->parse($child);
         }
         if (empty($types)) {
             $returnType = null;
         } else {
             $returnType = array_pop($types);
         }
+        assert($tag !== null);
         return new CallableType($tag, $returnType, $types);
     }
 
     private function fromGeneric(TreeNode $node): Type
     {
-        return $this->parse($node->getChild(0));
+        $firstChild = $node->getChild(0);
+        assert($firstChild !== null);
+        return $this->parse($firstChild);
     }
 }

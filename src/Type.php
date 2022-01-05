@@ -98,9 +98,8 @@ abstract class Type
                 return new ResourceType;
         }
         if (self::$compiler === null) {
-            self::$compiler = Llk::load(new Read(__DIR__ . '/../resources/grammar.pp'));
+            self::$compiler = Llk::load(__DIR__ . '/../resources/grammar.pp');
         }
-        /** @var TreeNode $node */
         $node = self::$compiler->parse($declaration, 'expression');
         $parser = new TypeParser($nameContext);
         return $parser->parse($node);

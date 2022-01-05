@@ -6,7 +6,6 @@ use Hamlet\Cast\Type;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Compiler\Visitor\Dump;
-use Hoa\File\Read;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -18,12 +17,12 @@ class ParserTest extends TestCase
     /**
      * @before
      */
-    public function _setUp()
+    public function _setUp(): void
     {
         Cache::purge();
     }
 
-    public function typeDeclarations()
+    public function typeDeclarations(): array
     {
         return [
             ['int'],
@@ -74,9 +73,9 @@ class ParserTest extends TestCase
      * @dataProvider typeDeclarations()
      * @param string $specification
      */
-    public function testHoaParser(string $specification)
+    public function testHoaParser(string $specification): void
     {
-        $compiler = Llk::load(new Read(__DIR__ . '/../../resources/grammar.pp'));
+        $compiler = Llk::load(__DIR__ . '/../../resources/grammar.pp');
         $ast = _class(TreeNode::class)->cast($compiler->parse($specification, 'expression'));
         $dump = new Dump();
 
@@ -91,7 +90,7 @@ class ParserTest extends TestCase
      * @dataProvider typeDeclarations()
      * @param string $specification
      */
-    public function testTypeParser(string $specification)
+    public function testTypeParser(string $specification): void
     {
         $type = Type::of($specification);
 
@@ -102,7 +101,7 @@ class ParserTest extends TestCase
         Assert::assertNotNull($type);
     }
 
-    public function phpDocDeclarations()
+    public function phpDocDeclarations(): array
     {
         return [
             ['
@@ -161,7 +160,7 @@ class ParserTest extends TestCase
     /**
      * @throws ReflectionException
      */
-    public function testNameResolver()
+    public function testNameResolver(): void
     {
         require_once __DIR__ . '/../../psalm-cases/classes/TestClass.php';
 
@@ -179,7 +178,7 @@ class ParserTest extends TestCase
      * @dataProvider typeDeclarations()
      * @param string $specification
      */
-    public function testSerialization(string $specification)
+    public function testSerialization(string $specification): void
     {
         $type = Type::of($specification);
 
@@ -187,7 +186,7 @@ class ParserTest extends TestCase
         $this->assertEquals((string) $type, (string) $copy, 'Failed on ' . $specification);
     }
 
-    public function testParsingOfUglyNestedStructures()
+    public function testParsingOfUglyNestedStructures(): void
     {
         if (version_compare(phpversion(), '7.4') < 0) {
             $this->assertTrue(true);
