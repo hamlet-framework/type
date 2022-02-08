@@ -7,16 +7,12 @@ namespace Hamlet\Cast;
  */
 class FloatType extends Type
 {
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_float($value);
     }
 
-    /**
-     * @param mixed $value
-     * @return float
-     */
-    public function cast($value): float
+    public function cast(mixed $value): float
     {
         if (is_object($value)) {
             throw new CastException($value, $this);

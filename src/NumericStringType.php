@@ -7,17 +7,15 @@ namespace Hamlet\Cast;
  */
 class NumericStringType extends Type
 {
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_string($value) && is_numeric($value);
     }
 
     /**
-     * @param mixed $value
-     * @return string
-     * @psalm-return numeric-string
+     * @return numeric-string
      */
-    public function cast($value): string
+    public function cast(mixed $value): string
     {
         if (is_array($value)) {
             throw new CastException($value, $this);

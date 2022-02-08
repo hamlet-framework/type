@@ -8,20 +8,14 @@ namespace Hamlet\Cast;
 class StringType extends Type
 {
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true string $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_string($value);
     }
 
-    /**
-     * @param mixed $value
-     * @return string
-     */
-    public function cast($value): string
+    public function cast(mixed $value): string
     {
         if (is_array($value)) {
             throw new CastException($value, $this);

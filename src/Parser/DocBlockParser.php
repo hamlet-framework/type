@@ -14,9 +14,6 @@ use RuntimeException;
 class DocBlockParser
 {
     /**
-     * @param ReflectionClass $reflectionClass
-     * @param ReflectionProperty $reflectionProperty
-     * @return Type
      * @psalm-suppress MixedInferredReturnType
      * @psalm-suppress MixedReturnStatement
      */
@@ -64,11 +61,7 @@ class DocBlockParser
         return $result;
     }
 
-    /**
-     * @param string $doc
-     * @return string|null
-     */
-    public static function varTypeDeclarationFrom(string $doc)
+    public static function varTypeDeclarationFrom(string $doc): ?string
     {
         $fields = self::parseDoc($doc);
         foreach ($fields as $field) {
@@ -85,9 +78,7 @@ class DocBlockParser
     }
 
     /**
-     * @param string $doc
-     * @return array
-     * @psalm-return array<int, array{tag:string, type:string, variable?:string}>
+     * @return array<int, array{tag:string, type:string, variable?:string}>
      */
     public static function parseDoc(string $doc): array
     {

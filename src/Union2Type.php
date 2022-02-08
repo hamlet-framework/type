@@ -12,20 +12,18 @@ use Hamlet\Cast\Resolvers\Resolver;
 class Union2Type extends Type
 {
     /**
-     * @var Type
-     * @psalm-var Type<A>
+     * @var Type<A>
      */
-    protected $a;
+    protected Type $a;
 
     /**
-     * @var Type
-     * @psalm-var Type<B>
+     * @var Type<B>
      */
-    protected $b;
+    protected Type $b;
 
     /**
-     * @psalm-param Type<A> $a
-     * @psalm-param Type<B> $b
+     * @param Type<A> $a
+     * @param Type<B> $b
      */
     public function __construct(Type $a, Type $b)
     {
@@ -34,8 +32,7 @@ class Union2Type extends Type
     }
 
     /**
-     * @return array<Type>
-     * @psalm-return array{Type<A>,Type<B>}
+     * @return array{Type<A>,Type<B>}
      */
     protected function types(): array
     {
@@ -58,12 +55,9 @@ class Union2Type extends Type
     }
 
     /**
-     * @param mixed $value
-     * @param Resolver $resolver
-     * @return mixed
-     * @psalm-return A|B
+     * @return A|B
      */
-    public function resolveAndCast($value, Resolver $resolver)
+    public function resolveAndCast(mixed $value, Resolver $resolver): mixed
     {
         foreach ($this->types() as $a) {
             if ($a->matches($value)) {

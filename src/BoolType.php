@@ -12,16 +12,12 @@ class BoolType extends Type
      * @return bool
      * @psalm-assert-if-true bool $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_bool($value);
     }
 
-    /**
-     * @param mixed $value
-     * @return bool
-     */
-    public function cast($value): bool
+    public function cast(mixed $value): bool
     {
         return (bool) $value;
     }

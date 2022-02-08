@@ -8,20 +8,17 @@ namespace Hamlet\Cast;
 class NullType extends Type
 {
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true null $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_null($value);
     }
 
     /**
-     * @param mixed $value
      * @return null
      */
-    public function cast($value)
+    public function cast(mixed $value): mixed
     {
         if ($value != null) {
             throw new CastException($value, $this);

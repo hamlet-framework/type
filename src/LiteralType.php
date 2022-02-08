@@ -9,26 +9,22 @@ namespace Hamlet\Cast;
 class LiteralType extends Type
 {
     /**
-     * @var array
-     * @psalm-var array<T>
+     * @var array<T>
      */
-    private $values;
+    private array $values;
 
     /**
-     * @param mixed ...$values
-     * @psalm-param T ...$values
+     * @param T ...$values
      */
-    public function __construct(...$values)
+    public function __construct(mixed ...$values)
     {
         $this->values = $values;
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true T $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         foreach ($this->values as $v) {
             if ($value === $v) {
@@ -39,11 +35,9 @@ class LiteralType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return mixed
-     * @psalm-return T
+     * @return T
      */
-    public function cast($value)
+    public function cast(mixed $value): mixed
     {
         if ($this->matches($value)) {
             return $value;

@@ -5,8 +5,7 @@ namespace Hamlet\Cast;
 use RuntimeException;
 
 /**
- * @return BoolType
- * @psalm-return Type<bool>
+ * @return Type<bool>
  * @psalm-suppress InvalidReturnType
  */
 function _bool(): Type
@@ -16,10 +15,8 @@ function _bool(): Type
 
 /**
  * @template T
- * @param string $type
- * @psalm-param class-string<T> $type
- * @return ClassType
- * @psalm-return Type<T>
+ * @param class-string<T> $type
+ * @return Type<T>
  * @psalm-suppress InvalidReturnType
  */
 function _class(string $type): Type
@@ -28,8 +25,7 @@ function _class(string $type): Type
 }
 
 /**
- * @return CallableType
- * @psalm-return Type<callable>
+ * @return Type<callable>
  * @psalm-suppress InvalidReturnType
  */
 function _callable(): Type
@@ -38,8 +34,7 @@ function _callable(): Type
 }
 
 /**
- * @return FloatType
- * @pslam-return Type<float>
+ * @return Type<float>
  * @psalm-suppress InvalidReturnType
  */
 function _float(): Type
@@ -48,8 +43,7 @@ function _float(): Type
 }
 
 /**
- * @return IntType
- * @psalm-return Type<int>
+ * @return Type<int>
  * @psalm-suppress InvalidReturnType
  */
 function _int(): Type
@@ -58,8 +52,7 @@ function _int(): Type
 }
 
 /**
- * @return NumericStringType
- * @psalm-return Type<numeric-string>
+ * @return Type<numeric-string>
  * @psalm-suppress InvalidReturnType
  */
 function _numeric_string(): Type
@@ -68,8 +61,7 @@ function _numeric_string(): Type
 }
 
 /**
- * @return NumericType
- * @psalm-return Type<numeric>
+ * @return Type<numeric>
  * @psalm-suppress InvalidReturnStatement
  * @psalm-suppress InvalidReturnType
  */
@@ -79,8 +71,7 @@ function _numeric(): Type
 }
 
 /**
- * @return ScalarType
- * @psalm-return Type<scalar>
+ * @return Type<scalar>
  * @psalm-suppress InvalidReturnStatement
  * @psalm-suppress InvalidReturnType
  */
@@ -90,8 +81,7 @@ function _scalar(): Type
 }
 
 /**
- * @return ArrayKeyType
- * @psalm-return Type<array-key>
+ * @return Type<array-key>
  * @psalm-suppress InvalidReturnType
  */
 function _array_key(): Type
@@ -101,10 +91,8 @@ function _array_key(): Type
 
 /**
  * @template A
- * @param Type $type
- * @psalm-param Type<A> $type
- * @return ListType
- * @psalm-return Type<list<A>>
+ * @param Type<A> $type
+ * @return Type<list<A>>
  */
 function _list(Type $type): Type
 {
@@ -113,10 +101,8 @@ function _list(Type $type): Type
 
 /**
  * @template A
- * @param Type $type
- * @psalm-param Type<A> $type
- * @return ArrayType
- * @psalm-return Type<array<A>>
+ * @param Type<A> $type
+ * @return Type<array<A>>
  */
 function _array(Type $type): Type
 {
@@ -125,10 +111,8 @@ function _array(Type $type): Type
 
 /**
  * @template A
- * @param array $as
- * @psalm-param array<A> $as
- * @return LiteralType
- * @psalm-return Type<A>
+ * @param array<A> $as
+ * @return Type<A>
  */
 function _literal(...$as): Type
 {
@@ -138,12 +122,9 @@ function _literal(...$as): Type
 /**
  * @template A as array-key
  * @template B
- * @param Type $keyType
- * @psalm-param Type<A> $keyType
- * @param Type $valueType
- * @psalm-param Type<B> $valueType
- * @return MapType
- * @psalm-return Type<array<A,B>>
+ * @param Type<A> $keyType
+ * @param Type<B> $valueType
+ * @return Type<array<A,B>>
  */
 function _map(Type $keyType, Type $valueType): Type
 {
@@ -151,8 +132,7 @@ function _map(Type $keyType, Type $valueType): Type
 }
 
 /**
- * @return MixedType
- * @psalm-return Type<mixed>
+ * @return Type<mixed>
  */
 function _mixed(): Type
 {
@@ -160,8 +140,7 @@ function _mixed(): Type
 }
 
 /**
- * @return NullType
- * @psalm-return Type<null>
+ * @return Type<null>
  */
 function _null(): Type
 {
@@ -169,8 +148,7 @@ function _null(): Type
 }
 
 /**
- * @return ObjectType
- * @pslam-return Type<object>
+ * @return Type<object>
  * @psalm-suppress InvalidReturnType
  */
 function _object(): Type
@@ -180,10 +158,8 @@ function _object(): Type
 
 /**
  * @template T
- * @param Type[] $properties
- * @psalm-param array<string,Type<T>> $properties
- * @return ObjectLikeType
- * @psalm-return ObjectLikeType<T>
+ * @param array<string,Type<T>> $properties
+ * @return ObjectLikeType<T>
  * @psalm-suppress InvalidReturnType
  */
 function _object_like(array $properties): Type
@@ -192,8 +168,7 @@ function _object_like(array $properties): Type
 }
 
 /**
- * @return ResourceType
- * @psalm-return Type<resource>
+ * @return Type<resource>
  * @psalm-suppress InvalidReturnType
  */
 function _resource(): Type
@@ -202,8 +177,7 @@ function _resource(): Type
 }
 
 /**
- * @return StringType
- * @psalm-return Type<string>
+ * @return Type<string>
  * @psalm-suppress InvalidReturnType
  */
 function _string(): Type
@@ -220,24 +194,15 @@ function _string(): Type
  * @template F
  * @template G
  * @template H
- * @param Type $a
- * @param Type $b
- * @param Type|null $c
- * @param Type|null $d
- * @param Type|null $e
- * @param Type|null $f
- * @param Type|null $g
- * @param Type|null $h
- * @psalm-param Type<A> $a
- * @psalm-param Type<B> $b
- * @psalm-param Type<C>|null $c
- * @psalm-param Type<D>|null $d
- * @psalm-param Type<E>|null $e
- * @psalm-param Type<F>|null $f
- * @psalm-param Type<G>|null $g
- * @psalm-param Type<H>|null $h
- * @return Type
- * @psalm-return (func_num_args() is 2 ? Type<A|B> : (func_num_args() is 3 ? Type<A|B|C> : (func_num_args() is 4 ? Type<A|B|C|D> : (func_num_args() is 5 ? Type<A|B|C|D|E> : (func_num_args() is 6 ? Type<A|B|C|D|E|F> : (func_num_args() is 7 ? Type<A|B|C|D|E|F|G> : Type<A|B|C|D|E|F|G|H>))))))
+ * @param Type<A> $a
+ * @param Type<B> $b
+ * @param Type<C>|null $c
+ * @param Type<D>|null $d
+ * @param Type<E>|null $e
+ * @param Type<F>|null $f
+ * @param Type<G>|null $g
+ * @param Type<H>|null $h
+ * @return (func_num_args() is 2 ? Type<A|B> : (func_num_args() is 3 ? Type<A|B|C> : (func_num_args() is 4 ? Type<A|B|C|D> : (func_num_args() is 5 ? Type<A|B|C|D|E> : (func_num_args() is 6 ? Type<A|B|C|D|E|F> : (func_num_args() is 7 ? Type<A|B|C|D|E|F|G> : Type<A|B|C|D|E|F|G|H>))))))
  * @psalm-suppress InvalidReturnType
  */
 function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type

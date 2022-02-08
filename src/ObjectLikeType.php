@@ -14,14 +14,12 @@ use stdClass;
 class ObjectLikeType extends Type
 {
     /**
-     * @var Type[]
-     * @psalm-var array<string,Type<T>>
+     * @var array<string,Type<T>>
      */
-    private $fields;
+    private array $fields;
 
     /**
-     * @param Type[] $fields
-     * @psalm-param array<string,Type<T>> $fields
+     * @param array<string,Type<T>> $fields
      */
     public function __construct(array $fields)
     {
@@ -29,11 +27,9 @@ class ObjectLikeType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true array $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
             return false;
@@ -55,12 +51,9 @@ class ObjectLikeType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @param Resolver $resolver
-     * @return array
-     * @psalm-return array<T>
+     * @return array<T>
      */
-    public function resolveAndCast($value, Resolver $resolver): array
+    public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
         if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);

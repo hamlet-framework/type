@@ -52,12 +52,9 @@ class ListType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @param Resolver $resolver
-     * @return array
-     * @psalm-return list<T>
+     * @return list<T>
      */
-    public function resolveAndCast($value, Resolver $resolver): array
+    public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
         if (!is_array($value)) {
             throw new CastException($value, $this);

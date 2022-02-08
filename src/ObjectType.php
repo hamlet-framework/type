@@ -8,20 +8,14 @@ namespace Hamlet\Cast;
 class ObjectType extends Type
 {
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true object $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_object($value);
     }
 
-    /**
-     * @param mixed $value
-     * @return object
-     */
-    public function cast($value)
+    public function cast(mixed $value): object
     {
         return (object) $value;
     }

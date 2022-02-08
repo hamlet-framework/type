@@ -11,25 +11,21 @@ use RuntimeException;
 class CastException extends RuntimeException
 {
     /**
-     * @var mixed
-     * @psalm-var T
+     * @var T
      */
-    protected $value;
+    protected mixed $value;
 
     /**
-     * @var Type
-     * @psalm-var Type<Q>
+     * @var Type<Q>
      */
-    protected $targetType;
+    protected Type $targetType;
 
     /**
-     * @param mixed $value
-     * @psalm-param T $value
-     * @param Type $targetType
-     * @psalm-param Type<Q> $targetType
+     * @param T $value
+     * @param Type<Q> $targetType
      * @param string $details
      */
-    public function __construct($value, Type $targetType, string $details = '')
+    public function __construct(mixed $value, Type $targetType, string $details = '')
     {
         $message = 'Cannot convert [' . var_export($value, true) . '] to ' . $targetType;
         if ($details) {
@@ -41,17 +37,15 @@ class CastException extends RuntimeException
     }
 
     /**
-     * @return mixed
-     * @psalm-return T
+     * @return T
      */
-    public function value()
+    public function value(): mixed
     {
         return $this->value;
     }
 
     /**
-     * @return Type
-     * @psalm-return Type<Q>
+     * @return Type<Q>
      */
     public function targetType(): Type
     {

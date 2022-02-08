@@ -60,30 +60,17 @@ class PropertyVisitor extends NameResolver
             }
             $key = $this->currentClass . '::' . $node->name;
             if ($this->currentProperty === true) {
-                /**
-                 * @psalm-suppress MixedAssignment
-                 * @psalm-suppress MixedMethodCall
-                 * @psalm-suppress MixedOperand
-                 * @psalm-suppress UndefinedMethod
-                 */
-                if (version_compare(phpversion(), '7.4') >= 0) {
-                    $currentReflectionClass = $this->reflectionClassByName($this->currentClass);
+                $currentReflectionClass = $this->reflectionClassByName($this->currentClass);
+                $reflectionType = $currentReflectionClass->getProperty($node->name)->getType();
+                if ($reflectionType !== null) {
                     /**
-                     * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
+                     * @psalm-suppress UndefinedMethod
                      */
-                    $reflectionType = $currentReflectionClass->getProperty($node->name)->getType();
-                    if ($reflectionType !== null) {
-                        /**
-                         * @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection
-                         */
-                        $typeDeclaration = (string) $reflectionType->getName();
-                        if ($reflectionType->allowsNull()) {
-                            $typeDeclaration .= '|null';
-                        }
-                        $this->properties[$key] = Type::of($typeDeclaration);
+                    $typeDeclaration = (string) $reflectionType->getName();
+                    if ($reflectionType->allowsNull()) {
+                        $typeDeclaration .= '|null';
                     }
-                } else {
-                    $this->properties[$key] = new MixedType;
+                    $this->properties[$key] = Type::of($typeDeclaration);
                 }
                 $this->currentProperty = null;
             } elseif ($this->currentProperty) {
@@ -95,8 +82,7 @@ class PropertyVisitor extends NameResolver
     }
 
     /**
-     * @return array
-     * @psalm-return array<string,Type>
+     * @return array<string,Type>
      */
     public function properties(): array
     {
@@ -104,11 +90,9 @@ class PropertyVisitor extends NameResolver
     }
 
     /**
-     * @param string|null $type
-     * @psalm-param class-string|null $type
-     * @return ReflectionClass
+     * @param class-string|null $type
      */
-    private function reflectionClassByName($type): ReflectionClass
+    private function reflectionClassByName(?string $type): ReflectionClass
     {
         if ($type === null) {
             throw new RuntimeException('Type information missing');

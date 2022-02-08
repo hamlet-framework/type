@@ -7,8 +7,6 @@ use Hamlet\Cast\Resolvers\DefaultResolver;
 use Hamlet\Cast\Resolvers\Resolver;
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\Parser;
-use Hoa\Compiler\Llk\TreeNode;
-use Hoa\File\Read;
 use PhpParser\NameContext;
 
 /**
@@ -28,11 +26,9 @@ abstract class Type
     private static $typeCache = [];
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true T $value
      */
-    abstract public function matches($value): bool;
+    abstract public function matches(mixed $value): bool;
 
     /**
      * @param mixed $value
@@ -47,23 +43,18 @@ abstract class Type
     }
 
     /**
-     * @param mixed $value
-     * @return mixed
-     * @psalm-return T
+     * @return T
      */
-    public function cast($value)
+    public function cast(mixed $value): mixed
     {
         $resolver = new DefaultResolver;
         return $this->resolveAndCast($value, $resolver);
     }
 
     /**
-     * @param mixed $value
-     * @param Resolver $resolver
-     * @return mixed
-     * @psalm-return T
+     * @return T
      */
-    public function resolveAndCast($value, Resolver $resolver)
+    public function resolveAndCast(mixed $value, Resolver $resolver): mixed
     {
         return $this->cast($value);
     }

@@ -11,14 +11,12 @@ use Hamlet\Cast\Resolvers\Resolver;
 class ArrayType extends Type
 {
     /**
-     * @var Type
-     * @psalm-var Type<T>
+     * @var Type<T>
      */
-    private $elementType;
+    private Type $elementType;
 
     /**
-     * @param Type $elementType
-     * @psalm-param Type<T> $elementType
+     * @param Type<T> $elementType
      */
     public function __construct(Type $elementType)
     {
@@ -26,11 +24,9 @@ class ArrayType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true array<T> $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
             return false;
@@ -47,12 +43,9 @@ class ArrayType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @param Resolver $resolver
-     * @return array
-     * @psalm-return array<T>
+     * @return array<T>
      */
-    public function resolveAndCast($value, Resolver $resolver): array
+    public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
         if (!is_array($value)) {
             throw new CastException($value, $this);

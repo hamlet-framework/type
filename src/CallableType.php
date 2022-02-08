@@ -10,27 +10,21 @@ namespace Hamlet\Cast;
  */
 class CallableType extends Type
 {
-    /**
-     * @var string
-     */
-    private $tag;
+    private string $tag;
+
+    private ?Type $returnType;
 
     /**
-     * @var Type|null
+     * @var array<Type>
      */
-    private $returnType;
-
-    /**
-     * @var Type[]
-     */
-    private $argumentTypes;
+    private array $argumentTypes;
 
     /**
      * @param string $tag
-     * @param Type|null $returnType
-     * @param Type[] $argumentTypes
+     * @param ?Type $returnType
+     * @param array<Type> $argumentTypes
      */
-    public function __construct(string $tag, $returnType = null, array $argumentTypes = [])
+    public function __construct(string $tag, ?Type $returnType = null, array $argumentTypes = [])
     {
         $this->tag = $tag;
         $this->returnType = $returnType;
@@ -38,23 +32,19 @@ class CallableType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true callable $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_callable($value);
     }
 
     /**
-     * @param mixed $value
-     * @return callable
-     * @psalm-return T
+     * @return T
      * @psalm-suppress InvalidReturnStatement not sure we can do more than that
      * @psalm-suppress InvalidReturnType
      */
-    public function cast($value)
+    public function cast(mixed $value): callable
     {
         if (!is_callable($value)) {
             throw new CastException($value, $this);

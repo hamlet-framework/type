@@ -13,22 +13,18 @@ use stdClass;
 class MapType extends Type
 {
     /**
-     * @var Type
-     * @psalm-var Type<K>
+     * @var Type<K>
      */
-    private $keyType;
+    private Type $keyType;
 
     /**
-     * @var Type
-     * @psalm-var Type<V>
+     * @var Type<V>
      */
-    private $valueType;
+    private Type $valueType;
 
     /**
-     * @param Type $keyType
-     * @psalm-param Type<K> $keyType
-     * @param Type $valueType
-     * @psalm-param Type<V> $valueType
+     * @param Type<K> $keyType
+     * @param Type<V> $valueType
      */
     public function __construct(Type $keyType, Type $valueType)
     {
@@ -37,11 +33,9 @@ class MapType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true array<K,V> $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
             return false;
@@ -59,12 +53,9 @@ class MapType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @param Resolver $resolver
-     * @return array
-     * @psalm-return array<K,V>
+     * @return array<K,V>
      */
-    public function resolveAndCast($value, Resolver $resolver): array
+    public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
         if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);

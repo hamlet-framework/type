@@ -7,13 +7,10 @@ use Hamlet\Cast\Type;
 class Cache
 {
     /**
-     * @param string $key
-     * @param Type $type
-     * @return void
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedOperand
      */
-    public static function set(string $key, Type $type)
+    public static function set(string $key, Type $type): void
     {
         $safeKey = __CLASS__ . '::' . $key;
         $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);
@@ -25,15 +22,12 @@ class Cache
     }
 
     /**
-     * @param string $key
-     * @param int $timeThreshold
-     * @return Type|null
      * @psalm-suppress MixedArrayAccess
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedInferredReturnType
      * @psalm-suppress MixedReturnStatement
      */
-    public static function get(string $key, int $timeThreshold)
+    public static function get(string $key, int $timeThreshold): ?Type
     {
         $safeKey = __CLASS__ . '::' . $key;
         $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);
@@ -57,11 +51,7 @@ class Cache
         return $value ?? null;
     }
 
-    /**
-     * @param string $key
-     * @return void
-     */
-    public static function remove(string $key)
+    public static function remove(string $key): void
     {
         $safeKey = __CLASS__ . '::' . $key;
         $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);
@@ -71,7 +61,7 @@ class Cache
     /**
      * @return void
      */
-    public static function purge()
+    public static function purge(): void
     {
         foreach (glob(sys_get_temp_dir() . '/type-cache.*') as $fileName) {
             unlink($fileName);

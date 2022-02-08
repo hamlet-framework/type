@@ -12,16 +12,15 @@ namespace Hamlet\Cast;
 class Union4Type extends Union3Type
 {
     /**
-     * @var Type
-     * @psalm-var Type<D>
+     * @var Type<D>
      */
-    protected $d;
+    protected Type $d;
 
     /**
-     * @psalm-param Type<A> $a
-     * @psalm-param Type<B> $b
-     * @psalm-param Type<C> $c
-     * @psalm-param Type<D> $d
+     * @param Type<A> $a
+     * @param Type<B> $b
+     * @param Type<C> $c
+     * @param Type<D> $d
      */
     public function __construct(Type $a, Type $b, Type $c, Type $d)
     {
@@ -30,8 +29,7 @@ class Union4Type extends Union3Type
     }
 
     /**
-     * @return array<Type>
-     * @psalm-return array{Type<A>,Type<B>,Type<C>,Type<D>}
+     * @return array{Type<A>,Type<B>,Type<C>,Type<D>}
      */
     protected function types(): array
     {

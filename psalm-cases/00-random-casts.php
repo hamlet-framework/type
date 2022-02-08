@@ -56,27 +56,22 @@ class Example
     }
 
     /**
-     * @return mixed
-     * @psalm-return (1|null|'java')
+     * @return (1|null|'java')
      */
-    public function literal()
+    public function literal(): mixed
     {
         return _literal(1, null, 'java')->cast(1);
     }
 
     /**
-     * @return array
-     * @psalm-return array<string,int>
+     * @return array<string,int>
      */
     public function map(): array
     {
         return _map(_string(), _int())->cast(['a' => 1]);
     }
 
-    /**
-     * @return mixed
-     */
-    public function mixed()
+    public function mixed(): mixed
     {
         return _mixed()->cast(null);
     }
@@ -89,10 +84,7 @@ class Example
         return _null()->cast(0);
     }
 
-    /**
-     * @return object
-     */
-    public function object()
+    public function object(): object
     {
         return _object()->cast(new stdClass());
     }
@@ -115,10 +107,7 @@ class Example
         return _string()->cast('hello');
     }
 
-    /**
-     * @return string|null
-     */
-    public function union()
+    public function union(): ?string
     {
         return _union(_string(), _null())->cast(null);
     }

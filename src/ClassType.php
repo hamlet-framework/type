@@ -41,14 +41,11 @@ class ClassType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @param Resolver $resolver
-     * @return object
-     * @psalm-return T
+     * @return T
      * @psalm-suppress InvalidReturnType
      * @psalm-suppress InvalidReturnStatement
      */
-    public function resolveAndCast($value, Resolver $resolver)
+    public function resolveAndCast(mixed $value, Resolver $resolver): object
     {
         if ($this->matches($value)) {
             return $value;
