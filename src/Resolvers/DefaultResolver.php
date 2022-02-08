@@ -13,31 +13,29 @@ use stdClass;
 class DefaultResolver implements Resolver
 {
     /**
-     * @var ReflectionClass[]
-     * @psalm-var array<string,ReflectionClass>
+     * @var array<string,ReflectionClass>
      */
-    private static $reflectionClasses = [];
+    private static array $reflectionClasses = [];
 
     /**
-     * @var Type[][]
-     * @psalm-var array<string,array<string,Type>>
+     * @var array<string,array<string,Type>>
      */
-    private static $propertyTypes = [];
+    private static array $propertyTypes = [];
 
     public function getValue($type, string $propertyName, $source): ValueResolution
     {
         if (is_array($source) && array_key_exists($propertyName, $source)) {
             return ValueResolution::success($source[$propertyName], $propertyName);
         } elseif (is_object($source) && is_a($source, stdClass::class) && property_exists($source, $propertyName)) {
-            /**
-             * @psalm-suppress MixedArgument
-             */
             return ValueResolution::success($source->{$propertyName}, $propertyName);
         }
         return ValueResolution::failure();
     }
 
-    public function setValue($object, string $propertyName, $value)
+    /**
+     * @throws ReflectionException
+     */
+    public function setValue(object|array $object, string $propertyName, mixed $value): object|array
     {
         if (is_array($object)) {
             $object[$propertyName] = $value;
@@ -45,14 +43,13 @@ class DefaultResolver implements Resolver
         } elseif (is_object($object)) {
             if (is_a($object, stdClass::class)) {
                 $object->{$propertyName} = $value;
-                return $object;
             } else {
                 $reflectionClass = $this->getReflectionClass(get_class($object));
                 $property = $reflectionClass->getProperty($propertyName);
                 $property->setAccessible(true);
                 $property->setValue($object, $value);
-                return $object;
             }
+            return $object;
         } else {
             throw new InvalidArgumentException('Unexpected type ' . var_export($object, true));
         }
@@ -60,10 +57,8 @@ class DefaultResolver implements Resolver
 
     /**
      * @template T
-     * @param string $type
-     * @psalm-param class-string<T> $type
-     * @return ReflectionClass
-     * @psalm-return ReflectionClass<T>
+     * @param class-string<T> $type
+     * @return ReflectionClass<T>
      * @psalm-suppress MixedReturnTypeCoercion
      */
     protected function getReflectionClass(string $type): ReflectionClass
@@ -77,20 +72,11 @@ class DefaultResolver implements Resolver
 
     /**
      * @template T
-     * @param string $type
-     * @psalm-param class-string<T> $type
+     * @param class-string<T> $type
      * @param mixed $value
-     * @return SubTypeResolution
-     * @psalm-return SubTypeResolution<T>
-     *
-     * @psalm-suppress InvalidReturnStatement
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress MixedArgumentTypeCoercion
-     * @psalm-suppress MixedReturnTypeCoercion
-     *
-     * @throws ReflectionException
+     * @return SubTypeResolution<T>
      */
-    public function resolveSubType(string $type, $value): SubTypeResolution
+    public function resolveSubType(string $type, mixed $value): SubTypeResolution
     {
         assert(class_exists($type));
         return new SubTypeResolution($this->getReflectionClass($type), $this);
@@ -100,8 +86,7 @@ class DefaultResolver implements Resolver
      * @template P
      * @param ReflectionClass $reflectionClass
      * @param ReflectionProperty $reflectionProperty
-     * @return Type
-     * @psalm-return Type<P>
+     * @return Type<P>
      */
     public function getPropertyType(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type
     {

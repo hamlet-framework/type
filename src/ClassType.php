@@ -4,6 +4,7 @@ namespace Hamlet\Cast;
 
 use Hamlet\Cast\Resolvers\MappingUtils;
 use Hamlet\Cast\Resolvers\Resolver;
+use ReflectionException;
 use stdClass;
 
 /**
@@ -31,11 +32,9 @@ class ClassType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true T $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         return is_object($value) && is_a($value, $this->type);
     }
@@ -44,6 +43,7 @@ class ClassType extends Type
      * @return T
      * @psalm-suppress InvalidReturnType
      * @psalm-suppress InvalidReturnStatement
+     * @throws ReflectionException
      */
     public function resolveAndCast(mixed $value, Resolver $resolver): object
     {

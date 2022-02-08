@@ -1,15 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Hamlet\Cast\Parser;
 
 use Hamlet\Cast\Type;
+use Throwable;
 
 class Cache
 {
-    /**
-     * @psalm-suppress MixedAssignment
-     * @psalm-suppress MixedOperand
-     */
     public static function set(string $key, Type $type): void
     {
         $safeKey = __CLASS__ . '::' . $key;
@@ -22,8 +19,6 @@ class Cache
     }
 
     /**
-     * @psalm-suppress MixedArrayAccess
-     * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedInferredReturnType
      * @psalm-suppress MixedReturnStatement
      */
@@ -34,12 +29,9 @@ class Cache
         if (!file_exists($fileName) || filemtime($fileName) < $timeThreshold) {
             return null;
         }
-        /**
-         * @psalm-suppress UnresolvableInclude
-         */
         try {
             include($fileName);
-        } catch (\Throwable $e) {
+        } catch (Throwable $exception) {
             unlink($fileName);
             return null;
         }
@@ -58,9 +50,6 @@ class Cache
         unlink($fileName);
     }
 
-    /**
-     * @return void
-     */
     public static function purge(): void
     {
         foreach (glob(sys_get_temp_dir() . '/type-cache.*') as $fileName) {

@@ -11,14 +11,12 @@ use Hamlet\Cast\Resolvers\Resolver;
 class ListType extends Type
 {
     /**
-     * @var Type
-     * @psalm-var Type<T>
+     * @var Type<T>
      */
-    private $elementType;
+    private Type $elementType;
 
     /**
-     * @param Type $elementType
-     * @psalm-param Type<T> $elementType
+     * @param Type<T> $elementType
      */
     public function __construct(Type $elementType)
     {
@@ -26,18 +24,13 @@ class ListType extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true list<T> $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
             return false;
         }
-        /**
-         * @psalm-suppress MixedAssignment
-         */
         $i = 0;
         foreach ($value as $k => $v) {
             if ($i !== $k) {

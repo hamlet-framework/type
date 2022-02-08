@@ -2,7 +2,6 @@
 
 namespace Hamlet\Cast;
 
-use Hamlet\Cast\Resolvers\DefaultResolver;
 use Hamlet\Cast\Resolvers\MappingUtils;
 use Hamlet\Cast\Resolvers\Resolver;
 use stdClass;

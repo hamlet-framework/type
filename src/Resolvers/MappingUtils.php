@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Hamlet\Cast\Resolvers;
 
@@ -7,28 +7,21 @@ use Hamlet\Cast\Type;
 use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
+use stdClass;
 
 class MappingUtils
 {
     /**
-     * @var string[][]
-     * @psalm-var array<string,array<string>>
+     * @var array<string,array<string>>
      */
-    private static $properties = [];
+    private static array $properties = [];
 
     /**
-     * @param mixed $value
-     * @param array $mappedProperties
-     * @psalm-param array<string,int> $mappedFields
-     * @param Type $context
-     * @return void
+     * @param array<string,int> $mappedProperties
      */
-    public static function checkMapping($value, array $mappedProperties, Type $context)
+    public static function checkMapping(mixed $value, array $mappedProperties, Type $context): void
     {
         if (is_array($value)) {
-            /**
-             * @psalm-suppress MixedAssignment
-             */
             foreach ($value as $property => $_) {
                 /**
                  * @psalm-suppress MixedArrayTypeCoercion
@@ -38,7 +31,7 @@ class MappingUtils
                 }
             }
         } elseif (is_object($value)) {
-            if (is_a($value, \stdClass::class)) {
+            if (is_a($value, stdClass::class)) {
                 $properties = array_keys(get_object_vars($value));
             } else {
                 $className = get_class($value);

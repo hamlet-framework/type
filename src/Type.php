@@ -14,16 +14,7 @@ use PhpParser\NameContext;
  */
 abstract class Type
 {
-    /**
-     * @var Parser|null
-     */
-    private static $compiler = null;
-
-    /**
-     * @var Type[]
-     * @psalm-var array<string,Type>
-     */
-    private static $typeCache = [];
+    private static ?Parser $compiler = null;
 
     /**
      * @psalm-assert-if-true T $value
@@ -31,12 +22,10 @@ abstract class Type
     abstract public function matches(mixed $value): bool;
 
     /**
-     * @param mixed $value
-     * @return mixed
-     * @psalm-return T
+     * @return T
      * @psalm-assert T $value
      */
-    public function assert($value)
+    public function assert(mixed $value): mixed
     {
         assert($this->matches($value), new CastException($value, $this));
         return $value;
@@ -66,12 +55,7 @@ abstract class Type
         return 'new ' . static::class;
     }
 
-    /**
-     * @param string $declaration
-     * @param NameContext|null $nameContext
-     * @return Type
-     */
-    public static function of(string $declaration, NameContext $nameContext = null): Type
+    public static function of(string $declaration, ?NameContext $nameContext = null): Type
     {
         switch ($declaration) {
             case 'string':

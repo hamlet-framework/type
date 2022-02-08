@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Hamlet\Cast\Parser;
 
-use Hamlet\Cast\MixedType;
 use Hamlet\Cast\Type;
 use PhpParser\Node;
 use PhpParser\Node\VarLikeIdentifier;
@@ -39,6 +38,9 @@ class PropertyVisitor extends NameResolver
         self::$reflectionClasses[$reflectionClass->getName()] = $reflectionClass;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof Node\Stmt\Class_) {

@@ -13,10 +13,6 @@ use RuntimeException;
 
 class DocBlockParser
 {
-    /**
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
-     */
     public static function fromProperty(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type
     {
         $declaringReflectionClass = $reflectionProperty->getDeclaringClass();
@@ -27,7 +23,6 @@ class DocBlockParser
         }
 
         try {
-            /** @psalm-suppress MixedAssignment */
             $propertyType = Cache::get($cacheKey, filemtime($fileName));
             if ($propertyType !== null) {
                 return $propertyType;

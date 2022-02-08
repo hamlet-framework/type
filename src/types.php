@@ -6,7 +6,6 @@ use RuntimeException;
 
 /**
  * @return Type<bool>
- * @psalm-suppress InvalidReturnType
  */
 function _bool(): Type
 {
@@ -17,7 +16,6 @@ function _bool(): Type
  * @template T
  * @param class-string<T> $type
  * @return Type<T>
- * @psalm-suppress InvalidReturnType
  */
 function _class(string $type): Type
 {
@@ -26,7 +24,6 @@ function _class(string $type): Type
 
 /**
  * @return Type<callable>
- * @psalm-suppress InvalidReturnType
  */
 function _callable(): Type
 {
@@ -35,7 +32,6 @@ function _callable(): Type
 
 /**
  * @return Type<float>
- * @psalm-suppress InvalidReturnType
  */
 function _float(): Type
 {
@@ -44,7 +40,6 @@ function _float(): Type
 
 /**
  * @return Type<int>
- * @psalm-suppress InvalidReturnType
  */
 function _int(): Type
 {
@@ -53,7 +48,6 @@ function _int(): Type
 
 /**
  * @return Type<numeric-string>
- * @psalm-suppress InvalidReturnType
  */
 function _numeric_string(): Type
 {
@@ -82,7 +76,6 @@ function _scalar(): Type
 
 /**
  * @return Type<array-key>
- * @psalm-suppress InvalidReturnType
  */
 function _array_key(): Type
 {
@@ -149,7 +142,6 @@ function _null(): Type
 
 /**
  * @return Type<object>
- * @psalm-suppress InvalidReturnType
  */
 function _object(): Type
 {
@@ -160,7 +152,6 @@ function _object(): Type
  * @template T
  * @param array<string,Type<T>> $properties
  * @return ObjectLikeType<T>
- * @psalm-suppress InvalidReturnType
  */
 function _object_like(array $properties): Type
 {
@@ -169,7 +160,6 @@ function _object_like(array $properties): Type
 
 /**
  * @return Type<resource>
- * @psalm-suppress InvalidReturnType
  */
 function _resource(): Type
 {
@@ -178,7 +168,6 @@ function _resource(): Type
 
 /**
  * @return Type<string>
- * @psalm-suppress InvalidReturnType
  */
 function _string(): Type
 {
@@ -202,8 +191,8 @@ function _string(): Type
  * @param Type<F>|null $f
  * @param Type<G>|null $g
  * @param Type<H>|null $h
- * @return (func_num_args() is 2 ? Type<A|B> : (func_num_args() is 3 ? Type<A|B|C> : (func_num_args() is 4 ? Type<A|B|C|D> : (func_num_args() is 5 ? Type<A|B|C|D|E> : (func_num_args() is 6 ? Type<A|B|C|D|E|F> : (func_num_args() is 7 ? Type<A|B|C|D|E|F|G> : Type<A|B|C|D|E|F|G|H>))))))
- * @psalm-suppress InvalidReturnType
+ * @return Type
+ * @psalm-return (func_num_args() is 2 ? Type<A|B> : (func_num_args() is 3 ? Type<A|B|C> : (func_num_args() is 4 ? Type<A|B|C|D> : (func_num_args() is 5 ? Type<A|B|C|D|E> : (func_num_args() is 6 ? Type<A|B|C|D|E|F> : (func_num_args() is 7 ? Type<A|B|C|D|E|F|G> : Type<A|B|C|D|E|F|G|H>))))))
  */
 function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
 {

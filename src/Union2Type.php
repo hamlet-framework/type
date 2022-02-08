@@ -40,11 +40,9 @@ class Union2Type extends Type
     }
 
     /**
-     * @param mixed $value
-     * @return bool
      * @psalm-assert-if-true A|B $value
      */
-    public function matches($value): bool
+    public function matches(mixed $value): bool
     {
         foreach ($this->types() as $a) {
             if ($a->matches($value)) {
@@ -67,7 +65,7 @@ class Union2Type extends Type
         foreach ($this->types() as $a) {
             try {
                 return $a->resolveAndCast($value, $resolver);
-            } catch (CastException $e) {
+            } catch (CastException $exception) {
             }
         }
         throw new CastException($value, $this);

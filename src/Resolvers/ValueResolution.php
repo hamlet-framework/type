@@ -8,50 +8,25 @@ namespace Hamlet\Cast\Resolvers;
 final class ValueResolution
 {
     /**
-     * @var bool
+     * @param T $value
      */
-    private $successful;
-
-    /**
-     * @var mixed
-     * @psalm-var T
-     */
-    private $value;
-
-    /**
-     * @var string|null
-     */
-    private $sourceFieldName;
-
-    /**
-     * @param bool $successful
-     * @param mixed $value
-     * @psalm-param T $value
-     * @param string|null $sourceFieldName
-     */
-    private function __construct(bool $successful, $value, $sourceFieldName)
+    private function __construct(private bool $successful, private mixed $value, private ?string $sourceFieldName)
     {
-        $this->successful = $successful;
-        $this->value = $value;
-        $this->sourceFieldName = $sourceFieldName;
     }
 
     /**
      * @template Q
-     * @param mixed $value
-     * @psalm-param Q $value
+     * @param Q $value
      * @param string $sourceFieldName
-     * @return self
-     * @psalm-return self<Q>
+     * @return self<Q>
      */
-    public static function success($value, string $sourceFieldName): self
+    public static function success(mixed $value, string $sourceFieldName): self
     {
         return new self(true, $value, $sourceFieldName);
     }
 
     /**
-     * @return self
-     * @psalm-return self<null>
+     * @return self<null>
      */
     public static function failure(): self
     {
@@ -64,18 +39,14 @@ final class ValueResolution
     }
 
     /**
-     * @return mixed
-     * @psalm-return T
+     * @return T
      */
-    public function value()
+    public function value(): mixed
     {
         return $this->value;
     }
 
-    /**
-     * @return string|null
-     */
-    public function sourceFieldName()
+    public function sourceFieldName(): ?string
     {
         return $this->sourceFieldName;
     }

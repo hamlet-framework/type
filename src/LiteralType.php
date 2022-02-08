@@ -53,11 +53,7 @@ class LiteralType extends Type
     public function __toString(): string
     {
         $escape =
-            /**
-             * @param mixed $a
-             * @return string
-             */
-            function ($a): string {
+            function (mixed $a): string {
                 if (is_string($a)) {
                     return "'$a'";
                 }
