@@ -65,7 +65,7 @@ class Union2Type extends Type
         foreach ($this->types() as $a) {
             try {
                 return $a->resolveAndCast($value, $resolver);
-            } catch (CastException $exception) {
+            } catch (CastException $_) {
             }
         }
         throw new CastException($value, $this);

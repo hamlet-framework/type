@@ -28,6 +28,7 @@ class DocBlockParser
                 return $propertyType;
             }
         } catch (Exception $exception) {
+            error_log($exception->getTraceAsString());
             Cache::remove($cacheKey);
         }
 

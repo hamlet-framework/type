@@ -32,6 +32,7 @@ class Cache
         try {
             include($fileName);
         } catch (Throwable $exception) {
+            error_log($exception->getTraceAsString());
             unlink($fileName);
             return null;
         }
