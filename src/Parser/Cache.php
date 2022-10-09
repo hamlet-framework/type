@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Parser;
+namespace Hamlet\Type\Parser;
 
-use Hamlet\Cast\Type;
+use Hamlet\Type\Type;
 use Throwable;
 
 class Cache

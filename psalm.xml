@@ -16,6 +16,11 @@
     <issueHandlers>
         <DuplicateClass errorLevel="suppress"/>
         <DuplicateFunction errorLevel="suppress"/>
+        <PossiblyNullReference>
+            <errorLevel type="suppress">
+                <file name="src/Parser/HoaParser.php"/>
+            </errorLevel>
+        </PossiblyNullReference>
         <ReservedWord errorLevel="suppress"/>
         <RedundantConditionGivenDocblockType errorLevel="suppress"/>
         <UnusedParam>

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Resolvers\MappingUtils;
-use Hamlet\Cast\Resolvers\Resolver;
+use Hamlet\Type\Resolvers\MappingUtils;
+use Hamlet\Type\Resolvers\Resolver;
 use stdClass;
 
 /**

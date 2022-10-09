@@ -1,11 +1,11 @@
 <?php
 
-namespace Hamlet\Cast\Types;
+namespace Hamlet\Type\Types;
 
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Hamlet\Cast\_mixed;
+use function Hamlet\Type\_mixed;
 
 class MixedTypeTest extends TestCase
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Hamlet\Cast\Types;
+namespace Hamlet\Type\Types;
 
 use DateTime;
 use Exception;
-use Hamlet\Cast\CastException;
+use Hamlet\Type\CastException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Hamlet\Cast\_array_key;
+use function Hamlet\Type\_array_key;
 
 class ArrayKeyTypeTest extends TestCase
 {

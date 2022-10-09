@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Hamlet\Cast\Type;
+use Hamlet\Type\Type;
 
 /**
  * @param array{x:string,y:int,z:('a'|'b')} $a

@@ -1,6 +1,6 @@
 <?php
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
 class User
 {

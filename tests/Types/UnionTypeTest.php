@@ -1,29 +1,29 @@
 <?php
 
-namespace Hamlet\Cast\Types;
+namespace Hamlet\Type\Types;
 
 use DateTime;
 use Exception;
-use Hamlet\Cast\CastException;
-use Hamlet\Cast\Union2Type;
-use Hamlet\Cast\Union3Type;
-use Hamlet\Cast\Union4Type;
-use Hamlet\Cast\Union5Type;
-use Hamlet\Cast\Union6Type;
-use Hamlet\Cast\Union7Type;
-use Hamlet\Cast\Union8Type;
+use Hamlet\Type\CastException;
+use Hamlet\Type\Union2Type;
+use Hamlet\Type\Union3Type;
+use Hamlet\Type\Union4Type;
+use Hamlet\Type\Union5Type;
+use Hamlet\Type\Union6Type;
+use Hamlet\Type\Union7Type;
+use Hamlet\Type\Union8Type;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
-use function Hamlet\Cast\_bool;
-use function Hamlet\Cast\_callable;
-use function Hamlet\Cast\_float;
-use function Hamlet\Cast\_int;
-use function Hamlet\Cast\_literal;
-use function Hamlet\Cast\_null;
-use function Hamlet\Cast\_resource;
-use function Hamlet\Cast\_string;
-use function Hamlet\Cast\_union;
+use function Hamlet\Type\_bool;
+use function Hamlet\Type\_callable;
+use function Hamlet\Type\_float;
+use function Hamlet\Type\_int;
+use function Hamlet\Type\_literal;
+use function Hamlet\Type\_null;
+use function Hamlet\Type\_resource;
+use function Hamlet\Type\_string;
+use function Hamlet\Type\_union;
 
 class UnionTypeTest extends TestCase
 {

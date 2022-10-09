@@ -1,13 +1,13 @@
 <?php
 
-namespace Hamlet\Cast\Types;
+namespace Hamlet\Type\Types;
 
 use DateTime;
 use Exception;
-use Hamlet\Cast\CastException;
+use Hamlet\Type\CastException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Hamlet\Cast\_resource;
+use function Hamlet\Type\_resource;
 
 class ResourceTypeTest extends TestCase
 {

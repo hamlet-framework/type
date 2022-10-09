@@ -1,8 +1,8 @@
 <?php
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Resolvers\DefaultResolver;
+use Hamlet\Type\Resolvers\DefaultResolver;
 use PHPUnit\Framework\TestCase;
 
 class TrackUnmappedPropertiesTest extends TestCase

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Resolvers;
+namespace Hamlet\Type\Resolvers;
 
-use Hamlet\Cast\CastException;
-use Hamlet\Cast\Type;
+use Hamlet\Type\CastException;
+use Hamlet\Type\Type;
 use ReflectionClass;
 use ReflectionException;
 use RuntimeException;

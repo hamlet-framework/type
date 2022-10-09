@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
 /**
  * @extends Union3Type<int,float,numeric-string>

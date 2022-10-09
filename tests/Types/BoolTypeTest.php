@@ -1,13 +1,13 @@
 <?php
 
-namespace Hamlet\Cast\Types;
+namespace Hamlet\Type\Types;
 
 use DateTime;
 use Exception;
-use Hamlet\Cast\CastException;
+use Hamlet\Type\CastException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Hamlet\Cast\_bool;
+use function Hamlet\Type\_bool;
 
 class BoolTypeTest extends TestCase
 {

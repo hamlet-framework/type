@@ -1,8 +1,8 @@
 <?php
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Parser\Cache;
+use Hamlet\Type\Parser\Cache;
 use PHPUnit\Framework\TestCase;
 
 class CacheTest extends TestCase

@@ -1,9 +1,9 @@
 <?php
 
-namespace Hamlet\Cast\Parser;
+namespace Hamlet\Type\Parser;
 
 use DateTime as AliasDateTime;
-use Hamlet\Cast\CastException;
+use Hamlet\Type\CastException;
 
 class TestClass
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace Hamlet\Cast\Types;
+namespace Hamlet\Type\Types;
 
 use DateTime;
-use Hamlet\Cast\CastException;
-use Hamlet\Cast\Type;
+use Hamlet\Type\CastException;
+use Hamlet\Type\Type;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Hamlet\Cast\_array;
-use function Hamlet\Cast\_int;
-use function Hamlet\Cast\_mixed;
-use function Hamlet\Cast\_string;
+use function Hamlet\Type\_array;
+use function Hamlet\Type\_int;
+use function Hamlet\Type\_mixed;
+use function Hamlet\Type\_string;
 
 class ArrayTypeTest extends TestCase
 {

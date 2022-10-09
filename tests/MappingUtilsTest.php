@@ -1,8 +1,8 @@
 <?php
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Resolvers\MappingUtils;
+use Hamlet\Type\Resolvers\MappingUtils;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 

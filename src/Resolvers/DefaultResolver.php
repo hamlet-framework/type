@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Resolvers;
+namespace Hamlet\Type\Resolvers;
 
-use Hamlet\Cast\Parser\DocBlockParser;
-use Hamlet\Cast\Type;
+use Hamlet\Type\Parser\DocBlockParser;
+use Hamlet\Type\Type;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
@@ -59,7 +59,8 @@ class DefaultResolver implements Resolver
      * @template T
      * @param class-string<T> $type
      * @return ReflectionClass<T>
-     * @psalm-suppress MixedReturnTypeCoercion
+     * @psalm-suppress InvalidReturnType
+     * @psalm-suppress InvalidReturnStatement
      */
     protected function getReflectionClass(string $type): ReflectionClass
     {

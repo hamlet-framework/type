@@ -1,6 +1,6 @@
 <?php
 
-namespace Hamlet\Cast\Parser
+namespace Hamlet\Type\Parser
 {
     class A
     {
@@ -9,9 +9,9 @@ namespace Hamlet\Cast\Parser
     }
 }
 
-namespace Hamlet\Cast\Parser\N0\N1
+namespace Hamlet\Type\Parser\N0\N1
 {
-    use Hamlet\Cast\Parser\A;
+    use Hamlet\Type\Parser\A;
 
     class B
     {
@@ -21,11 +21,11 @@ namespace Hamlet\Cast\Parser\N0\N1
 
 namespace
 {
-    use Hamlet\Cast\Parser\N0\N1\B;
+    use Hamlet\Type\Parser\N0\N1\B;
 
     class C
     {
-        /** @var \Hamlet\Cast\Parser\A */
+        /** @var \Hamlet\Type\Parser\A */
         private $a;
 
         /** @var B */

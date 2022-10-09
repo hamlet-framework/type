@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Parser\TypeParser;
-use Hamlet\Cast\Resolvers\DefaultResolver;
-use Hamlet\Cast\Resolvers\Resolver;
-use Hoa\Compiler\Llk\Llk;
+use Hamlet\Type\Parser\HoaParser;
+use Hamlet\Type\Parser\TypeParser;
+use Hamlet\Type\Resolvers\DefaultResolver;
+use Hamlet\Type\Resolvers\Resolver;
 use Hoa\Compiler\Llk\Parser;
 use PhpParser\NameContext;
 
@@ -73,7 +73,7 @@ abstract class Type
                 return new ResourceType;
         }
         if (self::$compiler === null) {
-            self::$compiler = Llk::load(__DIR__ . '/../resources/grammar.pp');
+            self::$compiler = new HoaParser;
         }
         $node = self::$compiler->parse($declaration, 'expression');
         $parser = new TypeParser($nameContext);

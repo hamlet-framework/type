@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Resolvers;
+namespace Hamlet\Type\Resolvers;
 
 use ReflectionClass;
 
@@ -13,9 +13,10 @@ class SubTypeResolution
      * @param ReflectionClass<T> $reflectionClass
      * @param Resolver $subTreeResolver
      */
-    public function __construct(private ReflectionClass $reflectionClass, private Resolver $subTreeResolver)
-    {
-    }
+    public function __construct(
+        private readonly ReflectionClass $reflectionClass,
+        private readonly Resolver $subTreeResolver
+    ) {}
 
     /**
      * @return ReflectionClass<T>

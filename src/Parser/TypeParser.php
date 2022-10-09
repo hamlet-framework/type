@@ -1,35 +1,35 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Parser;
+namespace Hamlet\Type\Parser;
 
-use Hamlet\Cast\ArrayKeyType;
-use Hamlet\Cast\ArrayType;
-use Hamlet\Cast\BoolType;
-use Hamlet\Cast\CallableType;
-use Hamlet\Cast\ClassType;
-use Hamlet\Cast\FloatType;
-use Hamlet\Cast\IntType;
-use Hamlet\Cast\ListType;
-use Hamlet\Cast\LiteralType;
-use Hamlet\Cast\MapType;
-use Hamlet\Cast\MixedType;
-use Hamlet\Cast\NullType;
-use Hamlet\Cast\NumericStringType;
-use Hamlet\Cast\NumericType;
-use Hamlet\Cast\ObjectType;
-use Hamlet\Cast\ResourceType;
-use Hamlet\Cast\StringType;
-use Hamlet\Cast\Type;
+use Hamlet\Type\ArrayKeyType;
+use Hamlet\Type\ArrayType;
+use Hamlet\Type\BoolType;
+use Hamlet\Type\CallableType;
+use Hamlet\Type\ClassType;
+use Hamlet\Type\FloatType;
+use Hamlet\Type\IntType;
+use Hamlet\Type\ListType;
+use Hamlet\Type\LiteralType;
+use Hamlet\Type\MapType;
+use Hamlet\Type\MixedType;
+use Hamlet\Type\NullType;
+use Hamlet\Type\NumericStringType;
+use Hamlet\Type\NumericType;
+use Hamlet\Type\ObjectType;
+use Hamlet\Type\ResourceType;
+use Hamlet\Type\StringType;
+use Hamlet\Type\Type;
 use Hoa\Compiler\Llk\TreeNode;
 use PhpParser\NameContext;
 use PhpParser\Node\Name;
 use RuntimeException;
-use function Hamlet\Cast\_object_like;
-use function Hamlet\Cast\_union;
+use function Hamlet\Type\_object_like;
+use function Hamlet\Type\_union;
 
 class TypeParser
 {
-    public function __construct(private ?NameContext $nameContext = null)
+    public function __construct(private readonly ?NameContext $nameContext = null)
     {
     }
 

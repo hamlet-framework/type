@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast;
+namespace Hamlet\Type;
 
-use Hamlet\Cast\Resolvers\Resolver;
+use Hamlet\Type\Resolvers\Resolver;
 
 /**
  * @template A

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Resolvers;
+namespace Hamlet\Type\Resolvers;
 
-use Hamlet\Cast\Type;
+use Hamlet\Type\Type;
 use ReflectionClass;
 use ReflectionProperty;
 use stdClass;

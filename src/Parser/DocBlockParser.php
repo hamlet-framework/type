@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Cast\Parser;
+namespace Hamlet\Type\Parser;
 
 use Exception;
-use Hamlet\Cast\MixedType;
-use Hamlet\Cast\Type;
+use Hamlet\Type\MixedType;
+use Hamlet\Type\Type;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use ReflectionClass;
