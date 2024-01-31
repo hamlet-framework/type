@@ -84,10 +84,9 @@ class DefaultResolver implements Resolver
     }
 
     /**
-     * @template P
      * @param ReflectionClass $reflectionClass
      * @param ReflectionProperty $reflectionProperty
-     * @return Type<P>
+     * @return Type
      */
     public function getPropertyType(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type
     {

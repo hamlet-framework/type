@@ -29,6 +29,7 @@ jobs:
           - uses: actions/checkout@v2
           - run: composer update
           - run: vendor/bin/psalm
+          - run: vendor/bin/phpstan analyze src
           - run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
           - env:
                 COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
