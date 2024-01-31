@@ -9,7 +9,7 @@ use RuntimeException;
  */
 function _bool(): Type
 {
-    return new BoolType();
+    return new BoolType;
 }
 
 /**
@@ -35,7 +35,7 @@ function _callable(): Type
  */
 function _float(): Type
 {
-    return new FloatType();
+    return new FloatType;
 }
 
 /**
@@ -43,7 +43,7 @@ function _float(): Type
  */
 function _int(): Type
 {
-    return new IntType();
+    return new IntType;
 }
 
 /**
@@ -129,7 +129,7 @@ function _map(Type $keyType, Type $valueType): Type
  */
 function _mixed(): Type
 {
-    return new MixedType();
+    return new MixedType;
 }
 
 /**
@@ -137,7 +137,7 @@ function _mixed(): Type
  */
 function _null(): Type
 {
-    return new NullType();
+    return new NullType;
 }
 
 /**
@@ -145,7 +145,7 @@ function _null(): Type
  */
 function _object(): Type
 {
-    return new ObjectType();
+    return new ObjectType;
 }
 
 /**
@@ -163,7 +163,7 @@ function _object_like(array $properties): Type
  */
 function _resource(): Type
 {
-    return new ResourceType();
+    return new ResourceType;
 }
 
 /**
@@ -171,7 +171,7 @@ function _resource(): Type
  */
 function _string(): Type
 {
-    return new StringType();
+    return new StringType;
 }
 
 /**

@@ -40,7 +40,7 @@ class DocBlockParser
         $visitor = new PropertyVisitor($reflectionProperty->getDeclaringClass());
         $traverser->addVisitor($visitor);
         $statements = $parser->parse($body);
-        if ($statements) {
+        if ($statements !== null) {
             $traverser->traverse($statements);
         }
 

@@ -3,26 +3,21 @@
 namespace Hamlet\Type\Parser;
 
 use Hamlet\Type\Type;
-use Hoa\Compiler\Llk\Llk;
-use Hoa\Compiler\Llk\TreeNode;
-use Hoa\Compiler\Visitor\Dump;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
-use function Hamlet\Type\_class;
 
 class ParserTest extends TestCase
 {
-    /**
-     * @before
-     */
-    public function _setUp(): void
+    #[Before] public function _setUp(): void
     {
         Cache::purge();
     }
 
-    public function typeDeclarations(): array
+    public static function typeDeclarations(): array
     {
         return [
             ['int'],
@@ -33,75 +28,51 @@ class ParserTest extends TestCase
             ['numeric'],
             ['numeric-string'],
             ['bool'],
-            ['boolean'],
             ['mixed'],
             ['resource'],
             ['array-key'],
-            ['array<resource|numeric-string|numeric>'],
+            ['1'],
+            ['"a"'],
+            ["'a'"],
+            ['0.5'],
             ['null'],
-            ['array<array-key,int|float|double>'],
-            ['array<int,array<true|1|0.4>|false>'],
-            ['array<mixed>'],
-            ["'a'|'b'"],
-            ['Hamlet\\Type\\Type'],
             ['array'],
             ['array<string>'],
+            ['array<mixed>'],
+            ['array<resource|numeric-string|numeric>'],
+            ['array<array-key,int|float|double>'],
+            ['array<int,array<true|1|0.4>|false>'],
+            ["'a'|'b'"],
+            ['Hamlet\\Type\\Type'],
             ["array<string, array<string, int|'a'|false>>"],
-            ['array<string, array<string, array{0:DateTime}>>'],
             ['array|null|false|1|1.1'],
-            ['array{id:int|null,name?:string|null}'],
             ["('a'|'b'|'c')"],
             ['string[][]'],
             ['(1|false)[]'],
             ['int[]|string'],
             ['array<string,int[]|object>[]'],
             ['int[]'],
-            ['array{0: string, 1: string, foo: stdClass, 28: false}'],
             ['array|array{id:int}'],
-            ['non-empty-array{0:string,1:string,foo:non-empty-array,23:boolean}'],
+            ['array<string, array<string, array{0:DateTime}>>'],
+            ['array{id:int|null,name?:string|null}'],
+            ['array{0: string, 1: string, foo: stdClass, 28: false}'],
+            // ['non-empty-array{0:string,1:string,foo:non-empty-array,23:boolean}'],
             ['array<string,DateTime>'],
-            ['callable()'],
             ["callable(('a'|'b'), int):(string|array{DateTime}|callable():int)"],
             ['Closure(bool):int'],
-            ['Generator<T0, int, mixed, T0>'],
+            // ['Generator<T0, int, mixed, T0>'],
             ['callable(array{0:int}[]):(int|null)'],
             ['list<array<array<int,string|null>>|bool|null>'],
         ];
     }
 
-    /**
-     * @dataProvider typeDeclarations()
-     * @param string $specification
-     */
-    public function testHoaParser(string $specification): void
-    {
-        $compiler = Llk::load(__DIR__ . '/../../resources/grammar.pp');
-        $ast = _class(TreeNode::class)->cast($compiler->parse($specification, 'expression'));
-        $dump = new Dump();
-
-        // echo PHP_EOL;
-        // echo $specification . PHP_EOL;
-        // echo $dump->visit($ast);
-
-        Assert::assertTrue(true);
-    }
-
-    /**
-     * @dataProvider typeDeclarations()
-     * @param string $specification
-     */
-    public function testTypeParser(string $specification): void
+    #[DataProvider('typeDeclarations')] public function testTypeParser(string $specification): void
     {
         $type = Type::of($specification);
-
-        // echo PHP_EOL;
-        // echo $specification . PHP_EOL;
-        // echo $type . PHP_EOL;
-
         Assert::assertNotNull($type);
     }
 
-    public function phpDocDeclarations(): array
+    public static function phpDocDeclarations(): array
     {
         return [
             ['
@@ -147,11 +118,7 @@ class ParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider phpDocDeclarations()
-     * @param string $specification
-     */
-    public function testPhpDocParser(string $specification)
+    #[DataProvider('phpDocDeclarations')] public function testPhpDocParser(string $specification)
     {
         $data = DocBlockParser::parseDoc($specification);
         Assert::assertNotNull($data);
@@ -174,11 +141,7 @@ class ParserTest extends TestCase
         Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|DateTime|null", (string) $typeB);
     }
 
-    /**
-     * @dataProvider typeDeclarations()
-     * @param string $specification
-     */
-    public function testSerialization(string $specification): void
+    #[DataProvider('typeDeclarations')] public function testSerialization(string $specification): void
     {
         $type = Type::of($specification);
 

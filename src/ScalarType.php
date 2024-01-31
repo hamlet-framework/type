@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Union4Type<int,bool,float,string>
  */
-class ScalarType extends Union4Type
+readonly class ScalarType extends Union4Type
 {
     public function __construct()
     {

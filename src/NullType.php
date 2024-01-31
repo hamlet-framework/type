@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<null>
  */
-class NullType extends Type
+readonly class NullType extends Type
 {
     /**
      * @psalm-assert-if-true null $value

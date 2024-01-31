@@ -17,7 +17,7 @@ use function Hamlet\Type\_string;
 
 class ClassTypeTest extends TestCase
 {
-    public function matchCases()
+    public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()
@@ -91,7 +91,7 @@ class ClassTypeTest extends TestCase
         $this->assertFalse($type->matches(new DateTimeImmutable));
     }
 
-    public function castCases()
+    public static function castCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()

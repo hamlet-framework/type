@@ -19,16 +19,17 @@
     }
   },
   "require": {
-    "php": ">=8.1",
-    "hamlet-framework/hoa-compiler": "@stable",
-    "nikic/php-parser": "^4"
+    "php": ">=8.3",
+    "nikic/php-parser": "^4",
+    "phpstan/phpdoc-parser": "@stable"
   },
   "require-dev": {
     "ext-json": "*",
     "php-parallel-lint/php-parallel-lint": "@stable",
     "phpunit/phpunit": "@stable",
     "squizlabs/php_codesniffer": "@stable",
-    "vimeo/psalm": "@stable"
+    "vimeo/psalm": "@stable",
+    "phpstan/phpstan": "@stable"
   },
   "autoload": {
     "psr-4": {

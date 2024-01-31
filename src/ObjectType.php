@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<object>
  */
-class ObjectType extends Type
+readonly class ObjectType extends Type
 {
     /**
      * @psalm-assert-if-true object $value

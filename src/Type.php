@@ -2,20 +2,16 @@
 
 namespace Hamlet\Type;
 
-use Hamlet\Type\Parser\HoaParser;
-use Hamlet\Type\Parser\TypeParser;
+use Hamlet\Type\Parser\DeclarationReader;
 use Hamlet\Type\Resolvers\DefaultResolver;
 use Hamlet\Type\Resolvers\Resolver;
-use Hoa\Compiler\Llk\Parser;
 use PhpParser\NameContext;
 
 /**
  * @template T
  */
-abstract class Type
+abstract readonly class Type
 {
-    private static ?Parser $compiler = null;
-
     /**
      * @psalm-assert-if-true T $value
      */
@@ -57,26 +53,14 @@ abstract class Type
 
     public static function of(string $declaration, ?NameContext $nameContext = null): Type
     {
-        switch ($declaration) {
-            case 'string':
-                return new StringType;
-            case 'int':
-                return new IntType;
-            case 'float':
-                return new FloatType;
-            case 'bool':
-            case 'boolean':
-                return new BoolType;
-            case 'mixed':
-                return new MixedType;
-            case 'resource':
-                return new ResourceType;
-        }
-        if (self::$compiler === null) {
-            self::$compiler = new HoaParser;
-        }
-        $node = self::$compiler->parse($declaration, 'expression');
-        $parser = new TypeParser($nameContext);
-        return $parser->parse($node);
+        return match ($declaration) {
+            'string'    => new StringType,
+            'int'       => new IntType,
+            'float'     => new FloatType,
+            'bool'      => new BoolType,
+            'mixed'     => new MixedType,
+            'resource'  => new ResourceType,
+            default     => DeclarationReader::instance()->read($declaration, $nameContext),
+        };
     }
 }

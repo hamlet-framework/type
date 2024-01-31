@@ -9,7 +9,7 @@ namespace Hamlet\Type;
  * @template D
  * @extends Union3Type<A,B,C>
  */
-class Union4Type extends Union3Type
+readonly class Union4Type extends Union3Type
 {
     /**
      * @var Type<D>
@@ -29,7 +29,7 @@ class Union4Type extends Union3Type
     }
 
     /**
-     * @return array{Type<A>,Type<B>,Type<C>,Type<D>}
+     * @return list<Type>
      */
     protected function types(): array
     {

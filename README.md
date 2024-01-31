@@ -71,30 +71,11 @@ assert($type->matches($record));
 
 ## Background
 
-PHP Type "system" is a soup. There are multiple ingredients that cause its unforgettable taste:
-
-- Different versions of PHP
-- Super globals
-- Patchy support for types in PHP
-- Default casts
-- Largely untyped core PHP library with baroque API surface
-- Outdated PHPDoc specification
-- Uncoordinated attempt by Psalm to clean it up
-- Adhoc generics
-- PHPStorm patchy support for advanced types
-- Array/List/HashMap/ObjectLike all in one breakfast 
-
-This library is an attempt to give the developer some kind of certainty whilst applying for Java jobs.
-
-## Todo
-
-- Add union types in PHP 8.0
-- Add non-empty-* handling
-- Add support for callables wrapping the original callable object to match the types
-- Support for enums once this is added to PHP
-- Add more tests around class/object-like nullable,? properties
-- Rework all Cast and Match tests to deal with complete set of basic types
-- Add test coverage metrics to travis, add badge
-- Add types for iterable|self|static|class-string
-- Add more tests for PHPDoc and Namespace resolver
-- Add more tests for agreements between Psalm/PHPStan and Type assertions
+- Move completely to PHPStan parsed including docblock
+- Add union and intersection types 
+- Support for enums
+- Support for non-empty-* types
+- Support for tuples as int `array{int,string}`
+- Support for iterable|self|static|class-string
+- Better support for callables
+- Add PHPStan to QA pipeline

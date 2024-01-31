@@ -10,7 +10,7 @@ use stdClass;
  * @template T
  * @extends Type<array<T>>
  */
-class ObjectLikeType extends Type
+readonly class ObjectLikeType extends Type
 {
     /**
      * @var array<string,Type<T>>
@@ -68,22 +68,19 @@ class ObjectLikeType extends Type
             /**
              * @psalm-suppress ArgumentTypeCoercion
              */
-
             $resolution = $resolver->getValue(null, $fieldName, $value);
             if ($resolution->successful()) {
                 if ($validateUnmappedProperties) {
                     $sourceFieldName = $resolution->sourceFieldName();
-                    if ($sourceFieldName) {
+                    if ($sourceFieldName !== null) {
                         $mappedProperties[$sourceFieldName] = 1;
                     }
                 }
+            } elseif (!$required) {
+                $mappedProperties[$fieldName] = 1;
+                continue;
             } else {
-                if (!$required) {
-                    $mappedProperties[$fieldName] = 1;
-                    continue;
-                } else {
-                    throw new CastException($value, $this);
-                }
+                throw new CastException($value, $this);
             }
 
             $fieldValue = $fieldType->resolveAndCast($resolution->value(), $resolver);

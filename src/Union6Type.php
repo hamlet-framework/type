@@ -11,7 +11,7 @@ namespace Hamlet\Type;
  * @template F
  * @extends Union5Type<A,B,C,D,E>
  */
-class Union6Type extends Union5Type
+readonly class Union6Type extends Union5Type
 {
     /**
      * @var Type<F>
@@ -33,7 +33,7 @@ class Union6Type extends Union5Type
     }
 
     /**
-     * @array{Type<A>,Type<B>,Type<C>,Type<D>,Type<E>,Type<F>}
+     * @return list<Type>
      */
     protected function types(): array
     {

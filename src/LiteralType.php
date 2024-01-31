@@ -6,7 +6,7 @@ namespace Hamlet\Type;
  * @template T
  * @extends Type<T>
  */
-class LiteralType extends Type
+readonly class LiteralType extends Type
 {
     /**
      * @var array<T>

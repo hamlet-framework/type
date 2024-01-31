@@ -10,7 +10,7 @@ use stdClass;
  * @template V
  * @extends Type<array<K,V>>
  */
-class MapType extends Type
+readonly class MapType extends Type
 {
     /**
      * @var Type<K>

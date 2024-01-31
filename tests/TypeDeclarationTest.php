@@ -3,12 +3,13 @@
 namespace Hamlet\Type;
 
 use DateTime;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class TypeDeclarationTest extends TestCase
 {
-    public function testSimpleCast()
+    public function testSimpleCast(): void
     {
         _string()->cast("this");
         _union(_string(), _null())->cast("this");
@@ -17,7 +18,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function testTypeString()
+    public function testTypeString(): void
     {
         $type = _map(
             _int(),
@@ -29,7 +30,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertEquals('array<int,null|DateTime>', (string)$type);
     }
 
-    public function testLiteralType()
+    public function testLiteralType(): void
     {
         $type = _literal('a', 1, false, null);
 
@@ -44,14 +45,14 @@ class TypeDeclarationTest extends TestCase
 
         $this->assertEquals('a', $type->cast('a'));
         $this->assertEquals(1, $type->cast('1'));
-        $this->assertEquals(false, $type->cast(false));
-        $this->assertEquals(false, $type->cast('0'));
+        $this->assertFalse($type->cast(false));
+        $this->assertFalse($type->cast('0'));
 
         $this->expectException(CastException::class);
         $type->cast(new stdClass);
     }
 
-    public function testPropertyType()
+    public function testPropertyType(): void
     {
         $value = ['id' => 12];
         $type = _object_like([
@@ -62,7 +63,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertEquals(12, $type->cast($value)['id']);
     }
 
-    public function testIntersectionType()
+    public function testIntersectionType(): void
     {
         /** @var Type<array{id:int,name:string,online?:bool}> $type */
         $type = Type::of('array{id:int,name:string,online?:bool}');
@@ -82,7 +83,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertFalse($type->matches($value));
     }
 
-    public function testIntersectionCast()
+    public function testIntersectionCast(): void
     {
         /** @var Type<array{id:int,name:string,online?:bool}> $type */
         $type = _object_like([
@@ -102,19 +103,19 @@ class TypeDeclarationTest extends TestCase
         $this->assertEquals(['id' => 12, 'name' => 'hey there', 'online' => false], $type->cast($value));
     }
 
-    public function testPropertyTypeThrowsExceptionOnMissingProperty()
+    public function testPropertyTypeThrowsExceptionOnMissingProperty(): void
     {
         $this->expectException(CastException::class);
         _object_like(['id' => _int()])->cast([]);
     }
 
-    public function testNonRequiredPropertyTypeThrowsNoExceptionOnMissingProperty()
+    public function testNonRequiredPropertyTypeThrowsNoExceptionOnMissingProperty(): void
     {
         _object_like(['id?' => _int()])->cast([]);
         $this->assertTrue(true);
     }
 
-    public function testListType()
+    public function testListType(): void
     {
         $type = _list(_string());
 
@@ -128,7 +129,7 @@ class TypeDeclarationTest extends TestCase
         $type->cast('a, b, c');
     }
 
-    public function testCastOrFail()
+    public function testCastOrFail(): void
     {
         $type = _union(_class(DateTime::class), _null());
 
@@ -136,13 +137,13 @@ class TypeDeclarationTest extends TestCase
         $type->cast(1.1);
     }
 
-    public function testCastable()
+    public function testCastable(): void
     {
         $type = _float();
         $this->assertEquals(2.5, $type->cast("2.5"));
     }
 
-    public function testUnionType()
+    public function testUnionType(): void
     {
         $type = _union(_int(), _null());
         $this->assertTrue($type->matches(1));
@@ -150,7 +151,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertFalse($type->matches(new stdClass));
     }
 
-    public function invalidNumericStrings()
+    public static function invalidNumericStrings(): array
     {
         return [
             ['hey'],
@@ -160,23 +161,19 @@ class TypeDeclarationTest extends TestCase
             [new class() {
                 public function __toString()
                 {
-                    return 'sousage';
+                    return 'sausage';
                 }
             }],
         ];
     }
 
-    /**
-     * @dataProvider invalidNumericStrings()
-     * @param mixed $value
-     */
-    public function testInvalidNumericStrings($value)
+    #[DataProvider('invalidNumericStrings')] public function testInvalidNumericStrings(mixed $value): void
     {
         $this->expectException(CastException::class);
         _numeric_string()->cast($value);
     }
 
-    public function testNumericStringMatchAndCast()
+    public function testNumericStringMatchAndCast(): void
     {
         $type = _numeric_string();
         $this->assertTrue($type->matches('1.2'));
@@ -200,7 +197,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertEquals('0', $type->cast(null));
     }
 
-    public function values()
+    public static function values(): array
     {
         return [
             [null],
@@ -218,17 +215,13 @@ class TypeDeclarationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testMixedTypeMatchAndCast($value)
+    #[DataProvider('values')] public function testMixedTypeMatchAndCast(mixed $value): void
     {
         $this->assertTrue(_mixed()->matches($value));
         $this->assertSame($value, _mixed()->cast($value));
     }
 
-    public function testMapMatch()
+    public function testMapMatch(): void
     {
         $type = _map(_string(), _string());
         $this->assertTrue($type->matches([]));
@@ -239,7 +232,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertFalse($type->matches(null));
     }
 
-    public function testMapCast()
+    public function testMapCast(): void
     {
         $type = _map(_string(), _int());
         $this->assertEquals(['a' => 1], $type->cast(['a' => 1]));
@@ -253,7 +246,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertEquals(['a' => 1], $type->cast($object));
     }
 
-    public function invalidMaps()
+    public static function invalidMaps(): array
     {
         return [
             ['hey'],
@@ -263,24 +256,20 @@ class TypeDeclarationTest extends TestCase
             [new class() {
                 public function __toString()
                 {
-                    return 'sousage';
+                    return 'sausage';
                 }
             }],
         ];
     }
 
-    /**
-     * @dataProvider invalidMaps()
-     * @param mixed $value
-     */
-    public function testMapCastFail($value)
+    #[DataProvider('invalidMaps')] public function testMapCastFail(mixed $value): void
     {
         $type = _map(_string(), _int());
         $this->expectException(CastException::class);
         $type->cast($value);
     }
 
-    public function testObjectLikeType()
+    public function testObjectLikeType(): void
     {
         $type = _object_like([
             'name' => _string(),
@@ -296,7 +285,7 @@ class TypeDeclarationTest extends TestCase
         $type->cast("user");
     }
 
-    public function testCast()
+    public function testCast(): void
     {
         $type = _list(_string());
         $list = $type->cast([0, 1.4, 'test', false, null]);
@@ -304,7 +293,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertEquals(['0', '1.4', 'test', '', ''], $list);
     }
 
-    public function testCastToNull()
+    public function testCastToNull(): void
     {
         $this->assertNull(_null()->cast(0));
         $this->assertNull(_null()->cast(''));
@@ -312,7 +301,7 @@ class TypeDeclarationTest extends TestCase
         $this->assertNull(_null()->cast(false));
     }
 
-    public function testNumericStringCastsToString()
+    public function testNumericStringCastsToString(): void
     {
         $value = _list(_numeric_string())->cast([1.0, "2.34", -1]);
         $this->assertSame(['1', '2.34', '-1'], $value);

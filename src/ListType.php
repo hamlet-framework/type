@@ -8,7 +8,7 @@ use Hamlet\Type\Resolvers\Resolver;
  * @template T
  * @extends Type<list<T>>
  */
-class ListType extends Type
+readonly class ListType extends Type
 {
     /**
      * @var Type<T>

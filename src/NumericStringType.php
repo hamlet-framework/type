@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<numeric-string>
  */
-class NumericStringType extends Type
+readonly class NumericStringType extends Type
 {
     public function matches(mixed $value): bool
     {

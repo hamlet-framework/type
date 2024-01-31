@@ -9,7 +9,7 @@ use function Hamlet\Type\_mixed;
 
 class MixedTypeTest extends TestCase
 {
-    public function matchCases()
+    public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()
@@ -71,7 +71,7 @@ class MixedTypeTest extends TestCase
         $this->assertTrue(true);
     }
 
-    public function castCases()
+    public static function castCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()

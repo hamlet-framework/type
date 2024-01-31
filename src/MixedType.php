@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<mixed>
  */
-class MixedType extends Type
+readonly class MixedType extends Type
 {
     public function matches(mixed $value): bool
     {

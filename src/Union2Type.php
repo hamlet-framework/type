@@ -9,7 +9,7 @@ use Hamlet\Type\Resolvers\Resolver;
  * @template B
  * @extends Type<A|B>
  */
-class Union2Type extends Type
+readonly class Union2Type extends Type
 {
     /**
      * @var Type<A>
@@ -32,7 +32,7 @@ class Union2Type extends Type
     }
 
     /**
-     * @return array{Type<A>,Type<B>}
+     * @return list<Type>
      */
     protected function types(): array
     {

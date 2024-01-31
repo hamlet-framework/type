@@ -5,13 +5,14 @@ namespace Hamlet\Type\Types;
 use DateTime;
 use Exception;
 use Hamlet\Type\CastException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use function Hamlet\Type\_callable;
 
 class CallableTypeTest extends TestCase
 {
-    public function matchCases()
+    public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()
@@ -52,33 +53,23 @@ class CallableTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testMatch($value, bool $success)
+    #[DataProvider('matchCases')] public function testMatch(mixed $value, bool $success): void
     {
         $this->assertEquals($success, _callable()->matches($value));
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testAssert($value, bool $success)
+    #[DataProvider('matchCases')] public function testAssert(mixed $value, bool $success): void
     {
         $exceptionThrown = false;
         try {
             _callable()->assert($value);
-        } catch (Exception $error) {
+        } catch (Exception) {
             $exceptionThrown = true;
         }
         $this->assertEquals(!$success, $exceptionThrown);
     }
 
-    public function castCases()
+    public static function castCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()
@@ -121,13 +112,7 @@ class CallableTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider castCases()
-     * @param mixed $value
-     * @param mixed $result
-     * @param bool $exceptionThrown
-     */
-    public function testCast($value, $result, bool $exceptionThrown)
+    #[DataProvider('castCases')] public function testCast(mixed $value, mixed $result, bool $exceptionThrown): void
     {
         if ($exceptionThrown) {
             $this->expectException(CastException::class);

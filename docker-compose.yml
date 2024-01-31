@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  php:
+    image: php:8.3-cli
+    volumes:
+      - .:/app
+    working_dir: /app
+  composer:
+    image: composer
+    volumes:
+      - .:/app
+    working_dir: /app

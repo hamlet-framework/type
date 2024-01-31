@@ -4,12 +4,13 @@ namespace Hamlet\Type;
 
 use DateTime;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 class CastTest extends TestCase
 {
-    public function values()
+    public static function values(): array
     {
         $handle = fopen(__FILE__, 'r');
         $callback = function (): int {
@@ -46,100 +47,72 @@ class CastTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testBooleanCast($value)
+    #[DataProvider('values')] public function testBooleanCast(mixed $value): void
     {
         $result = _bool()->cast($value);
         Assert::assertSame((bool) $value, $result);
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testFloatCast($value)
+    #[DataProvider('values')] public function testFloatCast(mixed $value): void
     {
         try {
             $result = _float()->cast($value);
             Assert::assertEquals((float) $value, $result);
-        } catch (CastException $e) {
+        } catch (CastException) {
             // @todo need to check that the warning would have been thrown
             Assert::assertTrue(true);
         }
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testIntegerCast($value)
+    #[DataProvider('values')] public function testIntegerCast(mixed $value): void
     {
         try {
             $result = _int()->cast($value);
             Assert::assertSame((int) $value, $result);
-        } catch (CastException $e) {
+        } catch (CastException) {
             // @todo need to check that the warning would have been thrown
             Assert::assertTrue(true);
         }
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testStringCast($value)
+    #[DataProvider('values')] public function testStringCast(mixed $value): void
     {
         try {
             $result = _string()->cast($value);
             Assert::assertSame((string) $value, $result);
-        } catch (CastException $e) {
+        } catch (CastException) {
             // @todo need to check that the warning would have been thrown
             Assert::assertTrue(true);
         }
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testObjectCast($value)
+    #[DataProvider('values')] public function testObjectCast(mixed $value): void
     {
         $result = _object()->cast($value);
         Assert::assertEquals((object) $value, $result);
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testNumericCast($value)
+    #[DataProvider('values')] public function testNumericCast(mixed $value): void
     {
         try {
             $result = _numeric()->cast($value);
             Assert::assertTrue(is_numeric($result));
-        } catch (CastException $exception) {
+        } catch (CastException) {
             Assert::assertTrue(is_object($value) && !method_exists($value, '__toString'));
         }
     }
 
-    /**
-     * @dataProvider values()
-     * @param mixed $value
-     */
-    public function testScalarCast($value)
+    #[DataProvider('values')] public function testScalarCast(mixed $value): void
     {
         try {
             $result = _scalar()->cast($value);
             Assert::assertTrue(is_scalar($result));
-        } catch (CastException $exception) {
+        } catch (CastException) {
             Assert::assertTrue(is_object($value) && !method_exists($value, '__toString'));
         }
     }
 
-    public function testObjectMatch()
+    public function testObjectMatch(): void
     {
         $this->assertTrue(_object()->matches(new stdClass));
         $this->assertTrue(_object()->matches(new DateTime));
@@ -154,7 +127,7 @@ class CastTest extends TestCase
         $this->assertFalse(_object()->matches('s'));
     }
 
-    public function testIllegalFloatCastWithinList()
+    public function testIllegalFloatCastWithinList(): void
     {
         $this->expectException(CastException::class);
         $value = [1.1, null, new stdClass];

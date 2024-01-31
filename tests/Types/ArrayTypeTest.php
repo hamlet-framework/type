@@ -14,7 +14,7 @@ use function Hamlet\Type\_string;
 
 class ArrayTypeTest extends TestCase
 {
-    public function matchCases()
+    public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()
@@ -114,7 +114,7 @@ class ArrayTypeTest extends TestCase
         $this->assertTrue($type->matches([1 => 2]));
     }
 
-    public function castCases()
+    public static function castCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()

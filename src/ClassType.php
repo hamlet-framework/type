@@ -11,7 +11,7 @@ use stdClass;
  * @template T as object
  * @extends Type<T>
  */
-class ClassType extends Type
+readonly class ClassType extends Type
 {
     /**
      * @var class-string<T>
@@ -43,6 +43,7 @@ class ClassType extends Type
      * @return T
      * @psalm-suppress InvalidReturnType
      * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress NoValue
      * @throws ReflectionException
      */
     public function resolveAndCast(mixed $value, Resolver $resolver): object
@@ -71,16 +72,14 @@ class ClassType extends Type
             if ($valueResolution->successful()) {
                 if ($validateUnmappedProperties) {
                     $sourceFieldName = $valueResolution->sourceFieldName();
-                    if ($sourceFieldName) {
+                    if ($sourceFieldName !== null) {
                         $mappedProperties[$sourceFieldName] = 1;
                     }
                 }
+            } elseif ($propertyType->matches(null)) {
+                $mappedProperties[$propertyName] = 1;
             } else {
-                if ($propertyType->matches(null)) {
-                    $mappedProperties[$propertyName] = 1;
-                } else {
-                    throw new CastException($value, $this);
-                }
+                throw new CastException($value, $this);
             }
 
             $result = $resolver->setValue(

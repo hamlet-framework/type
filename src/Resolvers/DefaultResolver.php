@@ -22,6 +22,9 @@ class DefaultResolver implements Resolver
      */
     private static array $propertyTypes = [];
 
+    /**
+     * @psalm-suppress RedundantConditionGivenDocblockType
+     */
     public function getValue($type, string $propertyName, $source): ValueResolution
     {
         if (is_array($source) && array_key_exists($propertyName, $source)) {
@@ -39,8 +42,7 @@ class DefaultResolver implements Resolver
     {
         if (is_array($object)) {
             $object[$propertyName] = $value;
-            return $object;
-        } elseif (is_object($object)) {
+        } else {
             if (is_a($object, stdClass::class)) {
                 $object->{$propertyName} = $value;
             } else {
@@ -49,10 +51,8 @@ class DefaultResolver implements Resolver
                 $property->setAccessible(true);
                 $property->setValue($object, $value);
             }
-            return $object;
-        } else {
-            throw new InvalidArgumentException('Unexpected type ' . var_export($object, true));
         }
+        return $object;
     }
 
     /**

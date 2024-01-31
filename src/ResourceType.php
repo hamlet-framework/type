@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<resource>
  */
-class ResourceType extends Type
+readonly class ResourceType extends Type
 {
     /**
      * @psalm-assert-if-true resource $type

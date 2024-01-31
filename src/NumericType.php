@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Union3Type<int,float,numeric-string>
  */
-class NumericType extends Union3Type
+readonly class NumericType extends Union3Type
 {
     public function __construct()
     {

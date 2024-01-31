@@ -8,7 +8,7 @@ use Hamlet\Type\Resolvers\Resolver;
  * @template T
  * @extends Type<array<T>>
  */
-class ArrayType extends Type
+readonly class ArrayType extends Type
 {
     /**
      * @var Type<T>

@@ -6,15 +6,10 @@ use Hamlet\Type\Parser\DocBlockParser;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class Php74PropertiesTest extends TestCase
+class TypedPropertiesTest extends TestCase
 {
-    public function testTypedProperties()
+    public function testTypedProperties(): void
     {
-        if (version_compare(phpversion(), '7.4') < 0) {
-            $this->assertTrue(true);
-            return;
-        }
-
         require_once __DIR__ . '/../psalm-cases/classes/Foo.php';
         $reflectionClass = new ReflectionClass(Foo::class);
 

@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Union2Type<int,string>
  */
-class ArrayKeyType extends Union2Type
+readonly class ArrayKeyType extends Union2Type
 {
     public function __construct()
     {

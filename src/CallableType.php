@@ -8,7 +8,7 @@ namespace Hamlet\Type;
  *
  * @todo add more logic into return type and argument types
  */
-class CallableType extends Type
+readonly class CallableType extends Type
 {
     private string $tag;
 
@@ -41,6 +41,7 @@ class CallableType extends Type
 
     /**
      * @return T
+     * @todo think about wrapping the value into an asserting closure here and in the assert methods
      * @psalm-suppress InvalidReturnStatement not sure we can do more than that
      * @psalm-suppress InvalidReturnType
      */

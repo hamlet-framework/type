@@ -11,7 +11,7 @@ use function Hamlet\Type\_null;
 
 class NullTypeTest extends TestCase
 {
-    public function matchCases()
+    public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()
@@ -78,7 +78,7 @@ class NullTypeTest extends TestCase
         $this->assertEquals(!$success, $exceptionThrown);
     }
 
-    public function castCases()
+    public static function castCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()

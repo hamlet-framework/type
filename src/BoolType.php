@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<bool>
  */
-class BoolType extends Type
+readonly class BoolType extends Type
 {
     /**
      * @param mixed $value

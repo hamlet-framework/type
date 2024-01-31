@@ -8,7 +8,7 @@ namespace Hamlet\Type;
  * @template C
  * @extends Union2Type<A,B>
  */
-class Union3Type extends Union2Type
+readonly class Union3Type extends Union2Type
 {
     /**
      * @var Type<C>
@@ -27,7 +27,7 @@ class Union3Type extends Union2Type
     }
 
     /**
-     * @return array{Type<A>,Type<B>,Type<C>}
+     * @return list<Type>
      */
     protected function types(): array
     {

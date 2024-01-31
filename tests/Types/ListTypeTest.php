@@ -14,7 +14,7 @@ use function Hamlet\Type\_string;
 
 class ListTypeTest extends TestCase
 {
-    public function matchCases()
+    public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()

@@ -41,7 +41,7 @@ class PropertyVisitor extends NameResolver
     /**
      * @throws ReflectionException
      */
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): Node|int|null
     {
         if ($node instanceof Node\Stmt\Class_) {
             $className = (string) $node->name;
@@ -52,7 +52,7 @@ class PropertyVisitor extends NameResolver
             $docComment = $node->getDocComment();
             if ($docComment) {
                 $typeDeclaration = DocBlockParser::varTypeDeclarationFrom($docComment->getText());
-                if ($typeDeclaration) {
+                if ($typeDeclaration !== null) {
                     $this->currentProperty = Type::of($typeDeclaration, $this->getNameContext());
                 }
             }
@@ -68,7 +68,7 @@ class PropertyVisitor extends NameResolver
                     /**
                      * @psalm-suppress UndefinedMethod
                      */
-                    $typeDeclaration = (string) $reflectionType->getName();
+                    $typeDeclaration = $reflectionType->getName();
                     if ($reflectionType->allowsNull()) {
                         $typeDeclaration .= '|null';
                     }

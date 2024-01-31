@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<int>
  */
-class IntType extends Type
+readonly class IntType extends Type
 {
     /**
      * @psalm-assert-if-true int $value

@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<string>
  */
-class StringType extends Type
+readonly class StringType extends Type
 {
     /**
      * @psalm-assert-if-true string $value

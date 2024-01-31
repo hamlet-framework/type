@@ -27,7 +27,7 @@ use function Hamlet\Type\_union;
 
 class UnionTypeTest extends TestCase
 {
-    public function matchCases()
+    public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()
@@ -103,7 +103,7 @@ class UnionTypeTest extends TestCase
         $this->assertEquals(!$success, $exceptionThrown);
     }
 
-    public function castCases()
+    public static function castCases(): array
     {
         $resource = fopen(__FILE__, 'r');
         $object = new class ()

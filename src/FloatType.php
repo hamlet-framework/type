@@ -5,7 +5,7 @@ namespace Hamlet\Type;
 /**
  * @extends Type<float>
  */
-class FloatType extends Type
+readonly class FloatType extends Type
 {
     public function matches(mixed $value): bool
     {

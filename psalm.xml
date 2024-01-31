@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
-<psalm
-    findUnusedPsalmSuppress="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd">
+<psalm findUnusedCode="false"
+       findUnusedBaselineEntry="true">
     <projectFiles>
         <directory name="src" />
         <file name="psalm-cases/00-random-casts.php"/>
@@ -13,20 +10,4 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
-    <issueHandlers>
-        <DuplicateClass errorLevel="suppress"/>
-        <DuplicateFunction errorLevel="suppress"/>
-        <PossiblyNullReference>
-            <errorLevel type="suppress">
-                <file name="src/Parser/HoaParser.php"/>
-            </errorLevel>
-        </PossiblyNullReference>
-        <ReservedWord errorLevel="suppress"/>
-        <RedundantConditionGivenDocblockType errorLevel="suppress"/>
-        <UnusedParam>
-            <errorLevel type="suppress">
-                <directory name="psalm-cases"/>
-            </errorLevel>
-        </UnusedParam>
-    </issueHandlers>
 </psalm>
