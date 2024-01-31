@@ -18,7 +18,9 @@ final class DeclarationReader
         return self::$instance ??= new self;
     }
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     public function read(string $declaration, ?NameContext $nameContext = null): Type
     {

@@ -5,16 +5,17 @@ namespace Hamlet\Type\Resolvers;
 /**
  * @template T
  */
-final class ValueResolution
+final readonly class ValueResolution
 {
     /**
      * @param T $value
      */
     private function __construct(
-        private readonly bool $successful,
-        private readonly mixed $value,
-        private readonly ?string $sourceFieldName
-    ) {}
+        private bool    $successful,
+        private mixed   $value,
+        private ?string $sourceFieldName
+    ) {
+    }
 
     /**
      * @template Q

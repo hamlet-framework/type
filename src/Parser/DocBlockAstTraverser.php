@@ -43,7 +43,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use RuntimeException;
 
-class DocBlockAstTraverser
+final class DocBlockAstTraverser
 {
     public function traverse(Node $node, ?NameContext $nameContext): Type
     {
@@ -87,7 +87,7 @@ class DocBlockAstTraverser
             foreach ($node->types as $type) {
                 $types[] = $this->traverse($type, $nameContext);
             }
-            return match(count($types)) {
+            return match (count($types)) {
                 2 => new Union2Type($types[0], $types[1]),
                 3 => new Union3Type($types[0], $types[1], $types[2]),
                 4 => new Union4Type($types[0], $types[1], $types[2], $types[3]),

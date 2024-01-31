@@ -10,7 +10,7 @@ use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
 
-class PropertyVisitor extends NameResolver
+final class PropertyVisitor extends NameResolver
 {
     /**
      * @var array<class-string,ReflectionClass>

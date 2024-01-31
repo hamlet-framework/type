@@ -7,16 +7,17 @@ use ReflectionClass;
 /**
  * @template T as object
  */
-class SubTypeResolution
+readonly class SubTypeResolution
 {
     /**
      * @param ReflectionClass<T> $reflectionClass
      * @param Resolver $subTreeResolver
      */
     public function __construct(
-        private readonly ReflectionClass $reflectionClass,
-        private readonly Resolver $subTreeResolver
-    ) {}
+        private ReflectionClass $reflectionClass,
+        private Resolver        $subTreeResolver
+    ) {
+    }
 
     /**
      * @return ReflectionClass<T>
