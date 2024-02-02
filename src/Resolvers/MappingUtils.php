@@ -9,6 +9,9 @@ use ReflectionException;
 use RuntimeException;
 use stdClass;
 
+/**
+ * @psalm-internal Hamlet\Type
+ */
 class MappingUtils
 {
     /**

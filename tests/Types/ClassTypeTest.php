@@ -6,14 +6,11 @@ use DateTime;
 use DateTimeImmutable;
 use Hamlet\Type\Address;
 use Hamlet\Type\CastException;
-use Hamlet\Type\Type;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
-use function Hamlet\Type\_array;
 use function Hamlet\Type\_class;
-use function Hamlet\Type\_int;
-use function Hamlet\Type\_mixed;
-use function Hamlet\Type\_string;
+use function Hamlet\Type\type_of;
 
 class ClassTypeTest extends TestCase
 {
@@ -60,22 +57,12 @@ class ClassTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testMatch($value, bool $success)
+    #[DataProvider('matchCases')] public function testMatch(mixed $value, bool $success): void
     {
         $this->assertEquals($success, _class(stdClass::class)->matches($value), 'Failed on ' . print_r($value, true));
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testAssert($value, bool $success)
+    #[DataProvider('matchCases')] public function testAssert(mixed $value, bool $success): void
     {
         if (!$success) {
             $this->expectException(CastException::class);
@@ -86,7 +73,7 @@ class ClassTypeTest extends TestCase
 
     public function testParsing()
     {
-        $type = Type::of('\\DateTime');
+        $type = type_of('\\DateTime');
         $this->assertTrue($type->matches(new DateTime));
         $this->assertFalse($type->matches(new DateTimeImmutable));
     }
@@ -133,12 +120,7 @@ class ClassTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider castCases()
-     * @param mixed $value
-     * @param bool $exceptionThrown
-     */
-    public function testCast($value, bool $exceptionThrown)
+    #[DataProvider('castCases')] public function testCast(mixed $value, bool $exceptionThrown): void
     {
         if ($exceptionThrown) {
             $this->expectException(CastException::class);

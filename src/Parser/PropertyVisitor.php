@@ -3,13 +3,18 @@
 namespace Hamlet\Type\Parser;
 
 use Hamlet\Type\Type;
+use Override;
 use PhpParser\Node;
 use PhpParser\Node\VarLikeIdentifier;
 use PhpParser\NodeVisitor\NameResolver;
 use ReflectionClass;
 use ReflectionException;
 use RuntimeException;
+use function Hamlet\Type\type_of;
 
+/**
+ * @psalm-internal Hamlet\Type
+ */
 final class PropertyVisitor extends NameResolver
 {
     /**
@@ -41,7 +46,7 @@ final class PropertyVisitor extends NameResolver
     /**
      * @throws ReflectionException
      */
-    public function enterNode(Node $node): Node|int|null
+    #[Override] public function enterNode(Node $node): Node|int|null
     {
         if ($node instanceof Node\Stmt\Class_) {
             $className = (string) $node->name;
@@ -53,7 +58,7 @@ final class PropertyVisitor extends NameResolver
             if ($docComment) {
                 $typeDeclaration = DocBlockParser::varTypeDeclarationFrom($docComment->getText());
                 if ($typeDeclaration !== null) {
-                    $this->currentProperty = Type::of($typeDeclaration, $this->getNameContext());
+                    $this->currentProperty = type_of($typeDeclaration, $this->getNameContext());
                 }
             }
         } elseif ($node instanceof VarLikeIdentifier) {
@@ -72,7 +77,7 @@ final class PropertyVisitor extends NameResolver
                     if ($reflectionType->allowsNull()) {
                         $typeDeclaration .= '|null';
                     }
-                    $this->properties[$key] = Type::of($typeDeclaration);
+                    $this->properties[$key] = type_of($typeDeclaration);
                 }
                 $this->currentProperty = null;
             } elseif ($this->currentProperty) {
@@ -97,7 +102,7 @@ final class PropertyVisitor extends NameResolver
     private function reflectionClassByName(?string $type): ReflectionClass
     {
         if ($type === null) {
-            throw new RuntimeException('Type information missing');
+            throw new RuntimeException('AbstractType information missing');
         }
         if (isset(self::$reflectionClasses[$type])) {
             return self::$reflectionClasses[$type];

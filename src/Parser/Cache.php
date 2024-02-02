@@ -5,6 +5,9 @@ namespace Hamlet\Type\Parser;
 use Hamlet\Type\Type;
 use Throwable;
 
+/**
+ * @psalm-internal Hamlet\Type
+ */
 final class Cache
 {
     public static function set(string $key, Type $type): void

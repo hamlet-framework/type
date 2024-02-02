@@ -1,10 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type;
+namespace Hamlet\Type\Types;
 
+use Hamlet\Type\CastException;
 use Hamlet\Type\Resolvers\Resolver;
+use Hamlet\Type\Type;
+use Override;
 
 /**
+ * @psalm-internal Hamlet\Type
  * @template T
  * @extends Type<list<T>>
  */
@@ -23,51 +27,40 @@ readonly class ListType extends Type
         $this->elementType = $elementType;
     }
 
-    /**
-     * @psalm-assert-if-true list<T> $value
-     */
-    public function matches(mixed $value): bool
+    #[Override] public function matches(mixed $value): bool
     {
-        if (!is_array($value)) {
+        if (!is_array($value) || !array_is_list($value)) {
             return false;
         }
-        $i = 0;
-        foreach ($value as $k => $v) {
-            if ($i !== $k) {
+        foreach ($value as $element) {
+            if (!$this->elementType->matches($element)) {
                 return false;
             }
-            if (!$this->elementType->matches($v)) {
-                return false;
-            }
-            $i++;
         }
         return true;
     }
 
-    /**
-     * @return list<T>
-     */
-    public function resolveAndCast(mixed $value, Resolver $resolver): array
+    #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
-        if (!is_array($value)) {
+        if ($this->matches($value)) {
+            return $value;
+        }
+        if (!is_array($value) || !array_is_list($value)) {
             throw new CastException($value, $this);
         }
         $result = [];
-        /**
-         * @psalm-suppress MixedAssignment
-         */
         foreach ($value as $v) {
             $result[] = $this->elementType->resolveAndCast($v, $resolver);
         }
         return $result;
     }
 
-    public function __toString(): string
+    #[Override] public function __toString(): string
     {
         return 'list<' . $this->elementType . '>';
     }
 
-    public function serialize(): string
+    #[Override] public function serialize(): string
     {
         return 'new ' . static::class . '(' . $this->elementType->serialize() . ')';
     }

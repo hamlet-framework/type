@@ -52,69 +52,6 @@ class TypeDeclarationTest extends TestCase
         $type->cast(new stdClass);
     }
 
-    public function testPropertyType(): void
-    {
-        $value = ['id' => 12];
-        $type = _object_like([
-            'id' => _int()
-        ]);
-        assert($type->matches($value));
-
-        $this->assertEquals(12, $type->cast($value)['id']);
-    }
-
-    public function testIntersectionType(): void
-    {
-        /** @var Type<array{id:int,name:string,online?:bool}> $type */
-        $type = Type::of('array{id:int,name:string,online?:bool}');
-
-        $this->assertEquals('array{id:int,name:string,online?:bool}', (string)$type);
-
-        $value = ['id' => 12, 'name' => 'hey there'];
-        $this->assertTrue($type->matches($value));
-
-        $value = ['id' => 1, 'name' => 'too', 'online' => false];
-        $this->assertTrue($type->matches($value));
-
-        $value = ['id' => 1, 'name' => 'too', 'online' => 2.3];
-        $this->assertFalse($type->matches($value));
-
-        $value = ['id' => 1];
-        $this->assertFalse($type->matches($value));
-    }
-
-    public function testIntersectionCast(): void
-    {
-        /** @var Type<array{id:int,name:string,online?:bool}> $type */
-        $type = _object_like([
-            'id' => _int(),
-            'name' => _string(),
-            'online?' => _bool()
-        ]);
-
-        $object = new class() {
-            public function __toString(): string
-            {
-                return 'hey there';
-            }
-        };
-        $value = ['id' => '12monkeys', 'name' => $object, 'online' => '0'];
-
-        $this->assertEquals(['id' => 12, 'name' => 'hey there', 'online' => false], $type->cast($value));
-    }
-
-    public function testPropertyTypeThrowsExceptionOnMissingProperty(): void
-    {
-        $this->expectException(CastException::class);
-        _object_like(['id' => _int()])->cast([]);
-    }
-
-    public function testNonRequiredPropertyTypeThrowsNoExceptionOnMissingProperty(): void
-    {
-        _object_like(['id?' => _int()])->cast([]);
-        $this->assertTrue(true);
-    }
-
     public function testListType(): void
     {
         $type = _list(_string());
@@ -267,22 +204,6 @@ class TypeDeclarationTest extends TestCase
         $type = _map(_string(), _int());
         $this->expectException(CastException::class);
         $type->cast($value);
-    }
-
-    public function testObjectLikeType(): void
-    {
-        $type = _object_like([
-            'name' => _string(),
-            'age?' => _int(),
-        ]);
-        $this->assertTrue($type->matches(['name' => 'Ivan']));
-        $this->assertTrue($type->matches(['name' => 'Ivan', 'address' => 'Moscow']));
-        $this->assertTrue($type->matches(['name' => 'Ivan', 'age' => 22]));
-        $this->assertFalse($type->matches(['name' => 'Ivan', 'age' => 'unknown']));
-        $this->assertFalse($type->matches("user"));
-
-        $this->expectException(CastException::class);
-        $type->cast("user");
     }
 
     public function testCast(): void

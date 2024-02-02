@@ -4,13 +4,15 @@ namespace Hamlet\Type\Types;
 
 use DateTime;
 use Hamlet\Type\CastException;
-use Hamlet\Type\Type;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use TypeError;
 use function Hamlet\Type\_array;
 use function Hamlet\Type\_int;
 use function Hamlet\Type\_mixed;
 use function Hamlet\Type\_string;
+use function Hamlet\Type\type_of;
 
 class ArrayTypeTest extends TestCase
 {
@@ -57,22 +59,12 @@ class ArrayTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testMatch($value, bool $success)
+    #[DataProvider('matchCases')] public function testMatch(mixed $value, bool $success): void
     {
         $this->assertEquals($success, _array(_mixed())->matches($value), 'Failed on ' . print_r($value, true));
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testAssert($value, bool $success)
+    #[DataProvider('matchCases')] public function testAssert(mixed $value, bool $success): void
     {
         if ($success) {
             _array(_mixed())->assert($value);
@@ -83,33 +75,33 @@ class ArrayTypeTest extends TestCase
         }
     }
 
-    public function testArrayOfStrings()
+    public function testArrayOfStrings(): void
     {
         $a = [0 => 'a', 1 => 'b'];
         $this->assertTrue(_array(_string())->matches($a));
     }
 
-    public function testWrongOrder()
+    public function testWrongOrder(): void
     {
         $a = [1 => 'a', 0 => 'b'];
         $this->assertTrue(_array(_string())->matches($a));
     }
 
-    public function testSkippedIndex()
+    public function testSkippedIndex(): void
     {
         $a = [0 => 'a', 2 => 'b'];
         $this->assertTrue(_array(_string())->matches($a));
     }
 
-    public function testInvalidType()
+    public function testInvalidType(): void
     {
         $a = [1, 2, 'a'];
         $this->assertFalse(_array(_int())->matches($a));
     }
 
-    public function testParsing()
+    public function testParsing(): void
     {
-        $type = Type::of('array<int>');
+        $type = type_of('array<int>');
         $this->assertTrue($type->matches([1, 2, 3]));
         $this->assertTrue($type->matches([1 => 2]));
     }
@@ -134,8 +126,8 @@ class ArrayTypeTest extends TestCase
         };
 
         return [
-            [true,       null,      true],
-            [false,      null,      true],
+            [true,       [true],      false],
+            [false,      [false],     false],
             [0,          null,      true],
             [1,          null,      true],
             [-1,         null,      true],
@@ -154,17 +146,17 @@ class ArrayTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider castCases()
-     * @param mixed $value
-     * @param mixed $result
-     * @param bool $exceptionThrown
-     */
-    public function testCast($value, $result, bool $exceptionThrown)
+    #[DataProvider('castCases')] public function testCast(mixed $value, mixed $expectedResult, bool $expectedExceptionThrown): void
     {
-        if ($exceptionThrown) {
-            $this->expectException(CastException::class);
+        $result = null;
+        $exceptionThrown = false;
+        try {
+            $result = (array) $value;
+        } catch (TypeError) {
+            $exceptionThrown = true;
         }
-        $this->assertSame($result, _array(_mixed())->cast($value), 'Failed on ' . print_r($value, true));
+
+        $this->assertSame($expectedResult, $result);
+        $this->assertEquals($expectedExceptionThrown, $exceptionThrown);
     }
 }

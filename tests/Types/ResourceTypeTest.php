@@ -5,12 +5,21 @@ namespace Hamlet\Type\Types;
 use DateTime;
 use Exception;
 use Hamlet\Type\CastException;
+use Hamlet\Type\Type;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use function Hamlet\Type\_resource;
 
 class ResourceTypeTest extends TestCase
 {
+    use CastCasesTrait;
+
+    protected function type(): Type
+    {
+        return _resource();
+    }
+
     public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
@@ -52,88 +61,31 @@ class ResourceTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testMatch($value, bool $success)
+    #[DataProvider('matchCases')] public function testMatch(mixed $value, bool $success): void
     {
         $this->assertEquals($success, _resource()->matches($value));
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testAssert($value, bool $success)
+    #[DataProvider('matchCases')] public function testAssert(mixed $value, bool $success): void
     {
         $exceptionThrown = false;
         try {
             _resource()->assert($value);
-        } catch (Exception $error) {
+        } catch (Exception) {
             $exceptionThrown = true;
         }
         $this->assertEquals(!$success, $exceptionThrown);
     }
 
-    public static function castCases(): array
+    #[DataProvider('castCases')] public function testCast(mixed $value)
     {
-        $resource = fopen(__FILE__, 'r');
-        $object = new class ()
-        {
-            public function __toString()
-            {
-                return 'a';
-            }
-        };
-        $callable = function () {
-        };
-        $invokable = new class()
-        {
-            public function __invoke()
-            {
-            }
-        };
+        $expectedExceptionThrown = !is_resource($value);
 
-        return [
-            [true,          null,       true],
-            [false,         null,       true],
-            [0,             null,       true],
-            [1,             null,       true],
-            [-1,            null,       true],
-            ['',            null,       true],
-            ['0',           null,       true],
-            ['x1',          null,       true],
-            [[],            null,       true],
-            [[false],       null,       true],
-            [[1],           null,       true],
-            [[1, 3],        null,       true],
-            [new stdClass,  null,       true],
-            [$object,       null,       true],
-            [new DateTime,  null,       true],
-            ['abs',         null,       true],
-            [$callable,     null,       true],
-            [$invokable,    null,       true],
-            [$resource,     $resource, false],
-            [null,          null,       true],
-        ];
-    }
-
-    /**
-     * @dataProvider castCases()
-     * @param mixed $value
-     * @param mixed $result
-     * @param bool $exceptionThrown
-     */
-    public function testCast($value, $result, bool $exceptionThrown)
-    {
-        if ($exceptionThrown) {
-            $this->expectException(CastException::class);
+        try {
             _resource()->cast($value);
-        } else {
-            $this->assertSame($result, _resource()->cast($value));
+            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
+        } catch (CastException) {
+            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
         }
     }
 }

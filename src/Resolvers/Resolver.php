@@ -7,6 +7,9 @@ use ReflectionClass;
 use ReflectionProperty;
 use stdClass;
 
+/**
+ * @todo add PHPDoc to this interface
+ */
 interface Resolver
 {
     /**

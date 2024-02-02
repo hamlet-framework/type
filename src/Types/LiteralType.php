@@ -1,8 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type;
+namespace Hamlet\Type\Types;
+
+use Hamlet\Type\CastException;
+use Hamlet\Type\Resolvers\Resolver;
+use Hamlet\Type\Type;
+use Override;
 
 /**
+ * @psalm-internal Hamlet\Type
  * @template T
  * @extends Type<T>
  */
@@ -21,10 +27,7 @@ readonly class LiteralType extends Type
         $this->values = $values;
     }
 
-    /**
-     * @psalm-assert-if-true T $value
-     */
-    public function matches(mixed $value): bool
+    #[Override] public function matches(mixed $value): bool
     {
         foreach ($this->values as $v) {
             if ($value === $v) {
@@ -34,10 +37,7 @@ readonly class LiteralType extends Type
         return false;
     }
 
-    /**
-     * @return T
-     */
-    public function cast(mixed $value): mixed
+    #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): mixed
     {
         if ($this->matches($value)) {
             return $value;
@@ -50,7 +50,7 @@ readonly class LiteralType extends Type
         throw new CastException($value, $this);
     }
 
-    public function __toString(): string
+    #[Override] public function __toString(): string
     {
         $escape =
             function (mixed $a): string {
@@ -73,7 +73,7 @@ readonly class LiteralType extends Type
         }
     }
 
-    public function serialize(): string
+    #[Override] public function serialize(): string
     {
         $properties = [];
         foreach ($this->values as $value) {

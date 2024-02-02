@@ -7,36 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class JsonMappingTest extends TestCase
 {
-    public function testSimpleJsonMapping()
-    {
-        $type = Type::of('array<array{id:int,name:string,age?:int}>');
-        $json = '
-            [
-                {
-                    "id": 1,
-                    "name": "Vanya",
-                    "age": 10
-                },
-                {
-                    "id": 2,
-                    "name": "Masha"
-                }
-            ]
-        ';
-        $value1 = $type->cast(json_decode($json));
-
-        Assert::assertCount(2, $value1);
-        Assert::assertEquals(10, $value1[0]['age']);
-        Assert::assertArrayNotHasKey('age', $value1[1]);
-
-        $value2 = $type->cast(json_decode($json, true));
-
-        Assert::assertCount(2, $value2);
-        Assert::assertEquals(10, $value2[0]['age']);
-        Assert::assertArrayNotHasKey('age', $value2[1]);
-    }
-
-    public function testObjectMapping()
+    public function testObjectMapping(): void
     {
         require_once __DIR__ . '/../psalm-cases/classes/User.php';
         require_once __DIR__ . '/../psalm-cases/classes/Address.php';

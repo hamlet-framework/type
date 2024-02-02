@@ -2,13 +2,13 @@
 
 namespace Hamlet\Type\Parser;
 
-use Hamlet\Type\Type;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
+use function Hamlet\Type\type_of;
 
 class ParserTest extends TestCase
 {
@@ -44,6 +44,7 @@ class ParserTest extends TestCase
             ['array<int,array<true|1|0.4>|false>'],
             ["'a'|'b'"],
             ['Hamlet\\Type\\Type'],
+            ['\\DateTime'],
             ["array<string, array<string, int|'a'|false>>"],
             ['array|null|false|1|1.1'],
             ["('a'|'b'|'c')"],
@@ -52,23 +53,19 @@ class ParserTest extends TestCase
             ['int[]|string'],
             ['array<string,int[]|object>[]'],
             ['int[]'],
-            ['array|array{id:int}'],
-            ['array<string, array<string, array{0:DateTime}>>'],
-            ['array{id:int|null,name?:string|null}'],
-            ['array{0: string, 1: string, foo: stdClass, 28: false}'],
-            // ['non-empty-array{0:string,1:string,foo:non-empty-array,23:boolean}'],
+            ['array|list{int}'],
+            ['array<string, array<string, list{DateTime}>>'],
+            ['list{int|null,?string}'],
+            ['list{string,string,\stdClass,false}'],
+            ['list{string,string,non-empty-array,boolean}'],
             ['array<string,DateTime>'],
-            ["callable(('a'|'b'), int):(string|array{DateTime}|callable():int)"],
-            ['Closure(bool):int'],
-            // ['Generator<T0, int, mixed, T0>'],
-            ['callable(array{0:int}[]):(int|null)'],
             ['list<array<array<int,string|null>>|bool|null>'],
         ];
     }
 
     #[DataProvider('typeDeclarations')] public function testTypeParser(string $specification): void
     {
-        $type = Type::of($specification);
+        $type = type_of($specification);
         Assert::assertNotNull($type);
     }
 
@@ -88,7 +85,7 @@ class ParserTest extends TestCase
                  *
                  *
                  * This is the set of objects
-                 * @psalm-var object|array{'*': int}
+                 * @psalm-var object|list{'*': int}
                  */
             "],
             ['
@@ -137,13 +134,13 @@ class ParserTest extends TestCase
         $typeA = DocBlockParser::fromProperty($type, $type->getProperty('a'));
         $typeB = DocBlockParser::fromProperty($type, $type->getProperty('b'));
 
-        Assert::assertEquals('array<int,array<array{0:DateTime}>>', (string) $typeA);
+        Assert::assertEquals('array<int,array<list{DateTime}>>', (string) $typeA);
         Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|DateTime|null", (string) $typeB);
     }
 
     #[DataProvider('typeDeclarations')] public function testSerialization(string $specification): void
     {
-        $type = Type::of($specification);
+        $type = type_of($specification);
 
         $copy = eval('return ' . $type->serialize() . ';');
         $this->assertEquals((string) $type, (string) $copy, 'Failed on ' . $specification);

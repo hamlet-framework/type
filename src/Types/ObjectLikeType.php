@@ -1,12 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type;
+namespace Hamlet\Type\Types;
 
+use Hamlet\Type\CastException;
 use Hamlet\Type\Resolvers\MappingUtils;
 use Hamlet\Type\Resolvers\Resolver;
+use Hamlet\Type\Type;
+use Override;
 use stdClass;
 
 /**
+ * @psalm-internal Hamlet\Type
  * @template T
  * @extends Type<array<T>>
  */
@@ -25,10 +29,7 @@ readonly class ObjectLikeType extends Type
         $this->fields = $fields;
     }
 
-    /**
-     * @psalm-assert-if-true array $value
-     */
-    public function matches(mixed $value): bool
+    #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
             return false;
@@ -52,8 +53,11 @@ readonly class ObjectLikeType extends Type
     /**
      * @return array<T>
      */
-    public function resolveAndCast(mixed $value, Resolver $resolver): array
+    #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
+        if ($this->matches($value)) {
+            return $value;
+        }
         if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);
         }
@@ -92,7 +96,7 @@ readonly class ObjectLikeType extends Type
         return (array) $value;
     }
 
-    public function __toString(): string
+    #[Override] public function __toString(): string
     {
         $keys = [];
         foreach ($this->fields as $name => $type) {
@@ -101,7 +105,7 @@ readonly class ObjectLikeType extends Type
         return 'array{' . join(',', $keys) . '}';
     }
 
-    public function serialize(): string
+    #[Override] public function serialize(): string
     {
         $arguments = [];
         foreach ($this->fields as $name => $type) {

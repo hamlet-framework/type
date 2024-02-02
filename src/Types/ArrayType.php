@@ -1,10 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type;
+namespace Hamlet\Type\Types;
 
+use Hamlet\Type\CastException;
 use Hamlet\Type\Resolvers\Resolver;
+use Hamlet\Type\Type;
+use Override;
 
 /**
+ * @psalm-internal Hamlet\Type
  * @template T
  * @extends Type<array<T>>
  */
@@ -23,17 +27,11 @@ readonly class ArrayType extends Type
         $this->elementType = $elementType;
     }
 
-    /**
-     * @psalm-assert-if-true array<T> $value
-     */
-    public function matches(mixed $value): bool
+    #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
             return false;
         }
-        /**
-         * @psalm-suppress MixedAssignment
-         */
         foreach ($value as $v) {
             if (!$this->elementType->matches($v)) {
                 return false;
@@ -42,30 +40,27 @@ readonly class ArrayType extends Type
         return true;
     }
 
-    /**
-     * @return array<T>
-     */
-    public function resolveAndCast(mixed $value, Resolver $resolver): array
+    #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
+        if ($this->matches($value)) {
+            return $value;
+        }
         if (!is_array($value)) {
             throw new CastException($value, $this);
         }
         $result = [];
-        /**
-         * @psalm-suppress MixedAssignment
-         */
-        foreach ($value as $v) {
-            $result[] = $this->elementType->resolveAndCast($v, $resolver);
+        foreach ($value as $k => $v) {
+            $result[$k] = $this->elementType->resolveAndCast($v, $resolver);
         }
         return $result;
     }
 
-    public function __toString(): string
+    #[Override] public function __toString(): string
     {
         return 'array<' . $this->elementType . '>';
     }
 
-    public function serialize(): string
+    #[Override] public function serialize(): string
     {
         return 'new ' . static::class . '(' . $this->elementType->serialize() . ')';
     }

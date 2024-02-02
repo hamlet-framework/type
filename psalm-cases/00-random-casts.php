@@ -2,9 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Hamlet\Type\Type;
 use function Hamlet\Type\_bool;
-use function Hamlet\Type\_callable;
 use function Hamlet\Type\_class;
 use function Hamlet\Type\_float;
 use function Hamlet\Type\_int;
@@ -14,7 +12,6 @@ use function Hamlet\Type\_map;
 use function Hamlet\Type\_mixed;
 use function Hamlet\Type\_null;
 use function Hamlet\Type\_object;
-use function Hamlet\Type\_object_like;
 use function Hamlet\Type\_string;
 use function Hamlet\Type\_union;
 
@@ -23,13 +20,6 @@ class Example
     public function bool(): bool
     {
         return _bool()->cast(true);
-    }
-
-    public function callable(): callable
-    {
-        return _callable()->cast(function (): int {
-            return 1;
-        });
     }
 
     public function stdClass(): stdClass
@@ -87,19 +77,6 @@ class Example
     public function object(): object
     {
         return _object()->cast(new stdClass());
-    }
-
-    /**
-     * @return array{id:int}
-     */
-    public function object_like(): array
-    {
-        /** @var Type<array{id:int}> $type */
-        $type = _object_like([
-            'id' => _int()
-        ]);
-
-        return $type->cast(['id' => 1]);
     }
 
     public function string(): string

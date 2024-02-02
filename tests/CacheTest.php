@@ -4,12 +4,16 @@ namespace Hamlet\Type;
 
 use Hamlet\Type\Parser\Cache;
 use PHPUnit\Framework\TestCase;
+use Random\RandomException;
 
 class CacheTest extends TestCase
 {
+    /**
+     * @throws RandomException
+     */
     public function testSetThenGet()
     {
-        $type = Type::of('array<int,resource|array<resource>>');
+        $type = type_of('array<int,resource|array<resource>>');
         $key = md5(random_bytes(15));
 
         Cache::set($key, $type);
@@ -18,9 +22,12 @@ class CacheTest extends TestCase
         $this->assertEquals((string) $copy, (string) $type);
     }
 
+    /**
+     * @throws RandomException
+     */
     public function testSetThenRemoveAndThenGet()
     {
-        $type = Type::of('array<int,resource|array<resource>>');
+        $type = type_of('array<int,resource|array<resource>>');
         $key = md5(random_bytes(15));
 
         Cache::set($key, $type);
@@ -30,9 +37,12 @@ class CacheTest extends TestCase
         $this->assertNull($copy);
     }
 
+    /**
+     * @throws RandomException
+     */
     public function testSetThenGetWithFutureTimestamp()
     {
-        $type = Type::of('array<int,resource|array<resource>>');
+        $type = type_of('array<int,resource|array<resource>>');
         $key = md5(random_bytes(15));
 
         Cache::set($key, $type);
@@ -41,9 +51,12 @@ class CacheTest extends TestCase
         $this->assertNull($copy);
     }
 
+    /**
+     * @throws RandomException
+     */
     public function testCacheReturnsNullOnError()
     {
-        $type = Type::of('array<int,resource|array<resource>>');
+        $type = type_of('array<int,resource|array<resource>>');
         $key = md5(random_bytes(15));
         $safeKey = Cache::class . '::' . $key;
         $fileName = sys_get_temp_dir() . '/type-cache.' . md5($safeKey);

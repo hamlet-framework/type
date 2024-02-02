@@ -39,38 +39,6 @@ class TrackUnmappedPropertiesTest extends TestCase
         _class(User::class)->resolveAndCast($value, $resolver);
     }
 
-    public function testArrayPropertiesNotMappedToObjectLikePropertiesDoNotThrowExceptionByDefault()
-    {
-        $value = [
-            'id' => 1,
-            'name' => 'Alexey',
-            'hobby' => 'Cats, of course',
-        ];
-
-        $type = Type::of('array{id:int,name:string}');
-        $this->assertEquals($value, $type->cast($value));
-    }
-
-    public function testArrayPropertiesNotMappedToObjectLikePropertiesThrowExceptionWhenEnabled()
-    {
-        $resolver = new class() extends DefaultResolver {
-            public function ignoreUnmappedProperties(): bool
-            {
-                return false;
-            }
-        };
-
-        $value = [
-            'id' => 1,
-            'name' => 'Alexey',
-            'hobby' => 'Cats, of course',
-        ];
-
-        $this->expectException(CastException::class);
-        $type = Type::of('array{id:int,name:string}');
-        $type->resolveAndCast($value, $resolver);
-    }
-
     public function testClassPropertiesNotMappedToClassPropertiesDoNotThrowExceptionByDefault()
     {
         $value = (object) [
@@ -101,37 +69,5 @@ class TrackUnmappedPropertiesTest extends TestCase
         require_once __DIR__ . '/../psalm-cases/classes/User.php';
         $this->expectException(CastException::class);
         _class(User::class)->resolveAndCast($value, $resolver);
-    }
-
-    public function testClassPropertiesNotMappedToObjectLikePropertiesDoNotThrowExceptionByDefault()
-    {
-        $value = (object) [
-            'id' => 1,
-            'name' => 'Alexey',
-            'hobby' => 'Cats, of course',
-        ];
-
-        $type = Type::of('array{id:int,name:string}');
-        $this->assertEquals((array) $value, $type->cast($value));
-    }
-
-    public function testClassPropertiesNotMappedToObjectLikePropertiesThrowExceptionWhenEnabled()
-    {
-        $resolver = new class() extends DefaultResolver {
-            public function ignoreUnmappedProperties(): bool
-            {
-                return false;
-            }
-        };
-
-        $value = (object) [
-            'id' => 1,
-            'name' => 'Alexey',
-            'hobby' => 'Cats, of course',
-        ];
-
-        $this->expectException(CastException::class);
-        $type = Type::of('array{id:int,name:string}');
-        $type->resolveAndCast($value, $resolver);
     }
 }

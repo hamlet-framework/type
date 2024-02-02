@@ -2,20 +2,20 @@
 
 namespace Hamlet\Type\Types;
 
+use Error;
 use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use TypeError;
-use function Hamlet\Type\_bool;
+use function Hamlet\Type\_string;
 
-class BoolTypeTest extends TestCase
+class StringTypeTest extends TestCase
 {
     use CastCasesTrait;
 
     protected function type(): Type
     {
-        return _bool();
+        return _string();
     }
 
     #[DataProvider('castCases')] public function testCast(mixed $value): void
@@ -23,13 +23,13 @@ class BoolTypeTest extends TestCase
         $expectedResult = null;
         $expectedExceptionThrown = false;
         try {
-            $expectedResult = (bool) $value;
-        } catch (TypeError) {
+            $expectedResult = (string) $value;
+        } catch (Error) {
             $expectedExceptionThrown = true;
         }
 
         try {
-            $result = _bool()->cast($value);
+            $result = _string()->cast($value);
             $this->assertSame($expectedResult, $result, 'Wrong cast result');
             $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
         } catch (CastException) {

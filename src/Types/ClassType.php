@@ -1,13 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type;
+namespace Hamlet\Type\Types;
 
+use Hamlet\Type\CastException;
 use Hamlet\Type\Resolvers\MappingUtils;
 use Hamlet\Type\Resolvers\Resolver;
+use Hamlet\Type\Type;
 use ReflectionException;
 use stdClass;
 
 /**
+ * @psalm-internal Hamlet\Type
  * @template T as object
  * @extends Type<T>
  */
@@ -31,9 +34,6 @@ readonly class ClassType extends Type
         }
     }
 
-    /**
-     * @psalm-assert-if-true T $value
-     */
     public function matches(mixed $value): bool
     {
         return is_object($value) && is_a($value, $this->type);
@@ -41,9 +41,6 @@ readonly class ClassType extends Type
 
     /**
      * @return T
-     * @psalm-suppress InvalidReturnType
-     * @psalm-suppress InvalidReturnStatement
-     * @psalm-suppress NoValue
      * @throws ReflectionException
      */
     public function resolveAndCast(mixed $value, Resolver $resolver): object

@@ -1,11 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Hamlet\Type;
+namespace Hamlet\Type\Types;
 
+use Hamlet\Type\CastException;
 use Hamlet\Type\Resolvers\Resolver;
+use Hamlet\Type\Type;
+use Override;
 use stdClass;
 
 /**
+ * @psalm-internal Hamlet\Type
  * @template K as array-key
  * @template V
  * @extends Type<array<K,V>>
@@ -32,18 +36,11 @@ readonly class MapType extends Type
         $this->valueType = $valueType;
     }
 
-    /**
-     * @psalm-assert-if-true array<K,V> $value
-     */
-    public function matches(mixed $value): bool
+    #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
             return false;
         }
-        /**
-         * @psalm-suppress MixedAssignment
-         * @psalm-suppress TypeDoesNotContainType
-         */
         foreach ($value as $k => $v) {
             if (!$this->keyType->matches($k) || !$this->valueType->matches($v)) {
                 return false;
@@ -52,10 +49,7 @@ readonly class MapType extends Type
         return true;
     }
 
-    /**
-     * @return array<K,V>
-     */
-    public function resolveAndCast(mixed $value, Resolver $resolver): array
+    #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
         if (!(is_array($value) || is_object($value) && is_a($value, stdClass::class))) {
             throw new CastException($value, $this);
@@ -70,12 +64,12 @@ readonly class MapType extends Type
         return $result;
     }
 
-    public function __toString(): string
+    #[Override] public function __toString(): string
     {
         return 'array<' . $this->keyType . ',' . $this->valueType . '>';
     }
 
-    public function serialize(): string
+    #[Override] public function serialize(): string
     {
         return 'new ' . static::class . '(' . $this->keyType->serialize() . ', ' . $this->valueType->serialize() . ')';
     }

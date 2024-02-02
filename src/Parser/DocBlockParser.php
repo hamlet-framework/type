@@ -3,14 +3,17 @@
 namespace Hamlet\Type\Parser;
 
 use Exception;
-use Hamlet\Type\MixedType;
 use Hamlet\Type\Type;
+use Hamlet\Type\Types\MixedType;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use ReflectionClass;
 use ReflectionProperty;
 use RuntimeException;
 
+/**
+ * @psalm-internal Hamlet\Type
+ */
 final class DocBlockParser
 {
     public static function fromProperty(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type

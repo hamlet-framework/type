@@ -5,12 +5,22 @@ namespace Hamlet\Type\Types;
 use DateTime;
 use Exception;
 use Hamlet\Type\CastException;
+use Hamlet\Type\Type;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use TypeError;
 use function Hamlet\Type\_array_key;
 
 class ArrayKeyTypeTest extends TestCase
 {
+    use CastCasesTrait;
+
+    protected function type(): Type
+    {
+        return _array_key();
+    }
+
     public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
@@ -44,79 +54,41 @@ class ArrayKeyTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testMatch($value, bool $success)
+    #[DataProvider('matchCases')] public function testMatch(mixed $value, bool $success): void
     {
         $this->assertEquals($success, _array_key()->matches($value));
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testAssert($value, bool $success)
+    #[DataProvider('matchCases')] public function testAssert(mixed $value, bool $success): void
     {
         $exceptionThrown = false;
         try {
             _array_key()->assert($value);
-        } catch (Exception $error) {
+        } catch (Exception) {
             $exceptionThrown = true;
         }
         $this->assertEquals(!$success, $exceptionThrown);
     }
 
-    public static function castCases(): array
+    #[DataProvider('castCases')] public function testCast(mixed $value): void
     {
-        $resource = fopen(__FILE__, 'r');
-        $object = new class ()
-        {
-            public function __toString()
-            {
-                return 'a';
-            }
-        };
-        $callable = function () {
-        };
+        $expectedResult = null;
+        $expectedExceptionThrown = false;
+        try {
+            $a = [
+                $value => 1
+            ];
+            $expectedResult = array_key_first($a);
+        } catch (TypeError) {
+            $expectedExceptionThrown = true;
+        }
 
-        return [
-            [true,          1,                  false],
-            [false,         0,                  false],
-            [0,             0,                  false],
-            [1,             1,                  false],
-            [-1,            -1,                 false],
-            ['',            '',                 false],
-            ['0',           '0',                false],
-            ['string',      'string',           false],
-            [[],            0,                  false],
-            [[1],           1,                  false],
-            [[1, 3],        1,                  false],
-            [new stdClass,  null,               true],
-            [$object,       (string) $object,   false],
-            [new DateTime,  null,               true],
-            [$callable,     null,               true],
-            [$resource,     (int) $resource,    false],
-            [null,          0,                  false],
-        ];
-    }
-
-    /**
-     * @dataProvider castCases()
-     * @param mixed $value
-     * @param mixed $result
-     * @param bool $exceptionThrown
-     */
-    public function testCast($value, $result, bool $exceptionThrown)
-    {
-        if ($exceptionThrown) {
-            $this->expectException(CastException::class);
-            _array_key()->cast($value);
-        } else {
-            $this->assertSame($result, _array_key()->cast($value));
+        try {
+            $result = _array_key()->cast($value);
+            $this->assertEquals($expectedResult, $result, 'Wrong cast result');
+            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
+        } catch (CastException) {
+            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
         }
     }
 }

@@ -5,19 +5,12 @@ namespace Hamlet\Type\Types;
 use DateTime;
 use Exception;
 use Hamlet\Type\CastException;
-use Hamlet\Type\Union2Type;
-use Hamlet\Type\Union3Type;
-use Hamlet\Type\Union4Type;
-use Hamlet\Type\Union5Type;
-use Hamlet\Type\Union6Type;
-use Hamlet\Type\Union7Type;
-use Hamlet\Type\Union8Type;
+use Hamlet\Type\Type;
+use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 use stdClass;
 use function Hamlet\Type\_bool;
-use function Hamlet\Type\_callable;
-use function Hamlet\Type\_float;
 use function Hamlet\Type\_int;
 use function Hamlet\Type\_literal;
 use function Hamlet\Type\_null;
@@ -27,6 +20,13 @@ use function Hamlet\Type\_union;
 
 class UnionTypeTest extends TestCase
 {
+    use CastCasesTrait;
+
+    protected function type(): Type
+    {
+        return _union(_int(), _resource(), _null());
+    }
+
     public static function matchCases(): array
     {
         $resource = fopen(__FILE__, 'r');
@@ -68,14 +68,7 @@ class UnionTypeTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider matchCases
-     * @param mixed $value
-     * @param bool $success1
-     * @param bool $success2
-     * @param bool $success3
-     */
-    public function testMatch($value, bool $success1, bool $success2, bool $success3)
+    #[DataProvider('matchCases')] public function testMatch(mixed $value, bool $success1, bool $success2, bool $success3): void
     {
         $type1 = _union(_null(), _int());
         $this->assertEquals($success1, $type1->matches($value));
@@ -87,148 +80,89 @@ class UnionTypeTest extends TestCase
         $this->assertEquals($success3, $type3->matches($value));
     }
 
-    /**
-     * @dataProvider matchCases()
-     * @param mixed $value
-     * @param bool $success
-     */
-    public function testAssert($value, bool $success)
+    #[DataProvider('matchCases')] public function testAssert(mixed $value, bool $expectedSuccess): void
     {
         $exceptionThrown = false;
         try {
             _union(_int(), _null())->assert($value);
-        } catch (Exception $error) {
+        } catch (Exception) {
             $exceptionThrown = true;
         }
-        $this->assertEquals(!$success, $exceptionThrown);
+        $this->assertEquals(!$expectedSuccess, $exceptionThrown);
     }
 
-    public static function castCases(): array
+    #[DataProvider('castCases')] public function testCast(mixed $value): void
     {
-        $resource = fopen(__FILE__, 'r');
-        $object = new class ()
-        {
-            public function __toString()
-            {
-                return 'a';
-            }
-        };
-        $callable = function () {
-        };
-        $invokable = new class()
-        {
-            public function __invoke()
-            {
-            }
-        };
+        $expectedExceptionThrown = !is_int($value) && !is_resource($value) && !is_null($value);
 
-        return [
-            [true,          null,       true ],
-            [false,         null,       false],
-            [0,             null,       false],
-            [1,             null,       true ],
-            [-1,            null,       true ],
-            ['',            null,       false],
-            ['0',           null,       true ],
-            ['x1',          null,       true ],
-            [[],            null,       false],
-            [[false],       null,       true ],
-            [[1],           null,       true ],
-            [[1, 3],        null,       true ],
-            [new stdClass,  null,       true ],
-            [$object,       null,       true ],
-            [new DateTime,  null,       true ],
-            ['abs',         null,       true ],
-            [$callable,     null,       true ],
-            [$invokable,    null,       true ],
-            [$resource,     $resource,  false],
-            [null,          null,       false],
-        ];
-    }
-
-    /**
-     * @dataProvider castCases
-     * @param mixed $value
-     * @param mixed $result
-     * @param bool $exceptionThrown
-     */
-    public function testCast($value, $result, bool $exceptionThrown)
-    {
-        $type = _union(_resource(), _null());
-        if ($exceptionThrown) {
-            $this->expectException(CastException::class);
-            $type->cast($value);
-        } else {
-            $this->assertSame($result, $type->cast($value));
+        try {
+            _union(_int(), _resource(), _null())->cast($value);
+            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
+        } catch (CastException) {
+            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
         }
     }
 
-    public function testFactoryMethod() {
+    public function testFactoryMethod(): void
+    {
         $type2 = _union(_literal(1), _literal(2));
-        $this->assertInstanceOf(Union2Type::class, $type2);
         $this->assertTrue($type2->matches(2));
 
         $type3 = _union(_literal(1), _literal(2), _literal(3));
-        $this->assertInstanceOf(Union3Type::class, $type3);
         $this->assertTrue($type3->matches(3));
 
         $type4 = _union(_literal(1), _literal(2), _literal(3), _literal(4));
-        $this->assertInstanceOf(Union4Type::class, $type4);
         $this->assertTrue($type4->matches(4));
 
         $type5 = _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5));
-        $this->assertInstanceOf(Union5Type::class, $type5);
         $this->assertTrue($type5->matches(5));
 
         $type6 = _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), _literal(6));
-        $this->assertInstanceOf(Union6Type::class, $type6);
         $this->assertTrue($type6->matches(6));
 
         $type7 = _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), _literal(6), _literal(7));
-        $this->assertInstanceOf(Union7Type::class, $type7);
         $this->assertTrue($type7->matches(7));
 
         $type8 = _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), _literal(6), _literal(7), _literal(8));
-        $this->assertInstanceOf(Union8Type::class, $type8);
         $this->assertTrue($type8->matches(8));
 
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), _literal(6), _literal(7), _literal(8), _literal(9));
     }
 
-    public function testNullableTailsFail3()
+    public function testNullableTailsFail3(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), null);
     }
 
-    public function testNullableTailsFail4()
+    public function testNullableTailsFail4(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), _literal(3), null);
     }
 
-    public function testNullableTailsFail5()
+    public function testNullableTailsFail5(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), _literal(3), _literal(4), null);
     }
 
-    public function testNullableTailsFail6()
+    public function testNullableTailsFail6(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), null);
     }
 
-    public function testNullableTailsFail7()
+    public function testNullableTailsFail7(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), _literal(6), null);
     }
 
-    public function testNullableTailsFail8()
+    public function testNullableTailsFail8(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), _literal(6), _literal(7), null);
     }
 }

@@ -2,40 +2,30 @@
 
 namespace Hamlet\Type;
 
-use RuntimeException;
+use Hamlet\Type\Parser\DeclarationReader;
+use InvalidArgumentException;
+use PhpParser\NameContext;
 
-/**
- * @return Type<bool>
- */
-function _bool(): Type
+function type_of(string $declaration, ?NameContext $nameContext = null): Type
 {
-    return new BoolType;
+    return match ($declaration) {
+        'string'    => new Types\StringType,
+        'int'       => new Types\IntType,
+        'float'     => new Types\FloatType,
+        'bool'      => new Types\BoolType,
+        'mixed'     => new Types\MixedType,
+        'resource'  => new Types\ResourceType,
+        'null'      => new Types\NullType,
+        default     => DeclarationReader::instance()->read($declaration, $nameContext),
+    };
 }
 
 /**
- * @template T
- * @param class-string<T> $type
- * @return Type<T>
+ * @return Type<mixed>
  */
-function _class(string $type): Type
+function _mixed(): Type
 {
-    return new ClassType($type);
-}
-
-/**
- * @return Type<callable>
- */
-function _callable(): Type
-{
-    return new CallableType('callable');
-}
-
-/**
- * @return Type<float>
- */
-function _float(): Type
-{
-    return new FloatType;
+    return new Types\MixedType;
 }
 
 /**
@@ -43,7 +33,31 @@ function _float(): Type
  */
 function _int(): Type
 {
-    return new IntType;
+    return new Types\IntType;
+}
+
+/**
+ * @return Type<float>
+ */
+function _float(): Type
+{
+    return new Types\FloatType;
+}
+
+/**
+ * @return Type<string>
+ */
+function _string(): Type
+{
+    return new Types\StringType;
+}
+
+/**
+ * @return Type<non-empty-string>
+ */
+function _non_empty_string(): Type
+{
+    return new Types\NonEmptyStringType;
 }
 
 /**
@@ -51,27 +65,31 @@ function _int(): Type
  */
 function _numeric_string(): Type
 {
-    return new NumericStringType;
+    return new Types\NumericStringType;
+}
+
+/**
+ * @return Type<bool>
+ */
+function _bool(): Type
+{
+    return new Types\BoolType;
 }
 
 /**
  * @return Type<numeric>
- * @psalm-suppress InvalidReturnStatement
- * @psalm-suppress InvalidReturnType
  */
 function _numeric(): Type
 {
-    return new NumericType;
+    return new Types\NumericType;
 }
 
 /**
  * @return Type<scalar>
- * @psalm-suppress InvalidReturnStatement
- * @psalm-suppress InvalidReturnType
  */
 function _scalar(): Type
 {
-    return new ScalarType;
+    return new Types\ScalarType;
 }
 
 /**
@@ -79,27 +97,15 @@ function _scalar(): Type
  */
 function _array_key(): Type
 {
-    return new ArrayKeyType;
+    return new Types\ArrayKeyType;
 }
 
 /**
- * @template A
- * @param Type<A> $type
- * @return Type<list<A>>
+ * @return Type<null>
  */
-function _list(Type $type): Type
+function _null(): Type
 {
-    return new ListType($type);
-}
-
-/**
- * @template A
- * @param Type<A> $type
- * @return Type<array<A>>
- */
-function _array(Type $type): Type
-{
-    return new ArrayType($type);
+    return new Types\NullType;
 }
 
 /**
@@ -109,35 +115,7 @@ function _array(Type $type): Type
  */
 function _literal(...$as): Type
 {
-    return new LiteralType(...$as);
-}
-
-/**
- * @template A as array-key
- * @template B
- * @param Type<A> $keyType
- * @param Type<B> $valueType
- * @return Type<array<A,B>>
- */
-function _map(Type $keyType, Type $valueType): Type
-{
-    return new MapType($keyType, $valueType);
-}
-
-/**
- * @return Type<mixed>
- */
-function _mixed(): Type
-{
-    return new MixedType;
-}
-
-/**
- * @return Type<null>
- */
-function _null(): Type
-{
-    return new NullType;
+    return new Types\LiteralType(...$as);
 }
 
 /**
@@ -145,17 +123,7 @@ function _null(): Type
  */
 function _object(): Type
 {
-    return new ObjectType;
-}
-
-/**
- * @template T
- * @param array<string,Type<T>> $properties
- * @return ObjectLikeType<T>
- */
-function _object_like(array $properties): Type
-{
-    return new ObjectLikeType($properties);
+    return new Types\ObjectType;
 }
 
 /**
@@ -163,15 +131,17 @@ function _object_like(array $properties): Type
  */
 function _resource(): Type
 {
-    return new ResourceType;
+    return new Types\ResourceType;
 }
 
 /**
- * @return Type<string>
+ * @template T
+ * @param class-string<T> $type
+ * @return Type<T>
  */
-function _string(): Type
+function _class(string $type): Type
 {
-    return new StringType;
+    return new Types\ClassType($type);
 }
 
 /**
@@ -196,40 +166,100 @@ function _string(): Type
  */
 function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
 {
-    switch (func_num_args()) {
-        case 2:
-            return new Union2Type($a, $b);
-        case 3:
-            if ($c === null) {
-                throw new RuntimeException('Type cannot be null');
-            }
-            return new Union3Type($a, $b, $c);
-        case 4:
-            if ($c === null || $d === null) {
-                throw new RuntimeException('Type cannot be null');
-            }
-            return new Union4Type($a, $b, $c, $d);
-        case 5:
-            if ($c === null || $d === null || $e === null) {
-                throw new RuntimeException('Type cannot be null');
-            }
-            return new Union5Type($a, $b, $c, $d, $e);
-        case 6:
-            if ($c === null || $d === null || $e === null || $f === null) {
-                throw new RuntimeException('Type cannot be null');
-            }
-            return new Union6Type($a, $b, $c, $d, $e, $f);
-        case 7:
-            if ($c === null || $d === null || $e === null || $f === null || $g === null) {
-                throw new RuntimeException('Type cannot be null');
-            }
-            return new Union7Type($a, $b, $c, $d, $e, $f, $g);
-        case 8:
-            if ($c === null || $d === null || $e === null || $f === null || $g === null || $h === null) {
-                throw new RuntimeException('Type cannot be null');
-            }
-            return new Union8Type($a, $b, $c, $d, $e, $f, $g, $h);
-        default:
-            throw new RuntimeException('Unsupported number of arguments');
+    $args = func_get_args();
+    if (count($args) > 8) {
+        throw new InvalidArgumentException('At most 8 elements');
     }
+    foreach ($args as $arg) {
+        if ($arg === null) {
+            throw new InvalidArgumentException('Type cannot be null');
+        }
+    }
+    return new Types\UnionType($args);
+}
+
+/**
+ * @template A
+ * @template B
+ * @template C
+ * @template D
+ * @template E
+ * @template F
+ * @template G
+ * @template H
+ * @param Type<A> $a
+ * @param Type<B> $b
+ * @param Type<C>|null $c
+ * @param Type<D>|null $d
+ * @param Type<E>|null $e
+ * @param Type<F>|null $f
+ * @param Type<G>|null $g
+ * @param Type<H>|null $h
+ * @return Type
+ * @psalm-return (func_num_args() is 2 ? Type<list{A,B}> : (func_num_args() is 3 ? Type<list{A,B,C}> : (func_num_args() is 4 ? Type<list{A,B,C,D}> : (func_num_args() is 5 ? Type<list{A,B,C,D,E}> : (func_num_args() is 6 ? Type<list{A,B,C,D,E,F}> : (func_num_args() is 7 ? Type<list{A,B,C,D,E,F,G}> : Type<list{A,B,C,D,E,F,G,H}>))))))
+ */
+function _tuple(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
+{
+    $args = func_get_args();
+    if (count($args) > 8) {
+        throw new InvalidArgumentException('At most 8 elements');
+    }
+    foreach ($args as $arg) {
+        if ($arg === null) {
+            throw new InvalidArgumentException('Type cannot be null');
+        }
+    }
+    return new Types\TupleType($args);
+}
+
+/**
+ * @template A
+ * @param Type<A> $elementTime
+ * @return Type<array<A>>
+ */
+function _array(Type $elementTime): Type
+{
+    return new Types\ArrayType($elementTime);
+}
+
+/**
+ * @template A
+ * @param Type<A> $elementType
+ * @return Type<non-empty-array<A>>
+ */
+function _non_empty_array(Type $elementType): Type
+{
+    return new Types\NonEmptyArrayType($elementType);
+}
+
+/**
+ * @template A
+ * @param Type<A> $elementType
+ * @return Type<list<A>>
+ */
+function _list(Type $elementType): Type
+{
+    return new Types\ListType($elementType);
+}
+
+/**
+ * @template A
+ * @param Type<A> $elementType
+ * @return Type<non-empty-list<A>>
+ */
+function _non_empty_list(Type $elementType): Type
+{
+    return new Types\NonEmptyListType($elementType);
+}
+
+/**
+ * @template A as array-key
+ * @template B
+ * @param Type<A> $keyType
+ * @param Type<B> $valueType
+ * @return Type<array<A,B>>
+ */
+function _map(Type $keyType, Type $valueType): Type
+{
+    return new Types\MapType($keyType, $valueType);
 }

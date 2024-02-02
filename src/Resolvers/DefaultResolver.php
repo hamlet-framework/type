@@ -4,12 +4,15 @@ namespace Hamlet\Type\Resolvers;
 
 use Hamlet\Type\Parser\DocBlockParser;
 use Hamlet\Type\Type;
-use InvalidArgumentException;
+use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 use stdClass;
 
+/**
+ * @psalm-internal Hamlet\Type
+ */
 class DefaultResolver implements Resolver
 {
     /**
@@ -25,7 +28,7 @@ class DefaultResolver implements Resolver
     /**
      * @psalm-suppress RedundantConditionGivenDocblockType
      */
-    public function getValue($type, string $propertyName, $source): ValueResolution
+    #[Override] public function getValue($type, string $propertyName, $source): ValueResolution
     {
         if (is_array($source) && array_key_exists($propertyName, $source)) {
             return ValueResolution::success($source[$propertyName], $propertyName);
@@ -38,7 +41,7 @@ class DefaultResolver implements Resolver
     /**
      * @throws ReflectionException
      */
-    public function setValue(object|array $object, string $propertyName, mixed $value): object|array
+    #[Override] public function setValue(object|array $object, string $propertyName, mixed $value): object|array
     {
         if (is_array($object)) {
             $object[$propertyName] = $value;
@@ -77,7 +80,7 @@ class DefaultResolver implements Resolver
      * @param mixed $value
      * @return SubTypeResolution<T>
      */
-    public function resolveSubType(string $type, mixed $value): SubTypeResolution
+    #[Override] public function resolveSubType(string $type, mixed $value): SubTypeResolution
     {
         assert(class_exists($type));
         return new SubTypeResolution($this->getReflectionClass($type), $this);
@@ -88,7 +91,7 @@ class DefaultResolver implements Resolver
      * @param ReflectionProperty $reflectionProperty
      * @return Type
      */
-    public function getPropertyType(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type
+    #[Override] public function getPropertyType(ReflectionClass $reflectionClass, ReflectionProperty $reflectionProperty): Type
     {
         $className = $reflectionClass->getName();
         $propertyName = $reflectionProperty->getName();
@@ -100,7 +103,7 @@ class DefaultResolver implements Resolver
         return self::$propertyTypes[$className][$propertyName];
     }
 
-    public function ignoreUnmappedProperties(): bool
+    #[Override] public function ignoreUnmappedProperties(): bool
     {
         return true;
     }
