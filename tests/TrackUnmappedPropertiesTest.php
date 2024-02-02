@@ -34,6 +34,7 @@ class TrackUnmappedPropertiesTest extends TestCase
             'hobby' => 'Cats, of course',
         ];
 
+        require_once __DIR__ . '/../psalm-cases/classes/Address.php';
         require_once __DIR__ . '/../psalm-cases/classes/User.php';
         $this->expectException(CastException::class);
         _class(User::class)->resolveAndCast($value, $resolver);
@@ -47,6 +48,7 @@ class TrackUnmappedPropertiesTest extends TestCase
             'hobby' => 'Cats, of course',
         ];
 
+        require_once __DIR__ . '/../psalm-cases/classes/Address.php';
         require_once __DIR__ . '/../psalm-cases/classes/User.php';
         $this->assertInstanceOf(User::class, _class(User::class)->cast($value));
     }
@@ -66,6 +68,7 @@ class TrackUnmappedPropertiesTest extends TestCase
             'hobby' => 'Cats, of course',
         ];
 
+        require_once __DIR__ . '/../psalm-cases/classes/Address.php';
         require_once __DIR__ . '/../psalm-cases/classes/User.php';
         $this->expectException(CastException::class);
         _class(User::class)->resolveAndCast($value, $resolver);

@@ -29,13 +29,10 @@ readonly class TupleType extends Type
 
     #[Override] public function matches(mixed $value): bool
     {
-        if (!is_array($value) || count($value) != count($this->fields)) {
+        if (!is_array($value) || !array_is_list($value) || count($value) != count($this->fields)) {
             return false;
         }
         for ($i = 0; $i < count($this->fields); $i++) {
-            if (!array_key_exists($i, $value)) {
-                return false;
-            }
             $v = $value[$i];
             if (!$this->fields[$i]->matches($v)) {
                 return false;
@@ -49,9 +46,18 @@ readonly class TupleType extends Type
         if ($this->matches($value)) {
             return $value;
         }
-        if (!is_array($value) || count($value) != count($this->fields)) {
+        if (!is_array($value)) {
+            if (is_scalar($value) || is_object($value) || is_resource($value) || is_null($value)) {
+                $value = (array) $value;
+            } else {
+                throw new CastException($value, $this);
+            }
+        }
+
+        if (count($value) != count($this->fields)) {
             throw new CastException($value, $this);
         }
+
         $result = [];
         foreach ($this->fields as $i => $field) {
             $result[] = $field->resolveAndCast($value[$i], $resolver);

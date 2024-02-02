@@ -94,6 +94,8 @@ class TypeDeclarationTest extends TestCase
             ['hey'],
             ['null'],
             [[]],
+            [null],
+            [false],
             [new stdClass],
             [new class() {
                 public function __toString()
@@ -130,8 +132,6 @@ class TypeDeclarationTest extends TestCase
         $this->assertEquals('1.2', $type->cast($object));
         $this->assertEquals('1', $type->cast(1));
         $this->assertEquals('1', $type->cast(true));
-        $this->assertEquals('0', $type->cast(false));
-        $this->assertEquals('0', $type->cast(null));
     }
 
     public static function values(): array
@@ -188,8 +188,6 @@ class TypeDeclarationTest extends TestCase
         return [
             ['hey'],
             ['null'],
-            [[new stdClass]],
-            [[new DateTime]],
             [new class() {
                 public function __toString()
                 {

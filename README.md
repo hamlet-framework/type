@@ -118,6 +118,11 @@ function ints(): iterable {
 
 The same applies to callables. The hinting support is there, but assertions and casting are likely not possible.
 
+Numeric string is a string which is numeric. The type hints are supported by Psalm, the assertion is as simple as 
+`is_string($a) && is_numeric($a)`. But as for the casting, there's no built-in support for it. The semantics of it is 
+casting of the value to a string and checking that it's numeric. Other interpretations are possible, so this is a bit 
+messy.
+
 ## Library support for hinting, assertions and casting
 
 The library provides a consistent support for hinting, assertions and casting as much as possible. 
