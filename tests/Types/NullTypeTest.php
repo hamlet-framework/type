@@ -4,10 +4,10 @@ namespace Hamlet\Type\Types;
 
 use DateTime;
 use Exception;
-use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use stdClass;
 use function Hamlet\Type\_null;
 
@@ -18,6 +18,14 @@ class NullTypeTest extends TestCase
     protected function type(): Type
     {
         return _null();
+    }
+
+    protected function baselineCast(mixed $value): null
+    {
+        if ($value == null) {
+            return null;
+        }
+        throw new RuntimeException;
     }
 
     public static function matchCases(): array
@@ -75,17 +83,5 @@ class NullTypeTest extends TestCase
             $exceptionThrown = true;
         }
         $this->assertEquals(!$success, $exceptionThrown);
-    }
-
-    #[DataProvider('castCases')] public function testCast(mixed $value): void
-    {
-        $expectedExceptionThrown = $value != null;
-
-        try {
-            _null()->cast($value);
-            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
-        } catch (CastException) {
-            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
-        }
     }
 }

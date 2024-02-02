@@ -23,14 +23,11 @@ readonly class NonEmptyStringType extends Type
         if ($this->matches($value)) {
             return $value;
         }
-        if (is_array($value)) {
-            throw new CastException($value, $this);
-        }
         if (is_object($value) && !method_exists($value, '__toString')) {
             throw new CastException($value, $this);
         }
         $stringValue = (string) $value;
-        if ($stringValue == '') {
+        if (strlen($stringValue) == 0) {
             throw new CastException($value, $this);
         }
         return $stringValue;

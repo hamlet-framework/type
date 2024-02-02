@@ -8,8 +8,8 @@ use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use stdClass;
-use TypeError;
 use function Hamlet\Type\_array;
 use function Hamlet\Type\_int;
 use function Hamlet\Type\_mixed;
@@ -23,6 +23,20 @@ class ArrayTypeTest extends TestCase
     protected function type(): Type
     {
         return _array(_int());
+    }
+
+    protected function baselineCast(mixed $value): array
+    {
+        try {
+            $arrayValue = is_array($value) ? $value : (array) $value;
+            $expectedResult = [];
+            foreach ($arrayValue as $key => $property) {
+                $expectedResult[$key] = (int) $property;
+            }
+            return $expectedResult;
+        } catch (Error) {
+            throw new RuntimeException;
+        }
     }
 
     public static function matchCases(): array
@@ -113,26 +127,5 @@ class ArrayTypeTest extends TestCase
         $type = type_of('array<int>');
         $this->assertTrue($type->matches([1, 2, 3]));
         $this->assertTrue($type->matches([1 => 2]));
-    }
-
-    #[DataProvider('castCases')] public function testCast(mixed $value): void
-    {
-        $expectedResult = [];
-        $expectedExceptionThrown = false;
-        try {
-            foreach ((array) $value as $key => $property) {
-                $expectedResult[$key] = (int) $property;
-            }
-        } catch (Error) {
-            $expectedExceptionThrown = true;
-        }
-
-        try {
-            $result = _array(_int())->cast($value);
-            $this->assertSame($expectedResult, $result);
-            $this->assertFalse($expectedExceptionThrown);
-        } catch (TypeError) {
-            $this->assertTrue($expectedExceptionThrown);
-        }
     }
 }

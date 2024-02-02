@@ -6,21 +6,26 @@ use Error;
 use Hamlet\Type\Type;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use function Hamlet\Type\_string;
+use function Hamlet\Type\_non_empty_string;
 
-class StringTypeTest extends TestCase
+class NonEmptyStringTypeTest extends TestCase
 {
     use CastCasesTrait;
 
     protected function type(): Type
     {
-        return _string();
+        return _non_empty_string();
     }
 
     protected function baselineCast(mixed $value): string
     {
         try {
-            return (string) $value;
+            $stringValue = (string) $value;
+            if ($stringValue !== '') {
+                return $stringValue;
+            } else {
+                throw new RuntimeException;
+            }
         } catch (Error) {
             throw new RuntimeException;
         }

@@ -9,6 +9,7 @@ use Hamlet\Type\Type;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use stdClass;
 use function Hamlet\Type\_bool;
 use function Hamlet\Type\_int;
@@ -25,6 +26,14 @@ class UnionTypeTest extends TestCase
     protected function type(): Type
     {
         return _union(_int(), _resource(), _null());
+    }
+
+    protected function baselineCast(mixed $value): mixed
+    {
+        if (is_int($value) || is_resource($value) || is_null($value)) {
+            return $value;
+        }
+        throw new RuntimeException;
     }
 
     public static function matchCases(): array
@@ -89,18 +98,6 @@ class UnionTypeTest extends TestCase
             $exceptionThrown = true;
         }
         $this->assertEquals(!$expectedSuccess, $exceptionThrown);
-    }
-
-    #[DataProvider('castCases')] public function testCast(mixed $value): void
-    {
-        $expectedExceptionThrown = !is_int($value) && !is_resource($value) && !is_null($value);
-
-        try {
-            _union(_int(), _resource(), _null())->cast($value);
-            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
-        } catch (CastException) {
-            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
-        }
     }
 
     public function testFactoryMethod(): void

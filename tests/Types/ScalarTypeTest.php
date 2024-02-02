@@ -2,10 +2,9 @@
 
 namespace Hamlet\Type\Types;
 
-use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use function Hamlet\Type\_scalar;
 
 class ScalarTypeTest extends TestCase
@@ -17,19 +16,12 @@ class ScalarTypeTest extends TestCase
         return _scalar();
     }
 
-    #[DataProvider('castCases')] public function testCast(mixed $value): void
+    protected function baselineCast(mixed $value): string|int|bool|float
     {
         if (is_scalar($value)) {
-            $expectedExceptionThrown = false;
+            return $value;
         } else {
-            $expectedExceptionThrown = true;
-        }
-
-        try {
-            _scalar()->cast($value);
-            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
-        } catch (CastException) {
-            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
+            throw new RuntimeException;
         }
     }
 }

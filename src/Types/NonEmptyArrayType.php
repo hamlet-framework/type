@@ -45,9 +45,18 @@ readonly class NonEmptyArrayType extends Type
         if ($this->matches($value)) {
             return $value;
         }
-        if (!is_array($value) || count($value) == 0) {
+        if (!is_array($value)) {
+            if (is_scalar($value) || is_object($value) || is_resource($value) || is_null($value)) {
+                $value = (array) $value;
+            } else {
+                throw new CastException($value, $this);
+            }
+        }
+
+        if (count($value) == 0) {
             throw new CastException($value, $this);
         }
+
         $result = [];
         foreach ($value as $k => $v) {
             $result[$k] = $this->elementType->resolveAndCast($v, $resolver);

@@ -3,6 +3,7 @@
 namespace Hamlet\Type\Types;
 
 use DateTime;
+use Exception;
 use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -11,6 +12,13 @@ use stdClass;
 trait CastCasesTrait
 {
     abstract protected function type(): Type;
+
+    protected function strictCastResultComparison(): bool
+    {
+        return true;
+    }
+
+    abstract protected function baselineCast(mixed $value): mixed;
 
     #[DataProvider('castCases')] public function testCastMatchInvariant(mixed $value): void
     {
@@ -34,6 +42,29 @@ trait CastCasesTrait
             $this->assertTrue($type->matches($castValue));
         } catch (CastException) {
             $this->assertFalse($type->matches($value));
+        }
+    }
+
+    #[DataProvider('castCases')] public function testCast(mixed $value): void
+    {
+        $expectedResult = null;
+        try {
+            $expectedResult = $this->baselineCast($value);
+            $expectedExceptionThrown = false;
+        } catch (Exception) {
+            $expectedExceptionThrown = true;
+        }
+
+        try {
+            $result = $this->type()->cast($value);
+            if ($this->strictCastResultComparison()) {
+                $this->assertSame($expectedResult, $result);
+            } else {
+                $this->assertEquals($expectedResult, $result);
+            }
+            $this->assertFalse($expectedExceptionThrown);
+        } catch (CastException) {
+            $this->assertTrue($expectedExceptionThrown);
         }
     }
 

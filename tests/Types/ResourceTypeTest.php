@@ -4,10 +4,10 @@ namespace Hamlet\Type\Types;
 
 use DateTime;
 use Exception;
-use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use stdClass;
 use function Hamlet\Type\_resource;
 
@@ -18,6 +18,14 @@ class ResourceTypeTest extends TestCase
     protected function type(): Type
     {
         return _resource();
+    }
+
+    protected function baselineCast(mixed $value): mixed
+    {
+        if (is_resource($value)) {
+            return $value;
+        }
+        throw new RuntimeException;
     }
 
     public static function matchCases(): array
@@ -75,17 +83,5 @@ class ResourceTypeTest extends TestCase
             $exceptionThrown = true;
         }
         $this->assertEquals(!$success, $exceptionThrown);
-    }
-
-    #[DataProvider('castCases')] public function testCast(mixed $value)
-    {
-        $expectedExceptionThrown = !is_resource($value);
-
-        try {
-            _resource()->cast($value);
-            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
-        } catch (CastException) {
-            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
-        }
     }
 }

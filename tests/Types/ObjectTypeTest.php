@@ -3,10 +3,9 @@
 namespace Hamlet\Type\Types;
 
 use Error;
-use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use function Hamlet\Type\_object;
 
 class ObjectTypeTest extends TestCase
@@ -18,21 +17,17 @@ class ObjectTypeTest extends TestCase
         return _object();
     }
 
-    #[DataProvider('castCases')] public function testCast(mixed $value): void
+    protected function strictCastResultComparison(): bool
     {
-        $expectedExceptionThrown = false;
-        try {
-            $expectedResult = (object) $value;
-        } catch (Error) {
-            $expectedExceptionThrown = true;
-        }
+        return false;
+    }
 
+    protected function baselineCast(mixed $value): object
+    {
         try {
-            $result = _object()->cast($value);
-            $this->assertEquals($expectedResult, $result, 'Wrong cast result');
-            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
-        } catch (CastException) {
-            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
+            return (object) $value;
+        } catch (Error) {
+            throw new RuntimeException;
         }
     }
 }

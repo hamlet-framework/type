@@ -16,14 +16,13 @@ class MixedTypeTest extends TestCase
         return _mixed();
     }
 
-    #[DataProvider('castCases')] public function testMatch(mixed $value): void
+    protected function baselineCast(mixed $value): mixed
     {
-        $this->assertTrue(_mixed()->matches($value));
+        return $value;
     }
 
-    #[DataProvider('castCases')] public function testCast(mixed $value): void
+    #[DataProvider('castCases')] public function testMatch(mixed $value): void
     {
-        _mixed()->cast($value);
-        $this->assertTrue(true);
+        $this->assertTrue($this->type()->matches($value));
     }
 }

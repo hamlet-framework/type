@@ -3,13 +3,13 @@
 namespace Hamlet\Type\Types;
 
 use DateTime;
+use Error;
 use Exception;
-use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use stdClass;
-use TypeError;
 use function Hamlet\Type\_array_key;
 
 class ArrayKeyTypeTest extends TestCase
@@ -19,6 +19,18 @@ class ArrayKeyTypeTest extends TestCase
     protected function type(): Type
     {
         return _array_key();
+    }
+
+    protected function baselineCast(mixed $value): int|string|null
+    {
+        try {
+            $a = [
+                $value => 1
+            ];
+            return array_key_first($a);
+        } catch (Error) {
+            throw new RuntimeException;
+        }
     }
 
     public static function matchCases(): array
@@ -68,27 +80,5 @@ class ArrayKeyTypeTest extends TestCase
             $exceptionThrown = true;
         }
         $this->assertEquals(!$success, $exceptionThrown);
-    }
-
-    #[DataProvider('castCases')] public function testCast(mixed $value): void
-    {
-        $expectedResult = null;
-        $expectedExceptionThrown = false;
-        try {
-            $a = [
-                $value => 1
-            ];
-            $expectedResult = array_key_first($a);
-        } catch (TypeError) {
-            $expectedExceptionThrown = true;
-        }
-
-        try {
-            $result = _array_key()->cast($value);
-            $this->assertEquals($expectedResult, $result, 'Wrong cast result');
-            $this->assertFalse($expectedExceptionThrown, 'Expected exception not thrown');
-        } catch (CastException) {
-            $this->assertTrue($expectedExceptionThrown, "Thrown an excessive exception");
-        }
     }
 }
