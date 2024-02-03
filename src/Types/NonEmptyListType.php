@@ -61,7 +61,6 @@ readonly class NonEmptyListType extends Type
         foreach ($value as $v) {
             $result[] = $this->elementType->resolveAndCast($v, $resolver);
         }
-        assert(count($result) > 0);
         return $result;
     }
 

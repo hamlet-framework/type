@@ -30,7 +30,7 @@ readonly class NumericStringType extends Type
             $value = (string) $value;
         }
 
-        if (!is_numeric($value)) {
+        if (!is_string($value) || !is_numeric($value)) {
             throw new CastException($value, $this);
         }
         return $value;
