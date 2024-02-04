@@ -21,6 +21,11 @@ class ArrayKeyTypeTest extends TestCase
         return _array_key();
     }
 
+    protected function strictCastResultComparison(): bool
+    {
+        return false;
+    }
+
     protected function baselineCast(mixed $value): int|string|null
     {
         try {

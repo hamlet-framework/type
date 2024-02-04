@@ -27,7 +27,7 @@ readonly class NonEmptyStringType extends Type
             throw new CastException($value, $this);
         }
         $stringValue = (string) $value;
-        if (empty($stringValue)) {
+        if ($stringValue === '') {
             throw new CastException($value, $this);
         }
         return $stringValue;
