@@ -27,6 +27,9 @@ readonly class ArrayType extends Type
         $this->elementType = $elementType;
     }
 
+    /**
+     * @psalm-assert-if-true array<T> $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value)) {
@@ -54,6 +57,9 @@ readonly class ArrayType extends Type
         }
 
         $result = [];
+        /**
+         * @psalm-suppress MixedAssignment
+         */
         foreach ($value as $k => $v) {
             $result[$k] = $this->elementType->resolveAndCast($v, $resolver);
         }

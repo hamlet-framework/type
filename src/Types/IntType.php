@@ -13,6 +13,9 @@ use Override;
  */
 readonly class IntType extends Type
 {
+    /**
+     * @psalm-assert-if-true int $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_int($value);

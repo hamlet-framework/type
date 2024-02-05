@@ -13,6 +13,9 @@ use Override;
  */
 readonly class ObjectType extends Type
 {
+    /**
+     * @psalm-assert-if-true object $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_object($value);

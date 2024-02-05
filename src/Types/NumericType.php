@@ -13,6 +13,9 @@ use Override;
  */
 readonly class NumericType extends Type
 {
+    /**
+     * @psalm-assert-if-true numeric $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_int($value) || is_float($value) || (is_string($value) && is_numeric($value));

@@ -13,6 +13,9 @@ use Override;
  */
 readonly class ScalarType extends Type
 {
+    /**
+     * @psalm-assert-if-true scalar $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_scalar($value);

@@ -12,6 +12,9 @@ use Override;
  */
 readonly class BoolType extends Type
 {
+    /**
+     * @psalm-assert-if-true bool $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_bool($value);

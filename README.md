@@ -209,6 +209,7 @@ Types supported:
 
 ## Background
 
+- Support for PHP 8.4 constructor defined properties
 - Move completely to PHPStan parser, including docblock
 - Add intersection types
 - Support for enums

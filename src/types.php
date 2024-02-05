@@ -109,7 +109,8 @@ function _null(): Type
 }
 
 /**
- * @template A
+ * // @todo literal types should be checked, cannot be just anything.
+ * @template A of scalar
  * @param array<A> $as
  * @return Type<A>
  */
@@ -163,19 +164,26 @@ function _class(string $type): Type
  * @param Type<H>|null $h
  * @return Type
  * @psalm-return (func_num_args() is 2 ? Type<A|B> : (func_num_args() is 3 ? Type<A|B|C> : (func_num_args() is 4 ? Type<A|B|C|D> : (func_num_args() is 5 ? Type<A|B|C|D|E> : (func_num_args() is 6 ? Type<A|B|C|D|E|F> : (func_num_args() is 7 ? Type<A|B|C|D|E|F|G> : Type<A|B|C|D|E|F|G|H>))))))
+ * @psalm-suppress MixedReturnTypeCoercion
  */
 function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
 {
     $args = func_get_args();
+    $options = [];
     if (count($args) > 8) {
         throw new InvalidArgumentException('At most 8 elements');
     }
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     foreach ($args as $arg) {
-        if ($arg === null) {
-            throw new InvalidArgumentException('Type cannot be null');
+        if (!$arg instanceof Type) {
+            throw new InvalidArgumentException('Invalid argument');
+        } else {
+            $options[] = $arg;
         }
     }
-    return new Types\UnionType($args);
+    return new Types\UnionType($options);
 }
 
 /**
@@ -197,19 +205,26 @@ function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null
  * @param Type<H>|null $h
  * @return Type
  * @psalm-return (func_num_args() is 2 ? Type<list{A,B}> : (func_num_args() is 3 ? Type<list{A,B,C}> : (func_num_args() is 4 ? Type<list{A,B,C,D}> : (func_num_args() is 5 ? Type<list{A,B,C,D,E}> : (func_num_args() is 6 ? Type<list{A,B,C,D,E,F}> : (func_num_args() is 7 ? Type<list{A,B,C,D,E,F,G}> : Type<list{A,B,C,D,E,F,G,H}>))))))
+ * @psalm-suppress MixedReturnTypeCoercion
  */
 function _tuple(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
 {
     $args = func_get_args();
+    $fields = [];
     if (count($args) > 8) {
         throw new InvalidArgumentException('At most 8 elements');
     }
+    /**
+     * @psalm-suppress MixedAssignment
+     */
     foreach ($args as $arg) {
-        if ($arg === null) {
-            throw new InvalidArgumentException('Type cannot be null');
+        if (!$arg instanceof Type) {
+            throw new InvalidArgumentException('Invalid argument');
+        } else {
+            $fields[] = $arg;
         }
     }
-    return new Types\TupleType($args);
+    return new Types\TupleType($fields);
 }
 
 /**

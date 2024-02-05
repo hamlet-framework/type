@@ -34,6 +34,9 @@ readonly class ClassType extends Type
         }
     }
 
+    /**
+     * @psalm-assert-if-true T $value
+     */
     public function matches(mixed $value): bool
     {
         return is_object($value) && is_a($value, $this->type);
@@ -42,8 +45,9 @@ readonly class ClassType extends Type
     /**
      * @return T
      * @throws ReflectionException
+     * @psalm-suppress InvalidReturnType
      */
-    public function resolveAndCast(mixed $value, Resolver $resolver): object
+    public function resolveAndCast(mixed $value, Resolver $resolver): mixed
     {
         if ($this->matches($value)) {
             return $value;
@@ -88,6 +92,9 @@ readonly class ClassType extends Type
         if ($validateUnmappedProperties) {
             MappingUtils::checkMapping($value, $mappedProperties, $this);
         }
+        /**
+         * @psalm-suppress InvalidReturnStatement
+         */
         return $result;
     }
 

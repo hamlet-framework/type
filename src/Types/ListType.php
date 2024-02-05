@@ -27,6 +27,9 @@ readonly class ListType extends Type
         $this->elementType = $elementType;
     }
 
+    /**
+     * @psalm-assert-if-true list<T> $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value) || !array_is_list($value)) {
@@ -49,6 +52,9 @@ readonly class ListType extends Type
             throw new CastException($value, $this);
         }
         $result = [];
+        /**
+         * @psalm-suppress MixedAssignment
+         */
         foreach ($value as $v) {
             $result[] = $this->elementType->resolveAndCast($v, $resolver);
         }

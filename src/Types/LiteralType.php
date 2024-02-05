@@ -9,7 +9,7 @@ use Override;
 
 /**
  * @psalm-internal Hamlet\Type
- * @template T
+ * @template T of scalar
  * @extends Type<T>
  */
 readonly class LiteralType extends Type
@@ -27,6 +27,9 @@ readonly class LiteralType extends Type
         $this->values = $values;
     }
 
+    /**
+     * @psalm-assert-if-true T $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         foreach ($this->values as $v) {
@@ -53,7 +56,7 @@ readonly class LiteralType extends Type
     #[Override] public function __toString(): string
     {
         $escape =
-            function (mixed $a): string {
+            function ($a): string {
                 if (is_string($a)) {
                     return "'$a'";
                 }

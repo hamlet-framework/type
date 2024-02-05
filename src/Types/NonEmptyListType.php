@@ -27,6 +27,9 @@ readonly class NonEmptyListType extends Type
         $this->elementType = $elementType;
     }
 
+    /**
+     * @psalm-assert-if-true non-empty-list<T> $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value) || !array_is_list($value) || !count($value) > 0) {
@@ -58,6 +61,9 @@ readonly class NonEmptyListType extends Type
         }
 
         $result = [];
+        /**
+         * @psalm-suppress MixedAssignment
+         */
         foreach ($value as $v) {
             $result[] = $this->elementType->resolveAndCast($v, $resolver);
         }

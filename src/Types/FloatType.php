@@ -13,12 +13,15 @@ use Override;
  */
 readonly class FloatType extends Type
 {
+    /**
+     * @psalm-assert-if-true float $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_float($value);
     }
 
-    #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): mixed
+    #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): float
     {
         if ($this->matches($value)) {
             return $value;

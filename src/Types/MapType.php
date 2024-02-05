@@ -36,6 +36,9 @@ readonly class MapType extends Type
         $this->valueType = $valueType;
     }
 
+    /**
+     * @psalm-assert-if-true array<K,V> $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value)) {

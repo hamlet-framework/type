@@ -13,6 +13,9 @@ use Override;
  */
 readonly class ResourceType extends Type
 {
+    /**
+     * @psalm-assert-if-true resource $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_resource($value);

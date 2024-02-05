@@ -27,6 +27,9 @@ readonly class TupleType extends Type
         $this->fields = $fields;
     }
 
+    /**
+     * @psalm-assert-if-true list<A> $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         if (!is_array($value) || !array_is_list($value) || count($value) != count($this->fields)) {

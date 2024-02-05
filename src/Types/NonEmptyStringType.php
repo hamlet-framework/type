@@ -13,6 +13,9 @@ use Override;
  */
 readonly class NonEmptyStringType extends Type
 {
+    /**
+     * @psalm-assert-if-true non-empty-string $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_string($value) && $value !== '';

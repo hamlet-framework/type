@@ -73,7 +73,7 @@ final class PropertyVisitor extends NameResolver
                     /**
                      * @psalm-suppress UndefinedMethod
                      */
-                    $typeDeclaration = $reflectionType->getName();
+                    $typeDeclaration = (string)$reflectionType->getName();
                     if ($reflectionType->allowsNull()) {
                         $typeDeclaration .= '|null';
                     }

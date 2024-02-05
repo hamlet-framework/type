@@ -13,6 +13,9 @@ use Override;
  */
 readonly class StringType extends Type
 {
+    /**
+     * @psalm-assert-if-true string $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_string($value);

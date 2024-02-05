@@ -31,6 +31,9 @@ readonly class UnionType extends Type
         $this->options = $options;
     }
 
+    /**
+     * @psalm-assert-if-true A $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         foreach ($this->options as $option) {
@@ -51,10 +54,10 @@ readonly class UnionType extends Type
                 $candidates[] = $option;
             }
         }
-        if (count($candidates) > 1) {
-            throw new CastException($value, $this);
+        if (count($candidates) == 1) {
+            return $candidates[0]->resolveAndCast($value, $resolver);
         }
-        return $candidates[0]->resolveAndCast($value, $resolver);
+        throw new CastException($value, $this);
     }
 
     #[Override] public function serialize(): string

@@ -27,72 +27,19 @@ final class DocBlockAstTraverser
     public function traverse(Node $node, ?NameContext $nameContext): Type
     {
         if ($node instanceof GenericTypeNode) {
-            if ($node->type->name == 'array') {
-                return match (count($node->genericTypes)) {
-                    1 => new Types\ArrayType($this->traverse($node->genericTypes[0], $nameContext)),
-                    2 => new Types\MapType(
-                        $this->traverse($node->genericTypes[0], $nameContext),
-                        $this->traverse($node->genericTypes[1], $nameContext),
-                    ),
-                    default => throw new RuntimeException('Unknown array type: ' . count($node->genericTypes)),
-                };
-            } elseif ($node->type->name == 'list') {
-                return match (count($node->genericTypes)) {
-                    1 => new Types\ListType($this->traverse($node->genericTypes[0], $nameContext)),
-                    default => throw new RuntimeException('Unknown list type: ' . count($node->genericTypes)),
-                };
-            } elseif ($node->type->name == 'non-empty-array') {
-                return match (count($node->genericTypes)) {
-                    1 => new Types\NonEmptyArrayType($this->traverse($node->genericTypes[0], $nameContext)),
-                    default => throw new RuntimeException('Unknown non-empty-array type: ' . count($node->genericTypes)),
-                };
-            } elseif ($node->type->name == 'non-empty-list') {
-                return match (count($node->genericTypes)) {
-                    1 => new Types\NonEmptyListType($this->traverse($node->genericTypes[0], $nameContext)),
-                    default => throw new RuntimeException('Unknown list type: ' . count($node->genericTypes)),
-                };
-            }
-            throw new RuntimeException('Unknown generic type: ' . print_r($node, true));
+            return $this->traverseGenericTypeNode($node, $nameContext);
         } elseif ($node instanceof IdentifierTypeNode) {
-            return match ($node->name) {
-                'string' => new Types\StringType,
-                'int' => new Types\IntType,
-                'float', 'double' => new Types\FloatType,
-                'bool', 'boolean' => new Types\BoolType,
-                'mixed' => new Types\MixedType,
-                'resource' => new Types\ResourceType,
-                'array-key' => new Types\ArrayKeyType,
-                'numeric' => new Types\NumericType,
-                'numeric-string' => new Types\NumericStringType,
-                'array' => new Types\ArrayType(new Types\MixedType),
-                'object' => new Types\ObjectType,
-                'null' => new Types\NullType,
-                'true' => new Types\LiteralType(true),
-                'false' => new Types\LiteralType(false),
-                'non-empty-array' => new Types\NonEmptyArrayType(new Types\MixedType),
-                'non-empty-list' => new Types\NonEmptyListType(new Types\MixedType),
-                'non-empty-string' => new Types\NonEmptyStringType,
-                default => $this->traverseUserTypeNode($node, $nameContext),
-            };
+            return $this->traverseIdentifierTypeNode($node, $nameContext);
         } elseif ($node instanceof UnionTypeNode) {
-            $options = array_map(fn ($item) => $this->traverse($item, $nameContext), $node->types);
-            return new Types\UnionType($options);
+            return $this->traverseUnionTypeNode($node, $nameContext);
         } elseif ($node instanceof ConstTypeNode) {
-            if ($node->constExpr instanceof QuoteAwareConstExprStringNode) {
-                return new Types\LiteralType($node->constExpr->value);
-            } elseif ($node->constExpr instanceof ConstExprIntegerNode) {
-                return new Types\LiteralType($node->constExpr->value);
-            } elseif ($node->constExpr instanceof ConstExprFloatNode) {
-                return new Types\LiteralType($node->constExpr->value);
-            }
-            throw new RuntimeException('Unknown const type: ' . print_r($node, true));
+            return $this->traverseLiteralTypeNode($node, $nameContext);
         } elseif ($node instanceof ArrayTypeNode) {
             return new Types\ArrayType($this->traverse($node->type, $nameContext));
         } elseif ($node instanceof ArrayShapeNode) {
-            // @todo assert the node name
             return $this->traverseTupleNode($node, $nameContext);
         } elseif ($node instanceof NullableTypeNode) {
-            return new Types\UnionType([$this->traverse($node->type, $nameContext), new Types\NullType]);
+            return $this->traverseNullableTypeNode($node, $nameContext);
         }
         throw new RuntimeException('Unknown type: ' . print_r($node, true));
     }
@@ -123,13 +70,106 @@ final class DocBlockAstTraverser
 
     private function traverseTupleNode(ArrayShapeNode $node, ?NameContext $nameContext): Type
     {
+        // @todo assert the node name
+
         $fields = [];
         foreach ($node->items as $item) {
-            if ($item->keyName?->name) {
+            if ($item->keyName !== null && !$item->keyName instanceof ConstExprIntegerNode) {
                 throw new RuntimeException('Unsupported object like arrays: ' . $node);
             }
             $fields[] = $this->traverse($item->valueType, $nameContext);
         }
         return new Types\TupleType($fields);
     }
+
+    private function traverseUnionTypeNode(UnionTypeNode $node, ?NameContext $nameContext): Type
+    {
+        $options = array_map(fn ($item) => $this->traverse($item, $nameContext), $node->types);
+        /**
+         * @psalm-suppress ArgumentTypeCoercion
+         */
+        return new Types\UnionType($options);
+    }
+
+    private function traverseLiteralTypeNode(ConstTypeNode $node, ?NameContext $nameContext): Type
+    {
+        if ($node->constExpr instanceof QuoteAwareConstExprStringNode) {
+            return new Types\LiteralType($node->constExpr->value);
+        } elseif ($node->constExpr instanceof ConstExprIntegerNode) {
+            return new Types\LiteralType($node->constExpr->value);
+        } elseif ($node->constExpr instanceof ConstExprFloatNode) {
+            return new Types\LiteralType($node->constExpr->value);
+        }
+        throw new RuntimeException('Unknown const type: ' . print_r($node, true));
+    }
+
+    /**
+     * @param GenericTypeNode $node
+     * @param NameContext|null $nameContext
+     * @return Type
+     * @psalm-suppress MixedArgumentTypeCoercion
+     */
+    private function traverseGenericTypeNode(GenericTypeNode $node, ?NameContext $nameContext): Type
+    {
+        if ($node->type->name == 'array') {
+            return match (count($node->genericTypes)) {
+                1 => new Types\ArrayType($this->traverse($node->genericTypes[0], $nameContext)),
+                2 => new Types\MapType(
+                    $this->traverse($node->genericTypes[0], $nameContext),
+                    $this->traverse($node->genericTypes[1], $nameContext),
+                ),
+                default => throw new RuntimeException('Unknown array type: ' . count($node->genericTypes)),
+            };
+        } elseif ($node->type->name == 'list') {
+            return match (count($node->genericTypes)) {
+                1 => new Types\ListType($this->traverse($node->genericTypes[0], $nameContext)),
+                default => throw new RuntimeException('Unknown list type: ' . count($node->genericTypes)),
+            };
+        } elseif ($node->type->name == 'non-empty-array') {
+            return match (count($node->genericTypes)) {
+                1 => new Types\NonEmptyArrayType($this->traverse($node->genericTypes[0], $nameContext)),
+                default => throw new RuntimeException('Unknown non-empty-array type: ' . count($node->genericTypes)),
+            };
+        } elseif ($node->type->name == 'non-empty-list') {
+            return match (count($node->genericTypes)) {
+                1 => new Types\NonEmptyListType($this->traverse($node->genericTypes[0], $nameContext)),
+                default => throw new RuntimeException('Unknown list type: ' . count($node->genericTypes)),
+            };
+        }
+        throw new RuntimeException('Unknown generic type: ' . print_r($node, true));
+    }
+
+    private function traverseIdentifierTypeNode(IdentifierTypeNode $node, ?NameContext $nameContext): Type
+    {
+        return match ($node->name) {
+            'string' => new Types\StringType,
+            'int' => new Types\IntType,
+            'float', 'double' => new Types\FloatType,
+            'bool', 'boolean' => new Types\BoolType,
+            'mixed' => new Types\MixedType,
+            'resource' => new Types\ResourceType,
+            'array-key' => new Types\ArrayKeyType,
+            'numeric' => new Types\NumericType,
+            'numeric-string' => new Types\NumericStringType,
+            'array' => new Types\ArrayType(new Types\MixedType),
+            'object' => new Types\ObjectType,
+            'null' => new Types\NullType,
+            'true' => new Types\LiteralType(true),
+            'false' => new Types\LiteralType(false),
+            'non-empty-array' => new Types\NonEmptyArrayType(new Types\MixedType),
+            'non-empty-list' => new Types\NonEmptyListType(new Types\MixedType),
+            'non-empty-string' => new Types\NonEmptyStringType,
+            default => $this->traverseUserTypeNode($node, $nameContext),
+        };
+    }
+
+    private function traverseNullableTypeNode(NullableTypeNode $node, ?NameContext $nameContext): Type
+    {
+        /**
+         * @psalm-suppress InvalidArgument
+         */
+        return new Types\UnionType([$this->traverse($node->type, $nameContext), new Types\NullType]);
+    }
+
+
 }

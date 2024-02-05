@@ -13,6 +13,9 @@ use Override;
  */
 readonly class ArrayKeyType extends Type
 {
+    /**
+     * @psalm-assert-if-true array-key $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_int($value) || is_string($value);

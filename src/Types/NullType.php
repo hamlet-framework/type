@@ -13,6 +13,9 @@ use Override;
  */
 readonly class NullType extends Type
 {
+    /**
+     * @psalm-assert-if-true null $value
+     */
     #[Override] public function matches(mixed $value): bool
     {
         return is_null($value);
