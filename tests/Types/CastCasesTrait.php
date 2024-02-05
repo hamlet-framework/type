@@ -122,6 +122,8 @@ trait CastCasesTrait
             [[null, 1 => null]],
             [[false, 'barbeque' => 'sausage']],
             [['sausage', 2 => 3.1415, true]],
+            [['sausage', 2 => [0, 0 => null]]],
+            [[1 => [1 => [1 => [1 => [1 => [1 => [1 => [1 => [1 => []]]]]]]]]]],
             [new stdClass],
             [$object],
             [$stringableObject],
@@ -131,6 +133,7 @@ trait CastCasesTrait
             [null],
             [$intGenerator()],
             [$stringGenerator()],
+            [[1 => new stdClass, 2 => $object, 3 => $stringableObject, 4 => $callable, 5 => $resource, 6 => null]],
         ];
     }
 }

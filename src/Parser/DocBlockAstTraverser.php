@@ -125,7 +125,7 @@ final class DocBlockAstTraverser
     {
         $fields = [];
         foreach ($node->items as $item) {
-            if ($item->keyName->name) {
+            if ($item->keyName?->name) {
                 throw new RuntimeException('Unsupported object like arrays: ' . $node);
             }
             $fields[] = $this->traverse($item->valueType, $nameContext);

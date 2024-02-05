@@ -20,7 +20,7 @@ class NumericStringTypeTest extends TestCase
     protected function baselineCast(mixed $value): string
     {
         try {
-            $stringValue = (string) $value;
+            $stringValue = @(string)$value;
             if (is_numeric($stringValue)) {
                 return $stringValue;
             } else {

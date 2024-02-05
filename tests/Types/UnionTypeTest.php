@@ -4,7 +4,6 @@ namespace Hamlet\Type\Types;
 
 use DateTime;
 use Exception;
-use Hamlet\Type\CastException;
 use Hamlet\Type\Type;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -12,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
 use function Hamlet\Type\_bool;
+use function Hamlet\Type\_class;
 use function Hamlet\Type\_int;
 use function Hamlet\Type\_literal;
 use function Hamlet\Type\_null;
@@ -161,5 +161,11 @@ class UnionTypeTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         _union(_literal(1), _literal(2), _literal(3), _literal(4), _literal(5), _literal(6), _literal(7), null);
+    }
+
+    public function testCollapsingAndSorting(): void
+    {
+        $type = _union(_null(), _int(), _class(DateTime::class), _null(), _int(), _string());
+        $this->assertEquals('int|DateTime|string|null', (string) $type);
     }
 }

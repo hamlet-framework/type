@@ -27,7 +27,7 @@ class TypeDeclarationTest extends TestCase
                 _class(DateTime::class)
             )
         );
-        $this->assertEquals('array<int,null|DateTime>', (string)$type);
+        $this->assertEquals('array<int,DateTime|null>', (string)$type);
     }
 
     public function testLiteralType(): void

@@ -20,7 +20,7 @@ class StringTypeTest extends TestCase
     protected function baselineCast(mixed $value): string
     {
         try {
-            return (string) $value;
+            return @(string)$value;
         } catch (Error) {
             throw new RuntimeException;
         }

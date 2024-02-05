@@ -24,6 +24,10 @@ readonly class UnionType extends Type
      */
     public function __construct(array $options)
     {
+        $options = array_unique($options);
+        usort($options, fn (Type $a, Type $b) =>
+            $a instanceof NullType <=> $b instanceof NullType
+        );
         $this->options = $options;
     }
 
@@ -41,6 +45,13 @@ readonly class UnionType extends Type
     {
         if ($this->matches($value)) {
             return $value;
+        }
+        if (count($this->options) == 2 && $this->options[1] instanceof NullType) {
+            if ($value === null) {
+                return null;
+            } else {
+                return $this->options[0]->resolveAndCast($value, $resolver);
+            }
         }
         throw new CastException($value, $this);
     }

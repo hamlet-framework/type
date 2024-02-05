@@ -20,7 +20,7 @@ class IntTypeTest extends TestCase
     protected function baselineCast(mixed $value): int
     {
         try {
-            return (int) $value;
+            return @(int)$value;
         } catch (TypeError) {
             throw new RuntimeException;
         }

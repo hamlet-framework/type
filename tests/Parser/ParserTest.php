@@ -66,7 +66,7 @@ class ParserTest extends TestCase
     #[DataProvider('typeDeclarations')] public function testTypeParser(string $specification): void
     {
         $type = type_of($specification);
-        Assert::assertNotNull($type);
+        $this->assertNotNull($type);
     }
 
     public static function phpDocDeclarations(): array
@@ -118,7 +118,7 @@ class ParserTest extends TestCase
     #[DataProvider('phpDocDeclarations')] public function testPhpDocParser(string $specification)
     {
         $data = DocBlockParser::parseDoc($specification);
-        Assert::assertNotNull($data);
+        $this->assertNotNull($data);
     }
 
     /**
@@ -134,8 +134,8 @@ class ParserTest extends TestCase
         $typeA = DocBlockParser::fromProperty($type, $type->getProperty('a'));
         $typeB = DocBlockParser::fromProperty($type, $type->getProperty('b'));
 
-        Assert::assertEquals('array<int,array<list{DateTime}>>', (string) $typeA);
-        Assert::assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|DateTime|null", (string) $typeB);
+        $this->assertEquals('array<int,array<list{DateTime}>>', (string)$typeA);
+        $this->assertEquals("'x'|'y'|'z'|Hamlet\Type\CastException|DateTime|null", (string)$typeB);
     }
 
     #[DataProvider('typeDeclarations')] public function testSerialization(string $specification): void

@@ -26,7 +26,11 @@ readonly class NonEmptyStringType extends Type
         if (is_object($value) && !method_exists($value, '__toString')) {
             throw new CastException($value, $this);
         }
-        $stringValue = (string) $value;
+        if (is_array($value)) {
+            $stringValue = 'Array';
+        } else {
+            $stringValue = (string) $value;
+        }
         if ($stringValue === '') {
             throw new CastException($value, $this);
         }

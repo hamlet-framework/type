@@ -20,7 +20,7 @@ class BoolTypeTest extends TestCase
     protected function baselineCast(mixed $value): bool
     {
         try {
-            return (bool) $value;
+            return (bool)$value;
         } catch (TypeError) {
             throw new RuntimeException;
         }

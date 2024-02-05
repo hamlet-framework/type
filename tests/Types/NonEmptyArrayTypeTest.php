@@ -21,13 +21,13 @@ class NonEmptyArrayTypeTest extends TestCase
     protected function baselineCast(mixed $value): array
     {
         try {
-            $arrayValue = is_array($value) ? $value : (array) $value;
+            $arrayValue = is_array($value) ? $value : (array)$value;
             if (count($arrayValue) == 0) {
                 throw new RuntimeException;
             } else {
                 $expectedResult = [];
                 foreach ($arrayValue as $key => $property) {
-                    $expectedResult[$key] = (int) $property;
+                    $expectedResult[$key] = @(int)$property;
                 }
                 return $expectedResult;
             }

@@ -59,6 +59,7 @@ readonly class TupleType extends Type
         }
 
         $result = [];
+        $value = array_values($value);
         foreach ($this->fields as $i => $field) {
             $result[] = $field->resolveAndCast($value[$i], $resolver);
         }

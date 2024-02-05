@@ -27,7 +27,7 @@ class NonEmptyListTypeTest extends TestCase
             } else {
                 $expectedResult = [];
                 foreach ($arrayValue as $property) {
-                    $expectedResult[] = (int) $property;
+                    $expectedResult[] = @(int)$property;
                 }
                 return $expectedResult;
             }

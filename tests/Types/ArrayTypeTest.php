@@ -28,10 +28,10 @@ class ArrayTypeTest extends TestCase
     protected function baselineCast(mixed $value): array
     {
         try {
-            $arrayValue = is_array($value) ? $value : (array) $value;
+            $arrayValue = is_array($value) ? $value : (array)$value;
             $expectedResult = [];
             foreach ($arrayValue as $key => $property) {
-                $expectedResult[$key] = (int) $property;
+                $expectedResult[$key] = @(int)$property;
             }
             return $expectedResult;
         } catch (Error) {

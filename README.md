@@ -10,6 +10,55 @@ Hamlet Type
 
 ## Motivation
 
+The support for types in the PHP type system can be split into two big domains: static analysis time and runtime. 
+The PHP interpreter and the static analyzers like Psalm and PHPStan have different levels of support for the types. 
+
+On the language level there are three general mechanisms for type support: hinting, assertions and cascading. 
+
+The hinting can be done at compile time or run time. The compile time hinting is done through a hierarchy of different 
+mechansisms: 
+- the lowest level (lowest in terms of the level of support for different types) is the type hints, 
+- followed by phpdoc, 
+- followed by Psalm specific types. 
+
+```php
+/**
+ * @return array<string>
+ * @psalm-return array<non-empty-string>
+ */
+public function number(): array ...
+```
+
+Additionally, there's a support for type hints by use of type expression in this library
+
+```php
+/**
+ * @template T
+ * @param mixed $value
+ * @param Type<T> $type 
+ * @return T
+ */
+function convert(mixed $value, Type $type): mixed ...
+```
+
+By wrapping the `Type<T>`, you can use the type hinting to enforce the return type.
+
+The compile time type hinting is only useful if you run static analysis tools, like Psalm or PHPStan. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 The PHP type system is a complicated beast. PHP supports types in three ways: hinting, assertions, and casting.
 
 To unwrap the complexity, it's easiest to start with the basic type `int`. The type hinting support is thorough; 

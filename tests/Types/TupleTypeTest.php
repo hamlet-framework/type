@@ -19,17 +19,16 @@ class TupleTypeTest extends TestCase
         return _tuple(_int(), _string());
     }
 
-    protected function baselineCast(mixed $value): mixed
+    protected function baselineCast(mixed $value): array
     {
         try {
-            $arrayValue = is_array($value) ? $value : (array) $value;
+            $arrayValue = array_values(is_array($value) ? $value : (array) $value);
             if (count($arrayValue) == 2) {
-                return [(int) $arrayValue[0], (string) $arrayValue[1]];
-            } else {
-                throw new RuntimeException;
+                return [@(int)$arrayValue[0], @(string)$arrayValue[1]];
             }
         } catch (Error) {
             throw new RuntimeException;
         }
+        throw new RuntimeException;
     }
 }

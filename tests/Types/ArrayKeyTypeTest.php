@@ -29,7 +29,7 @@ class ArrayKeyTypeTest extends TestCase
     protected function baselineCast(mixed $value): int|string|null
     {
         try {
-            $a = [
+            $a = @[
                 $value => 1
             ];
             return array_key_first($a);

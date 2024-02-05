@@ -17,10 +17,10 @@ class FloatTypeTest extends TestCase
         return _float();
     }
 
-    protected function baselineCast(mixed $value): mixed
+    protected function baselineCast(mixed $value): float
     {
         try {
-            return (float) $value;
+            return @(float)$value;
         } catch (TypeError) {
             throw new RuntimeException;
         }

@@ -20,7 +20,7 @@ class NonEmptyStringTypeTest extends TestCase
     protected function baselineCast(mixed $value): string
     {
         try {
-            $stringValue = (string) $value;
+            $stringValue = @(string)$value;
             if ($stringValue !== '') {
                 return $stringValue;
             } else {
