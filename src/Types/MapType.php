@@ -58,7 +58,7 @@ readonly class MapType extends Type
         /**
          * @psalm-suppress MixedAssignment
          */
-        foreach (((array) $value) as $k => $v) {
+        foreach (((array)$value) as $k => $v) {
             $result[$this->keyType->resolveAndCast($k, $resolver)] = $this->valueType->resolveAndCast($v, $resolver);
         }
         return $result;

@@ -24,7 +24,7 @@ readonly class IntType extends Type
             return $value;
         }
         if (is_scalar($value) || is_resource($value)) {
-            return (int) $value;
+            return (int)$value;
         }
         if ($value == [] || $value === null) {
             return 0;

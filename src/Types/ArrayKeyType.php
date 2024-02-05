@@ -24,7 +24,7 @@ readonly class ArrayKeyType extends Type
             return $value;
         }
         if (is_float($value) || is_bool($value) || is_resource($value)) {
-            return (int) $value;
+            return (int)$value;
         }
         if (is_null($value)) {
             return '';

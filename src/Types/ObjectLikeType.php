@@ -93,7 +93,7 @@ readonly class ObjectLikeType extends Type
         if ($validateUnmappedProperties) {
             MappingUtils::checkMapping($value, $mappedProperties, $this);
         }
-        return (array) $value;
+        return (array)$value;
     }
 
     #[Override] public function __toString(): string

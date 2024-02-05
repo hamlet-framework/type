@@ -29,7 +29,7 @@ readonly class NonEmptyStringType extends Type
         if (is_array($value)) {
             $stringValue = 'Array';
         } else {
-            $stringValue = (string) $value;
+            $stringValue = (string)$value;
         }
         if ($stringValue === '') {
             throw new CastException($value, $this);

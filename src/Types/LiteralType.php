@@ -63,7 +63,7 @@ readonly class LiteralType extends Type
                 if (is_bool($a)) {
                     return $a ? 'true' : 'false';
                 }
-                return (string) $a;
+                return (string)$a;
             };
 
         if (count($this->values) > 1) {

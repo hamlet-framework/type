@@ -19,7 +19,7 @@ readonly class BoolType extends Type
 
     #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): mixed
     {
-        return (bool) $value;
+        return (bool)$value;
     }
 
     #[Override] public function __toString(): string

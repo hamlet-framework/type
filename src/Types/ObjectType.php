@@ -24,7 +24,7 @@ readonly class ObjectType extends Type
             return $value;
         }
         if (is_scalar($value) || is_array($value) || is_resource($value) || is_null($value)) {
-            return (object) $value;
+            return (object)$value;
         }
         throw new CastException($value, $this);
     }

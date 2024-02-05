@@ -33,8 +33,8 @@ readonly class UnionType extends Type
 
     #[Override] public function matches(mixed $value): bool
     {
-        foreach ($this->options as $type) {
-            if ($type->matches($value)) {
+        foreach ($this->options as $option) {
+            if ($option->matches($value)) {
                 return true;
             }
         }
@@ -43,17 +43,18 @@ readonly class UnionType extends Type
 
     #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): mixed
     {
-        if ($this->matches($value)) {
-            return $value;
-        }
-        if (count($this->options) == 2 && $this->options[1] instanceof NullType) {
-            if ($value === null) {
-                return null;
-            } else {
-                return $this->options[0]->resolveAndCast($value, $resolver);
+        $candidates = [];
+        foreach ($this->options as $option) {
+            if ($option->matches($value)) {
+                return $value;
+            } elseif (!$option instanceof NullType) {
+                $candidates[] = $option;
             }
         }
-        throw new CastException($value, $this);
+        if (count($candidates) > 1) {
+            throw new CastException($value, $this);
+        }
+        return $candidates[0]->resolveAndCast($value, $resolver);
     }
 
     #[Override] public function serialize(): string
@@ -63,6 +64,6 @@ readonly class UnionType extends Type
 
     #[Override] public function __toString(): string
     {
-        return join('|', array_map(fn ($option) => (string) $option, $this->options));
+        return join('|', array_map(fn ($option) => (string)$option, $this->options));
     }
 }

@@ -48,7 +48,7 @@ readonly class TupleType extends Type
         }
         if (!is_array($value)) {
             if (is_scalar($value) || is_object($value) || is_resource($value) || is_null($value)) {
-                $value = (array) $value;
+                $value = (array)$value;
             } else {
                 throw new CastException($value, $this);
             }

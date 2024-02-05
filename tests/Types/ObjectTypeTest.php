@@ -25,7 +25,7 @@ class ObjectTypeTest extends TestCase
     protected function baselineCast(mixed $value): object
     {
         try {
-            return (object) $value;
+            return (object)$value;
         } catch (Error) {
             throw new RuntimeException;
         }

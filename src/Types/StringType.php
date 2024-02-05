@@ -24,10 +24,10 @@ readonly class StringType extends Type
             return $value;
         }
         if (is_scalar($value) || is_resource($value)) {
-            return (string) $value;
+            return (string)$value;
         }
         if (is_object($value) && method_exists($value, '__toString')) {
-            return (string) $value;
+            return (string)$value;
         }
         if (is_array($value)) {
             return 'Array';

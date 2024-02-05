@@ -24,7 +24,7 @@ readonly class FloatType extends Type
             return $value;
         }
         if (is_scalar($value) || is_resource($value)) {
-            return (float) $value;
+            return (float)$value;
         }
         if ($value == []) {
             return 0.0;
