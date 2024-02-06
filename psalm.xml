@@ -6,6 +6,7 @@
         <directory name="src" />
         <file name="psalm-cases/00-random-casts.php"/>
         <file name="psalm-cases/01-maps-narrowing-array-keys.php"/>
+        <file name="psalm-cases/02-matches.php"/>
         <ignoreFiles>
             <directory name="vendor" />
         </ignoreFiles>

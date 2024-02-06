@@ -164,6 +164,7 @@ function _class(string $type): Type
  * @param Type<H>|null $h
  * @return Type
  * @psalm-return (func_num_args() is 2 ? Type<A|B> : (func_num_args() is 3 ? Type<A|B|C> : (func_num_args() is 4 ? Type<A|B|C|D> : (func_num_args() is 5 ? Type<A|B|C|D|E> : (func_num_args() is 6 ? Type<A|B|C|D|E|F> : (func_num_args() is 7 ? Type<A|B|C|D|E|F|G> : Type<A|B|C|D|E|F|G|H>))))))
+ * @phpstan-return ($h is Type ? Type<A|B|C|D|E|F|G|H> : ($g is Type ? Type<A|B|C|D|E|F|G> : ($f is Type ? Type<A|B|C|D|E|F> : ($e is Type ? Type<A|B|C|D|E> : ($d is Type ? Type<A|B|C|D> : ($c is Type ? Type<A|B|C> : Type<A|B>))))))
  * @psalm-suppress MixedReturnTypeCoercion
  */
 function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
@@ -205,6 +206,7 @@ function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null
  * @param Type<H>|null $h
  * @return Type
  * @psalm-return (func_num_args() is 2 ? Type<list{A,B}> : (func_num_args() is 3 ? Type<list{A,B,C}> : (func_num_args() is 4 ? Type<list{A,B,C,D}> : (func_num_args() is 5 ? Type<list{A,B,C,D,E}> : (func_num_args() is 6 ? Type<list{A,B,C,D,E,F}> : (func_num_args() is 7 ? Type<list{A,B,C,D,E,F,G}> : Type<list{A,B,C,D,E,F,G,H}>))))))
+ * @phpstan-return ($h is Type ? Type<list{A,B,C,D,E,F,G,H}> : ($g is Type ? Type<list{A,B,C,D,E,F,G}> : ($f is Type ? Type<list{A,B,C,D,E,F}> : ($e is Type ? Type<list{A,B,C,D,E}> : ($d is Type ? Type<list{A,B,C,D}> : ($c is Type ? Type<list{A,B,C}> : Type<list{A,B}>))))))
  * @psalm-suppress InvalidReturnType
  * @psalm-suppress MixedReturnTypeCoercion
  */
