@@ -20,7 +20,10 @@ class MappingUtils
     private static array $properties = [];
 
     /**
+     * @template T
+     * @param mixed $value
      * @param array<string,int> $mappedProperties
+     * @param Type<T> $context
      */
     public static function checkMapping(mixed $value, array $mappedProperties, Type $context): void
     {

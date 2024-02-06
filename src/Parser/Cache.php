@@ -56,7 +56,11 @@ final class Cache
 
     public static function purge(): void
     {
-        foreach (glob(sys_get_temp_dir() . '/type-cache.*') as $fileName) {
+        $fileNames = glob(sys_get_temp_dir() . '/type-cache.*');
+        if ($fileNames === false) {
+            return;
+        }
+        foreach ($fileNames as $fileName) {
             unlink($fileName);
         }
     }

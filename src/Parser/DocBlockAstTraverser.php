@@ -79,6 +79,9 @@ final class DocBlockAstTraverser
             }
             $fields[] = $this->traverse($item->valueType, $nameContext);
         }
+        /**
+         * @psalm-suppress MixedArgumentTypeCoercion
+         */
         return new Types\TupleType($fields);
     }
 

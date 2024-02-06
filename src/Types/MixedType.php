@@ -12,9 +12,6 @@ use Override;
  */
 readonly class MixedType extends Type
 {
-    /**
-     * @psalm-assert-if-true mixed $value
-     */
     #[Override] public function matches(mixed $value): bool
     {
         return true;

@@ -9,18 +9,18 @@ use Override;
 
 /**
  * @psalm-internal Hamlet\Type
- * @template A
+ * @template A of list
  * @extends Type<A>
  */
 readonly class TupleType extends Type
 {
     /**
-     * @var list<Type<A>>
+     * @var list<Type>
      */
     private array $fields;
 
     /**
-     * @param list<Type<A>> $fields
+     * @param list<Type> $fields
      */
     public function __construct(array $fields)
     {
@@ -28,7 +28,7 @@ readonly class TupleType extends Type
     }
 
     /**
-     * @psalm-assert-if-true list<A> $value
+     * @psalm-assert-if-true A $value
      */
     #[Override] public function matches(mixed $value): bool
     {
@@ -36,7 +36,13 @@ readonly class TupleType extends Type
             return false;
         }
         for ($i = 0; $i < count($this->fields); $i++) {
+            /**
+             * @psalm-suppress MixedAssignment
+             */
             $v = $value[$i];
+            /**
+             * @psalm-suppress TypeDoesNotContainType
+             */
             if (!$this->fields[$i]->matches($v)) {
                 return false;
             }
@@ -44,6 +50,9 @@ readonly class TupleType extends Type
         return true;
     }
 
+    /**
+     * @psalm-suppress InvalidReturnType
+     */
     #[Override] public function resolveAndCast(mixed $value, Resolver $resolver): array
     {
         if ($this->matches($value)) {
@@ -64,8 +73,14 @@ readonly class TupleType extends Type
         $result = [];
         $value = array_values($value);
         foreach ($this->fields as $i => $field) {
+            /**
+             * @psalm-suppress MixedAssignment
+             */
             $result[] = $field->resolveAndCast($value[$i], $resolver);
         }
+        /**
+         * @psalm-suppress InvalidReturnStatement
+         */
         return $result;
     }
 

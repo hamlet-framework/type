@@ -26,19 +26,22 @@ readonly class StringType extends Type
         if ($this->matches($value)) {
             return $value;
         }
-        if (is_scalar($value) || is_resource($value)) {
+
+        if (is_object($value)) {
+            if (method_exists($value, '__toString')) {
+                return (string)$value;
+            } else {
+                throw new CastException($value, $this);
+            }
+        } elseif (is_scalar($value) || is_resource($value)) {
             return (string)$value;
-        }
-        if (is_object($value) && method_exists($value, '__toString')) {
-            return (string)$value;
-        }
-        if (is_array($value)) {
+        } elseif (is_array($value)) {
             return 'Array';
-        }
-        if ($value === null) {
+        } elseif ($value === null) {
             return '';
+        } else {
+            throw new CastException($value, $this);
         }
-        throw new CastException($value, $this);
     }
 
     #[Override] public function __toString(): string

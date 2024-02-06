@@ -9,7 +9,7 @@ use Override;
 
 /**
  * @psalm-internal Hamlet\Type
- * @template T of scalar
+ * @template T of scalar|null
  * @extends Type<T>
  */
 readonly class LiteralType extends Type
@@ -56,7 +56,7 @@ readonly class LiteralType extends Type
     #[Override] public function __toString(): string
     {
         $escape =
-            function ($a): string {
+            function (int|bool|float|string|null $a): string {
                 if (is_string($a)) {
                     return "'$a'";
                 }

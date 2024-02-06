@@ -26,14 +26,21 @@ readonly class NonEmptyStringType extends Type
         if ($this->matches($value)) {
             return $value;
         }
-        if (is_object($value) && !method_exists($value, '__toString')) {
+
+        if (is_object($value)) {
+            if (method_exists($value, '__toString')) {
+                $stringValue = (string)$value;
+            } else {
+                throw new CastException($value, $this);
+            }
+        } elseif (is_array($value)) {
+            $stringValue = 'Array';
+        } elseif (is_scalar($value) || is_resource($value) || is_null($value)) {
+            $stringValue = (string)$value;
+        } else {
             throw new CastException($value, $this);
         }
-        if (is_array($value)) {
-            $stringValue = 'Array';
-        } else {
-            $stringValue = (string)$value;
-        }
+
         if ($stringValue === '') {
             throw new CastException($value, $this);
         }

@@ -110,7 +110,7 @@ function _null(): Type
 
 /**
  * // @todo literal types should be checked, cannot be just anything.
- * @template A of scalar
+ * @template A of scalar|null
  * @param array<A> $as
  * @return Type<A>
  */
@@ -205,6 +205,7 @@ function _union(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null
  * @param Type<H>|null $h
  * @return Type
  * @psalm-return (func_num_args() is 2 ? Type<list{A,B}> : (func_num_args() is 3 ? Type<list{A,B,C}> : (func_num_args() is 4 ? Type<list{A,B,C,D}> : (func_num_args() is 5 ? Type<list{A,B,C,D,E}> : (func_num_args() is 6 ? Type<list{A,B,C,D,E,F}> : (func_num_args() is 7 ? Type<list{A,B,C,D,E,F,G}> : Type<list{A,B,C,D,E,F,G,H}>))))))
+ * @psalm-suppress InvalidReturnType
  * @psalm-suppress MixedReturnTypeCoercion
  */
 function _tuple(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null, Type $f = null, Type $g = null, Type $h = null): Type
@@ -224,6 +225,9 @@ function _tuple(Type $a, Type $b, Type $c = null, Type $d = null, Type $e = null
             $fields[] = $arg;
         }
     }
+    /**
+     * @psalm-suppress InvalidReturnStatement
+     */
     return new Types\TupleType($fields);
 }
 

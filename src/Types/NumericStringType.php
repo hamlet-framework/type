@@ -25,18 +25,28 @@ readonly class NumericStringType extends Type
     {
         if ($this->matches($value)) {
             return $value;
+        }
+
+        if (is_string($value)) {
+            $stringValue = $value;
         } elseif (is_array($value) || is_null($value)) {
             throw new CastException($value, $this);
         } elseif (is_scalar($value) || is_resource($value)) {
-            $value = (string)$value;
-        } elseif (is_object($value) && method_exists($value, '__toString')) {
-            $value = (string)$value;
-        }
-
-        if (!is_string($value) || !is_numeric($value)) {
+            $stringValue = (string)$value;
+        } elseif (is_object($value)) {
+            if (method_exists($value, '__toString')) {
+                $stringValue = (string)$value;
+            } else {
+                throw new CastException($value, $this);
+            }
+        } else {
             throw new CastException($value, $this);
         }
-        return $value;
+
+        if (!is_numeric($stringValue)) {
+            throw new CastException($value, $this);
+        }
+        return $stringValue;
     }
 
     #[Override] public function __toString(): string
